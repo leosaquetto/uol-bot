@@ -119,7 +119,7 @@ test('OTA first opening shows UI without collection; next opening and explicit n
     preparePrivateFiles: async () => { assert.ok(displayed > 0, 'loading is visible before private data waits'); }, persistPrivateBootstrap() {},
     loadSettings: () => ({}), loadHistory: () => [], loadCredentials: () => ({}), loadSessionCookies: () => [], loadRedemptionsDatabase: () => [],
     buildDashboardHTML: (...args) => { lastInitial = args[5]; lastCollection = args[6]; return '<html></html>'; },
-    WebView: class { async loadHTML(html) { if (html === '<html></html>') closeWindow(); } async evaluateJavaScript() { throw Error('unexpected presentation bridge'); } present() { displayed++; return new Promise(resolve => { closeWindow = resolve; }); } },
+    WebView: class { async loadHTML(html) { if (html === '<html></html>') setImmediate(closeWindow); } async evaluateJavaScript() { throw Error('unexpected presentation bridge'); } present() { displayed++; return new Promise(resolve => { closeWindow = resolve; }); } },
     Script: { complete() {}, setShortcutOutput() {} }
   });
   const gate = source.slice(source.indexOf('function hunterCollectionPausedForUpdate('), source.indexOf('async function runNativeHunterCollector('));
@@ -129,7 +129,7 @@ test('OTA first opening shows UI without collection; next opening and explicit n
   assert.equal(lastCollection.status, 'updated');
   assert.equal(lastCollection.access, access); assert.equal(accessReads, 1);
   await context.main(); assert.equal(collects, 1); assert.equal(displayed, 2); assert.equal(lastInitial, false);
-  assert.equal(lastCollection.status, 'complete');
+  assert.equal(lastCollection.status, 'starting');
   context.SCRIPT_VERSION = 'test-2'; action = 'notification'; await context.main();
   assert.equal(collects, 2); assert.equal(displayed, 2, 'explicit notification is headless and eligible');
   action = 'update'; context.SCRIPT_VERSION = 'test-3'; await context.main();
@@ -283,12 +283,15 @@ test('native collector requires approval and retains the optional private local 
   assert.equal(result.reason, 'device_mismatch'); assert.equal(keys.has('token'), false);
 });
 
-test('generated HTML embeds exact data safely without replacement-string expansion or double escaped SVG', () => {
+test('generated HTML preserves icons while excluding native secrets', () => {
   const artifact = fs.readFileSync(path.join(__dirname, 'dist/Hunter.js'), 'utf8');
-  const start = artifact.indexOf('function buildDashboardHTML(');
+  const start = artifact.indexOf('function publicHunterCredentials(');
   const end = artifact.indexOf('\nawait main();', start);
   const icons = { tickets: '<svg viewBox="0 0 24 24"></svg>' };
-  const credentials = { test: "$& $` $' $$ </script><script>" };
+  const credentials = { source: 'private', accounts: {
+    leosaquetto: { login: 'leo@example.test', senha: "$& $` $' $$ </script><script>" },
+    gaoriel: { login: 'gao@example.test', senha: 'synthetic-secret' }
+  } };
   const context = vm.createContext({ BUNDLED_COOKIES_GAORIEL: [], BUNDLED_COOKIES_LEO: [],
     BUNDLED_REDEMPTIONS: [], ICONS: icons, NTFY_TOPIC: 'fixture', SCRIPT_VERSION: 'test', loadNavigationTheme: () => 'white' });
   context.HUNTER_LOGO_BASE64 = require('./test-support/artifact.cjs').literal(artifact, 'const HUNTER_LOGO_BASE64 = ');
@@ -301,7 +304,16 @@ test('generated HTML embeds exact data safely without replacement-string expansi
   new vm.Script(inline);
   const initialLine = inline.slice(inline.indexOf('const INITIAL ='), inline.indexOf('\n', inline.indexOf('const INITIAL =')));
   vm.runInContext(initialLine + '; globalThis.initial = INITIAL;', context);
-  assert.deepEqual(JSON.parse(JSON.stringify(context.initial.credentials)), credentials);
+  assert.equal(context.initial.credentials.accounts.leosaquetto.hasLogin, true);
+  assert.equal(context.initial.credentials.accounts.leosaquetto.maskedLogin, 'leo••••st');
+  assert.equal(context.initial.credentials.accounts.leosaquetto.login, undefined);
+  assert.equal(context.initial.credentials.email, undefined);
+  assert.equal(context.initial.credentials.accounts.leosaquetto.hasPassword, true);
+  assert.equal(context.initial.credentials.accounts.gaoriel.hasPassword, true);
+  assert.equal(context.initial.credentials.accounts.leosaquetto.senha, undefined);
+  assert.equal(context.initial.sessionCookies, undefined);
+  assert.equal(context.initial.settings.userSessions, undefined);
+  assert.doesNotMatch(html, /synthetic-secret|leo@example\.test|gao@example\.test|\$& \$`|sessionCookiesLeo/);
   assert.deepEqual(JSON.parse(JSON.stringify(context.initial.icons)), icons);
   assert.equal(context.initial.hunterCollection.status, 'complete');
   assert.equal(context.initial.navigationBarTheme, 'white');
@@ -314,4 +326,8 @@ test('redemption identity never merges accounts, missing accounts, or synthetic 
   assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'redemption-leo-1' }), '');
   assert.notEqual(context.nativeRedemptionKey({ user: 'leo', url: '/voucher/1' }), context.nativeRedemptionKey({ user: 'gab', url: '/voucher/1' }));
   assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'voucher-1' }), 'leo|id:voucher-1');
+  assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'voucher-1',
+    url: 'https://clube.uol.com.br/perfil/beneficios/voucher-1' }), 'leo|id:voucher-1');
+  assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'voucher-1',
+    url: 'https://clube.uol.com.br/perfil/beneficios/another' }), '');
 });

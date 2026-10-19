@@ -22,9 +22,13 @@ function harness(records = []) {
       return nodes.get(id);
     } },
     copyPromoCode: code => copies.push(code), fetch: () => assert.fail('rendering must not fetch an unsafe URL'),
+    getStoredVoucher: () => null, trustedVoucherDownloadUrl: () => '',
+    isVerifiedReceipt: () => false,
+    enterOwnedModal() {}, leaveOwnedModal() {}, closeRedemptionDetailsModal() {},
     console: { log() {} },
   });
   vm.runInContext(['escapeReceiptHtml', 'receiptSafeUrl', 'formatRedemptionTitle', 'formatRedemptionDateTime',
+    'base64ToUint8Array', 'voucherFileName', 'voucherMimeFromBytes', 'voucherBlobFromDataUrl',
     'renderRedemptionsScreen', 'openRedemptionDetailsModal', 'loadVoucherContent'].map(fn).join('\n'), context);
   return { context, nodes, copies };
 }
@@ -68,7 +72,7 @@ test('voucher display keeps image data and binds coupon copying without interpol
   assert.ok(html.includes(c.escapeReceiptHtml(coupon)));
   assert.doesNotMatch(html, /onclick=|data:text\/html|javascript:|<img src=x>/);
   nodes.get('btnCopyPromo').onclick(); assert.deepEqual(copies, [coupon]);
-  const image = 'data:image/png;base64,aGVsbG8=';
+  const image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9YfNpS8AAAAASUVORK5CYII=';
   await c.loadVoucherContent({ voucherImageDataUrl: image });
   assert.ok(nodes.get('voucherViewerContainer').innerHTML.includes(image));
   assert.equal(nodes.get('btnShareVoucher').style.display, 'flex');

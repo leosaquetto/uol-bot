@@ -22,7 +22,7 @@ function harness(action='open',paused=false){
 }
 test('automatic update precedes startup and its post-dashboard notice never holds UI close or collection',async()=>{
   const h=harness(),pending=h.context.main();await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(h.calls,['auto','marker','loading','present','collect','private','dashboard','notice']);h.close();
+  assert.deepEqual(h.calls,['auto','marker','loading','present','private','dashboard','notice','collect']);h.close();
   await Promise.race([pending,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('notice blocked close')),1000);timer.unref();})]);
 });
 test('automatic relaunch returns before WebView, private files, collection and version marker',async()=>{
@@ -36,7 +36,7 @@ test('automatic update settles before any startup side effect instead of racing 
   const pending=runtime.context.main();await new Promise(resolve=>setImmediate(resolve));
   assert.deepEqual(runtime.calls,['auto']);assert.equal(runtime.state.complete,0);
   finish(false);await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(runtime.calls,['auto','marker','loading','present','collect','private','dashboard','notice']);
+  assert.deepEqual(runtime.calls,['auto','marker','loading','present','private','dashboard','notice','collect']);
   runtime.close();await pending;
 });
 test('first updated opening preserves the collection pause while permitting its confirmed startup notice',async()=>{
@@ -50,5 +50,5 @@ test('headless collection and explicit updater actions retain their existing con
 test('missing optional startup update hooks leave the existing dashboard and collection lifecycle usable',async()=>{
   const runtime=harness();delete runtime.context.autoUpdateHunterOnOpen;delete runtime.context.showHunterStartupUpdateNotice;
   const pending=runtime.context.main();await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(runtime.calls,['marker','loading','present','collect','private','dashboard']);runtime.close();await pending;
+  assert.deepEqual(runtime.calls,['marker','loading','present','private','dashboard','collect']);runtime.close();await pending;
 });

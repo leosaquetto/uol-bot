@@ -26,6 +26,7 @@ const substitutions = {
   __BUILD_INSTAGRAM_BROWSER__: fs.readFileSync(path.join(__dirname, "native/instagram-browser.js"), "utf8"),
   __BUILD_ACCESS__: accessSource,
   __BUILD_REDEMPTION__: redemptionSource,
+  __BUILD_LINK_CHECKS__: fs.readFileSync(path.join(__dirname, "native/link-checks.js"), "utf8"),
   __BUILD_PARSER__: JSON.stringify(receiptParserSource),
   __BUILD_DASHBOARD_HTML__: JSON.stringify(htmlTemplate)
 };

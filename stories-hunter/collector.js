@@ -163,16 +163,44 @@ const HunterCollector = (() => {
     const root = fm.joinPath(fm.documentsDirectory(), 'uol-hunter-collector-v1');
     if (!fm.fileExists(root)) fm.createDirectory(root, true);
     const file = name => fm.joinPath(root, name);
-    const list = prefix => fm.listContents(root).filter(n => n.startsWith(prefix) && n.endsWith('.json'));
-    const read = name => { try { return JSON.parse(fm.readString(file(name))); } catch { return null; } };
+    // An elected run reads many immutable records. Reuse one directory snapshot
+    // within that run, while refreshing it at network boundaries where another
+    // process may have appended events or receipts.
+    let indexedNames = null, indexedSet = null, indexedValues = null;
+    const beginIndex = names => { indexedNames = names; indexedSet = new Set(names); indexedValues = new Map(); };
+    const refreshIndex = () => { if (indexedNames) beginIndex(fm.listContents(root)); };
+    const endIndex = () => { indexedNames = indexedSet = indexedValues = null; };
+    const list = prefix => (indexedNames || fm.listContents(root)).filter(n => n.startsWith(prefix) && n.endsWith('.json'));
+    const read = name => {
+      if (indexedValues?.has(name)) return indexedValues.get(name);
+      let value = null;
+      try { value = JSON.parse(fm.readString(file(name))); } catch (_) {}
+      if (indexedValues) indexedValues.set(name, value);
+      return value;
+    };
     function writeNew(name, value) {
       if (fm.fileExists(file(name))) return;
-      const temp = file('.tmp-' + uuid()); fm.writeString(temp, JSON.stringify(value));
-      if (!fm.fileExists(file(name))) { try { fm.move(temp, file(name)); } catch (e) { if (!fm.fileExists(file(name))) throw e; } }
+      const encoded = JSON.stringify(value);
+      const temp = file('.tmp-' + uuid()); fm.writeString(temp, encoded);
+      let written = false;
+      if (!fm.fileExists(file(name))) { try { fm.move(temp, file(name)); written = true; } catch (e) { if (!fm.fileExists(file(name))) throw e; } }
       if (fm.fileExists(temp)) fm.remove(temp);
+      if (indexedNames && written && !indexedSet.has(name)) {
+        indexedNames.push(name); indexedSet.add(name); indexedValues.set(name, JSON.parse(encoded));
+      }
+    }
+    function removeIndexed(name) {
+      fm.remove(file(name));
+      if (indexedSet?.delete(name)) {
+        indexedNames.splice(indexedNames.indexOf(name), 1);
+        indexedValues.delete(name);
+      }
     }
     const records = prefix => list(prefix).map(name => ({ name, value: read(name) })).filter(r => r.value);
-    const state = source => records('state-' + source + '-').map(r => r.value).sort((a, b) => b.at - a.at || (b.sequence || 0) - (a.sequence || 0))[0] || {};
+    const state = source => records('state-' + source + '-').reduce((latest, record) => {
+      const value = record.value;
+      return !latest || value.at > latest.at || (value.at === latest.at && (value.sequence || 0) > (latest.sequence || 0)) ? value : latest;
+    }, null) || {};
     const saveState = (source, value) => writeNew('state-' + source + '-' + uuid() + '.json', { ...value, at: now(), sequence: (state(source).sequence || 0) + 1 });
     function importBootstrap(value) {
       if (!plain(value)) return;
@@ -265,6 +293,7 @@ const HunterCollector = (() => {
         if (!plain(captured)) throw error('browser_response_invalid');
         const profile = profileIdentity({ data: { user: captured.profile } });
         const payloads = parseReels(captured.reels, profile, now());
+        refreshIndex();
         let found = 0; for (const payload of payloads) if (enqueue('instagram', payload)) found++;
         const status = payloads.length ? 'found' : 'empty';
         saveState(browserState, { ...state(browserState), suspended: false, retryAt: 0, reason: '', status, lastSuccessAt: new Date(now()).toISOString() });
@@ -285,6 +314,7 @@ const HunterCollector = (() => {
       try {
         reserve(source);
         const payloads = parsePortal(await request(PORTAL, { maxBytes: LIMITS.body, headers: { Accept: 'text/html' } }));
+        refreshIndex();
         let found = 0; for (const payload of payloads) if (enqueue(source, payload)) found++;
         saveState(source, { ...state(source), suspended: false, retryAt: 0, status: payloads.length ? 'found' : 'empty' });
         return { status: payloads.length ? 'found' : 'empty', found };
@@ -294,6 +324,7 @@ const HunterCollector = (() => {
       }
     }
     async function flush() {
+      refreshIndex();
       const auth = token(); if (!auth) return;
       const s = state('intake'); if (s.suspended || s.retryAt > now()) return;
       const events = records('event-').map(r => r.value.event).filter(e => !fm.fileExists(file('receipt-' + e.eventId + '.json'))).sort((a, b) => a.observedAt.localeCompare(b.observedAt));
@@ -309,6 +340,7 @@ const HunterCollector = (() => {
       } catch (e) { saveState('intake', { suspended: e.status === 'auth_required', retryAt: now() + (e.retryAfter || 120000), status: e.status || 'unknown' }); }
     }
     async function refreshReceipts() {
+      refreshIndex();
       const auth = token(); if (!auth || state('intake').retryAt > now() || state('intake').suspended) return;
       // Portal registration hands ownership to the normal delivery pipeline;
       // it is final for this intake receipt, but is never reported as delivered.
@@ -322,7 +354,8 @@ const HunterCollector = (() => {
           const result = await request(ORIGIN + '/hunter-intake-status?eventId=' + encodeURIComponent(previous.eventId), { headers: { Authorization: 'Bearer ' + auth }, json: true, maxBytes: 65536 });
           if (result?.eventId === previous.eventId && result.persisted === true) {
             if (terminal.has(result.status)) writeNew('terminal-' + previous.eventId + '.json', { eventId: previous.eventId, status: result.status, at: now() });
-            else if (['queued', 'processing', 'needs_reconciliation'].includes(result.status)) saveState('receipt-' + previous.eventId, { receiptStatus: result.status });
+            else if (['queued', 'processing', 'needs_reconciliation'].includes(result.status) && result.status !== previous.status)
+              saveState('receipt-' + previous.eventId, { receiptStatus: result.status });
           }
         } catch (e) {
           if (e.status === 'auth_required' || e.status === 'rate_limited') saveState('intake', { suspended: e.status === 'auth_required', retryAt: now() + (e.retryAfter || 120000), status: e.status });
@@ -334,19 +367,29 @@ const HunterCollector = (() => {
       const events = records('event-'), receipts = records('receipt-');
       return { status, discovered: Object.values(sources).reduce((n, s) => n + (s.found || 0), 0), received: receipts.length, delivered: receipts.filter(r => r.value.status === 'delivered' || read('terminal-' + r.value.eventId + '.json')?.status === 'delivered').length, pending: Math.max(0, events.length - receipts.length), sources };
     }
+    let leaseRunning = false;
     async function withLease(operation) {
       if (!token()) return summary('not_configured');
+      if (leaseRunning) return summary('busy');
+      leaseRunning = true;
       const leaseId = uuid(), leaseName = 'lease-' + leaseId + '.json';
-      writeNew(leaseName, { id: leaseId, at: now(), expires: now() + 180000 });
-      // FileManager has no exclusive-open primitive. Append-only events and
-      // receipts guarantee overlapping invocations never erase one another.
-      // A short election additionally prevents normal overlapping source reads.
-      if (env.pause) await env.pause(100);
-      const contenders = records('lease-').map(r => r.value).filter(v => v.expires > now()).sort((a, b) => a.at - b.at || a.id.localeCompare(b.id));
-      if (contenders[0]?.id !== leaseId) { if (read(leaseName)?.id === leaseId) fm.remove(file(leaseName)); return summary('busy'); }
       try {
+        writeNew(leaseName, { id: leaseId, at: now(), expires: now() + 180000 });
+        // FileManager has no exclusive-open primitive. Append-only events and
+        // receipts guarantee overlapping invocations never erase one another.
+        // A short election additionally prevents normal overlapping source reads.
+        if (env.pause) await env.pause(100);
+        const names = fm.listContents(root);
+        const contenders = names.filter(n => n.startsWith('lease-') && n.endsWith('.json'))
+          .map(read).filter(v => v && v.expires > now());
+        const winner = contenders.reduce((first, value) => !first || value.at < first.at || (value.at === first.at && value.id.localeCompare(first.id) < 0) ? value : first, null);
+        if (winner?.id !== leaseId) return summary('busy');
+        beginIndex(names);
         return await operation();
-      } finally { if (read(leaseName)?.id === leaseId) fm.remove(file(leaseName)); }
+      } finally {
+        try { if (read(leaseName)?.id === leaseId) removeIndexed(leaseName); }
+        finally { endIndex(); leaseRunning = false; }
+      }
     }
     async function run() {
       return withLease(async () => {

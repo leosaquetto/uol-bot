@@ -38,5 +38,5 @@ test('5.8.0 updater accepts new product artifact using retained compatibility ma
   const old=fs.readFileSync(path.join(__dirname,'fixtures/updater-5.8.0.js'));
   assert.equal(require('node:crypto').createHash('sha256').update(old).digest('hex'),'3817a4010b785991bdb063f9a3309720c51b411f684031679196d509dde5fb59');
   const context=vm.createContext({});vm.runInContext(old.toString('utf8'),context);
-  assert.equal(context.hunterUpdateVersion(require('./assemble.cjs').assembleHunter()),'5.9.4');
+  assert.equal(context.hunterUpdateVersion(require('./assemble.cjs').assembleHunter()),'5.9.5');
 });

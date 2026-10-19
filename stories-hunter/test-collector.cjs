@@ -143,6 +143,30 @@ test('concurrent openings elect one collector and never erase another event', as
   assert.equal([...h.files.keys()].filter(k => k.includes('/lease-')).length, 0);
 });
 
+test('an elected run indexes immutable records and refreshes after external appends', async () => {
+  const h = harness({ instagram: true }); let scans = 0;
+  const listContents = h.env.fm.listContents;
+  h.env.fm.listContents = root => { scans++; return listContents(root); };
+  h.env.instagramBrowser.capture = async () => {
+    h.files.set('/docs/uol-hunter-collector-v1/event-external.json', JSON.stringify({ fingerprint: 'external', event: {
+      eventId: 'external', source: 'portal', observedAt: new Date(NOW).toISOString(), payload: { link: LINK + '-extra', title: 'External' }
+    } }));
+    return { profile: PROFILE, reels: reel() };
+  };
+  const result = await h.collector.run();
+  assert.equal(result.status, 'complete');
+  assert.equal(result.received, 3, 'the final flush observes an event appended by another instance');
+  assert.ok(h.calls.some(c => c.method === 'POST' && JSON.parse(c.body).observations.some(e => e.eventId === 'external')));
+  assert.ok(scans <= 7, `directory was scanned ${scans} times`);
+});
+
+test('unchanged receipt status needs only the pre-query attempt record', async () => {
+  const h = harness(); await h.collector.run();
+  h.setResponder(url => ({ value: { ok: true, persisted: true, eventId: decodeURIComponent(url.split('=')[1]), status: 'queued' } }));
+  await h.collector.refreshReceipts();
+  assert.equal([...h.files.keys()].filter(name => name.includes('/state-receipt-')).length, 1);
+});
+
 test('receipt refresh uses owner-scoped status endpoint and registration never means delivery', async () => {
   const h = harness(); await h.collector.run();
   h.advance(120000);

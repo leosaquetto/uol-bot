@@ -142,7 +142,7 @@ test('dashboard receives the stored device-local theme on each opening', () => {
   const h = harness(new Map([[themeFile, '{"theme":"orange"}']]));
   Object.assign(h.context, { BUNDLED_COOKIES_LEO: [], BUNDLED_COOKIES_GAORIEL: [], BUNDLED_REDEMPTIONS: [],
     ICONS: {}, NTFY_TOPIC: 'synthetic', SCRIPT_VERSION: '5.7.9', resolveHunterAssets: value => value });
-  const dashboard = source.slice(source.indexOf('function buildDashboardHTML('), source.indexOf('\nawait main();'))
+  const dashboard = source.slice(source.indexOf('function publicHunterCredentials('), source.indexOf('\nawait main();'))
     .replace('__BUILD_DASHBOARD_HTML__', JSON.stringify('__INITIAL_DATA_JSON__'));
   vm.runInContext(dashboard, h.context);
   const settings = { userSessions: { leosaquetto: [], gaoriel: [] }, navigationBarTheme: 'purple' };

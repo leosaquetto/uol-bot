@@ -10,10 +10,12 @@ const compatibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'compatibi
 const fingerprint = source => crypto.createHash('sha256').update(source).digest('hex');
 test('current official UOL release is eligible for integrated launch', () => {
   const release = JSON.parse(fs.readFileSync(path.join(__dirname, '../stories-hunter/releases/stable.json')));
-  const artifact = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'));
-  assert.equal(fingerprint(artifact), release.sha256);
-  assert.equal(artifact.length, release.size);
+  const stableArtifact = fs.readFileSync(path.join(__dirname, '../scriptable_uol_stories_hunter.js'));
+  const candidateArtifact = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'));
+  assert.equal(fingerprint(stableArtifact), release.sha256);
+  assert.equal(stableArtifact.length, release.size);
   assert.equal(compatibility['clube-uol'].sha256.includes(release.sha256), true);
+  assert.equal(compatibility['clube-uol'].sha256.includes(fingerprint(candidateArtifact)), true);
 });
 const identity = { deviceId: '12345678-1234-1234-1234-123456789abc', token: 'a'.repeat(64) };
 function harness(route, options = {}) {

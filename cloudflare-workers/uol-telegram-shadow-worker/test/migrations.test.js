@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 26);
+  assert.equal(blocks.length, 27);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 26);
+  assert.equal(Number(version), 27);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -57,6 +57,9 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "id", "dedupe_key", "offer_id", "target", "operation", "state", "attempt",
     "generation", "occurred_at", "external_id", "error",
   ]));
+  const availabilityColumns = new Set(database.prepare("PRAGMA table_info(offer_availability_events)").all()
+    .map((column) => column.name));
+  assert.deepEqual(availabilityColumns, new Set(["id", "offer_id", "kind", "occurred_at"]));
   const beeperColumns = new Set(
     database.prepare("PRAGMA table_info(beeper_delivery_queue)").all()
       .map((column) => column.name),
@@ -89,6 +92,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "offers_discord_image_cache_due_v25",
     "offers_main_image_upgrade_due_v25",
     "beeper_delivery_pending_v25",
+    "offer_availability_events_recent_v27",
   ]) {
     assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
   }
@@ -155,8 +159,37 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    26,
+    27,
   );
+  database.close();
+});
+
+test("upgrade v27 preserva estado antigo sem fabricar transições e registra apenas mudanças futuras", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 26)) database.exec(sql);
+  database.prepare(
+    `INSERT INTO offers(id, link, preview_title, first_seen_at, last_seen_at,
+       status, sold_out_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+  ).run("historical", "https://clube.uol.com.br/campanhasdeingresso/pABC-historical",
+    "Historical", "2026-10-01T00:00:00.000Z", "2026-10-01T00:00:00.000Z",
+    "sold_out", "2026-10-02T00:00:00.000Z");
+  database.exec(blocks[26]);
+  const events = () => database.prepare(
+    "SELECT offer_id, kind, occurred_at FROM offer_availability_events ORDER BY id",
+  ).all().map(row => ({ ...row }));
+  assert.deepEqual(events(), []);
+  database.prepare(
+    "UPDATE offers SET status = 'delivered', sold_out_at = '', restocked_at = ? WHERE id = 'historical'",
+  ).run("2026-10-03T00:00:00.000Z");
+  database.prepare(
+    "UPDATE offers SET status = 'sold_out', sold_out_at = ?, restocked_at = '' WHERE id = 'historical'",
+  ).run("2026-10-04T00:00:00.000Z");
+  database.prepare("UPDATE offers SET status = 'sold_out' WHERE id = 'historical'").run();
+  assert.deepEqual(events(), [
+    { offer_id: "historical", kind: "restocked", occurred_at: "2026-10-03T00:00:00.000Z" },
+    { offer_id: "historical", kind: "sold_out", occurred_at: "2026-10-04T00:00:00.000Z" },
+  ]);
   database.close();
 });
 

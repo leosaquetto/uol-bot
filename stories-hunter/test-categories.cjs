@@ -83,7 +83,7 @@ test('description enrichment updates local category and detail badge without cha
   h.context.activeOffer = { ...football, category: 'OUTROS', availability: 'observed', firstSeen: 123 };
   h.context.historyData.active = [h.context.activeOffer];
   h.context.document.querySelector = () => tag;
-  vm.runInContext(fn('updateCategoryCounts') + '\n' + fn('renderModalDescription'), h.context);
+  vm.runInContext(fn('escapeReceiptHtml') + '\n' + fn('updateCategoryCounts') + '\n' + fn('renderModalDescription'), h.context);
   h.context.renderModalDescription(football.description);
   assert.equal(h.context.activeOffer.category, 'FUTEBOL');
   assert.equal(tag.className, 'card-tag tag-category tag-cat-FUTEBOL');
@@ -94,13 +94,16 @@ test('description enrichment updates local category and detail badge without cha
 
 test('Football label reaches timeline and historical category metrics', () => {
   const h = harness();
-  const item = { ...football, category: 'FUTEBOL', firstSeen: Date.now() - 1000 };
+  const item = { ...football, category: 'FUTEBOL', firstSeen: Date.now() - 1000,
+    capturedAt: Date.now() - 1000, captureSource: 'native' };
   h.context.historyData.active = [item];
   Object.assign(h.context, { getGroupKey: item => item.id, offerImage: () => '', isStoriesOnlyOffer: () => false,
-    catalogTime: value => Number(value) || 0, confirmedSoldOutTime: () => 0, getAllRedemptionsList: () => [] });
+    catalogTime: value => Number(value) || 0, captureTime: value => value.captureSource === 'native' ? value.capturedAt : 0,
+    confirmedSoldOutTime: () => 0, getAllRedemptionsList: () => [] });
   vm.runInContext(fn('getTimelineEvents'), h.context);
   assert.match(h.context.getTimelineEvents()[0].desc, /Futebol/);
   Object.assign(h.context, { getAllCatalogOffers: () => [item], saoPauloParts: () => ({ year: 2026, month: 10 }),
+    buildHistoryGroups: () => [{ category: 'FUTEBOL', latestCapturedAt: item.capturedAt, allItems: [item] }],
     selectedHistoryYear: null, selectedHistoryMonth: null, getOfferYearAndMonth: () => ({ year: 2026, month: 9 }),
     MONTH_SHORT_LABELS: Array(12).fill('Out'), historySearchQuery: '', htmlAttribute: value => value,
     renderHistoryCurated() {}, renderHistoryMonthSelector() {}, renderHistoryMonths() {} });

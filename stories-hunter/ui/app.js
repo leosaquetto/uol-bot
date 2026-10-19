@@ -31,38 +31,191 @@
     let selectedHistoryYear = null;
     let selectedHistoryMonth = null;
 
-    function initSessionCookies(cookies) {
-      const list = cookies || (settings.userSessions && settings.userSessions[settings.currentUser || 'leosaquetto']) || INITIAL.sessionCookies;
-      if (list && Array.isArray(list)) {
-        list.forEach(c => {
-          try {
-            const exp = c.expires && c.expires > 0 ? '; expires=' + new Date(c.expires * 1000).toUTCString() : '';
-            document.cookie = `${c.name}=${c.value}; path=/; domain=.uol.com.br${exp}; SameSite=Lax`;
-            document.cookie = `${c.name}=${c.value}; path=/; domain=clube.uol.com.br${exp}; SameSite=Lax`;
-            document.cookie = `${c.name}=${c.value}; path=/${exp}`;
-          } catch(e) {}
+    function historyIdentity(item, index, origin, section) {
+      const campaign = item && catalogCampaign(item.link || item.url);
+      if (campaign) return 'campaign:' + campaign.key;
+      return item && item.id ? 'id:' + String(item.id) : 'legacy:' + origin + ':' + section + ':' + index;
+    }
+
+    function reconcileHistorySnapshots(nativeSnapshot, localSnapshot) {
+      const result = { schemaVersion: 2, active: [], history: [] };
+      const trustedCapture = entry => {
+        if (!['worker', 'native', 'portal-client'].includes(entry && entry.captureSource)) return 0;
+        const value = catalogTime(entry.capturedAt);
+        return value && value <= Date.now() + 300000 ? value : 0;
+      };
+      const records = new Map();
+      const observed = item => Math.max(catalogTime(item.lastSeen), catalogTime(item.lastSourceSeenAt),
+        catalogTime(item.soldOutAt), catalogTime(item.restockedAt));
+      const add = (snapshot, origin, section) => {
+        const list = snapshot && Array.isArray(snapshot[section]) ? snapshot[section] : [];
+        list.forEach((item, index) => {
+          if (!item || typeof item !== 'object') return;
+          const key = historyIdentity(item, index, origin, section);
+          const previous = records.get(key);
+          if (!previous) {
+            records.set(key, { item: { ...item }, origin, section });
+            return;
+          }
+          const winner = origin === 'native' && previous.origin !== 'native' ||
+            origin === previous.origin && (observed(item) > observed(previous.item) ||
+              observed(item) === observed(previous.item) && section === 'history' && previous.section === 'active');
+          const preferred = winner ? item : previous.item;
+          const secondary = winner ? previous.item : item;
+          const merged = { ...secondary, ...preferred };
+          // Preserve a known capture across versions, but never promote a
+          // legacy firstSeen that may actually be the Story or event date.
+          const candidates = [previous.item, item].filter(entry => trustedCapture(entry));
+          const worker = candidates.filter(entry => entry.captureSource === 'worker');
+          const selected = (worker.length ? worker : candidates).sort((a, b) => trustedCapture(a) - trustedCapture(b))[0];
+          merged.legacyFirstSeen = previous.item.legacyFirstSeen || item.legacyFirstSeen ||
+            (!selected && (previous.item.firstSeen || item.firstSeen)) || 0;
+          merged.capturedAt = merged.firstSeen = selected ? trustedCapture(selected) : 0;
+          merged.captureSource = selected ? selected.captureSource : 'legacy';
+          records.set(key, { item: merged, origin: winner ? origin : previous.origin,
+            section: winner ? section : previous.section });
         });
+      };
+      // The native snapshot owns availability when a legacy WebView cache
+      // disagrees. A local-only record is retained as unverified history.
+      for (const section of ['history', 'active']) add(localSnapshot, 'local', section);
+      for (const section of ['history', 'active']) add(nativeSnapshot, 'native', section);
+      for (const { item, origin, section } of records.values()) {
+        const known = trustedCapture(item);
+        const normalized = known ? item : { ...item,
+          legacyFirstSeen: item.legacyFirstSeen || item.firstSeen || 0,
+          capturedAt: 0, firstSeen: 0, captureSource: 'legacy' };
+        if (origin === 'local') normalized.cacheUnverified = true;
+        else delete normalized.cacheUnverified;
+        result[origin === 'local' && section === 'active' ? 'history' : section].push(normalized);
       }
+      return result;
+    }
+
+    const legacyPrivateStorageSnapshot = new Map();
+    function isPublicSettingsPayload(value) {
+      return value && value.schemaVersion === 2 && !Array.isArray(value) &&
+        Object.keys(value).every(key => ['schemaVersion', 'priorizarWords', 'despriorizarWords', 'groupedView', 'currentTab'].includes(key));
+    }
+    function hunterLegacyPrivateCacheManifest() {
+      if (!INITIAL.nativeAccounts || typeof localStorage?.key !== 'function') return [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (typeof key !== 'string' || legacyPrivateStorageSnapshot.has(key)) continue;
+        if (key !== 'uol_hub_settings' && key !== 'uol_real_redemptions' && !key.startsWith('uol_vc_')) continue;
+        const value = localStorage.getItem(key);
+        if (typeof value !== 'string') continue;
+        if (key === 'uol_hub_settings') {
+          try { if (isPublicSettingsPayload(JSON.parse(value))) continue; } catch (_) {}
+        }
+        legacyPrivateStorageSnapshot.set(key, value);
+      }
+      return Array.from(legacyPrivateStorageSnapshot, ([key, value]) => ({ key, length: value.length }));
+    }
+    function hunterLegacyPrivateCacheChunk(key, offset, limit) {
+      const value = legacyPrivateStorageSnapshot.get(key);
+      const start = Number(offset);
+      const size = Number(limit);
+      if (typeof value !== 'string' || !Number.isSafeInteger(start) || start < 0 ||
+          start > value.length || !Number.isSafeInteger(size) || size < 1 || size > 32768) return null;
+      return { key, offset: start, length: value.length, data: value.slice(start, start + size) };
+    }
+    function saveSafeLegacyRedemptions(rows) {
+      if (!Array.isArray(rows) || !rows.length) return true;
+      const fields = ['id', 'title', 'partner', 'thumb', 'url', 'user', 'redeemedAt',
+        'description', 'rules', 'category', 'imageUrl', 'offerUrl', 'redemptionDate'];
+      let existing = [];
+      try { existing = JSON.parse(localStorage.getItem('uol_real_redemptions_v2') || '[]'); } catch (_) {}
+      if (!Array.isArray(existing)) existing = [];
+      const cleaned = rows.filter(row => row && typeof row === 'object').map(row => {
+        const safe = {};
+        for (const field of fields) {
+          const content = row[field];
+          if (typeof content === 'string' && !/^data:/i.test(content)) {
+            if (['url', 'thumb', 'imageUrl', 'offerUrl'].includes(field)) {
+              try {
+                const parsed = new URL(content);
+                if (parsed.protocol === 'https:' && !parsed.username && !parsed.password)
+                  safe[field] = (parsed.origin + parsed.pathname).slice(0, 2048);
+              } catch (_) {}
+            } else safe[field] = content.slice(0, 20000);
+          }
+          else if (field === 'id' && Number.isSafeInteger(content)) safe[field] = content;
+        }
+        safe.cacheUnverified = true;
+        return safe;
+      });
+      const merged = new Map();
+      [...existing, ...cleaned].forEach(row => {
+        const key = row.user && (row.id || row.url) ? String(row.user) + '|' + String(row.id || row.url)
+          : JSON.stringify(row);
+        merged.set(key, { ...(merged.get(key) || {}), ...row });
+      });
+      const serialized = JSON.stringify(Array.from(merged.values()));
+      if (serialized.length > 2_000_000) return false;
+      localStorage.setItem('uol_real_redemptions_v2', serialized);
+      return true;
+    }
+    function hunterLegacyPrivateCacheCommitted(keys) {
+      if (!Array.isArray(keys)) return;
+      for (const key of keys) {
+        const value = legacyPrivateStorageSnapshot.get(key);
+        if (typeof value !== 'string') continue;
+        const current = localStorage.getItem(key);
+        if (current !== value && key !== 'uol_hub_settings') continue;
+        try {
+          if (key === 'uol_hub_settings') {
+            if (current !== value && !isPublicSettingsPayload(JSON.parse(current))) continue;
+            let old = {};
+            try { old = JSON.parse(value) || {}; } catch (_) {}
+            if (!saveSafeLegacyRedemptions([...(Array.isArray(old.realRedemptions) ? old.realRedemptions : []),
+              ...(Array.isArray(old.myRedemptions) ? old.myRedemptions : [])])) continue;
+            legacyPrivateStorageSnapshot.delete(key);
+            if (current === value && !saveSettingsToStorage()) continue;
+          } else if (key === 'uol_real_redemptions') {
+            let rows = JSON.parse(value);
+            if (!Array.isArray(rows)) rows = [];
+            if (!saveSafeLegacyRedemptions(rows)) continue;
+            localStorage.removeItem(key);
+          } else if (key.startsWith('uol_vc_')) {
+            localStorage.removeItem(key);
+          }
+          legacyPrivateStorageSnapshot.delete(key);
+        } catch (_) { /* Keep the original cache until native archival can be retried. */ }
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.hunterLegacyPrivateCacheManifest = hunterLegacyPrivateCacheManifest;
+      window.hunterLegacyPrivateCacheChunk = hunterLegacyPrivateCacheChunk;
+      window.hunterLegacyPrivateCacheCommitted = hunterLegacyPrivateCacheCommitted;
     }
 
     // Inicialização da interface
     window.addEventListener('load', () => {
       installHeaderLayout();
-      // Injeta cookies de sessão autenticada imediatamente
-      if (!INITIAL.nativeAccounts) initSessionCookies();
-
-      // Hidratação via localStorage instantâneo
+      // Local storage contains display preferences and public offer history only.
+      // Legacy copies may contain cookies/passwords; never hydrate those fields.
       try {
         const localSet = localStorage.getItem('uol_hub_settings');
-        if (localSet) Object.assign(settings, JSON.parse(localSet));
+        if (localSet) {
+          const saved = JSON.parse(localSet);
+          if (saved && typeof saved === 'object') {
+            for (const key of ['priorizarWords', 'despriorizarWords', 'groupedView', 'currentTab']) {
+              if (Object.prototype.hasOwnProperty.call(saved, key)) settings[key] = saved[key];
+            }
+            if (!INITIAL.nativeAccounts && ['leosaquetto', 'gaoriel'].includes(saved.currentUser)) settings.currentUser = saved.currentUser;
+          }
+          if (!INITIAL.nativeAccounts || isPublicSettingsPayload(saved)) saveSettingsToStorage();
+        }
         const localHist = localStorage.getItem('uol_offers_history');
         if (localHist) {
           const parsed = JSON.parse(localHist);
           if (parsed && Array.isArray(parsed.active) && Array.isArray(parsed.history)) {
-            historyData = parsed;
+            historyData = reconcileHistorySnapshots(historyData, parsed);
           }
         }
       } catch(e) {}
+      historyData = reconcileHistorySnapshots(historyData, { active: [], history: [] });
 
       // Native device preference wins over a stale WebView cache after updates.
       initializeNavigationTheme();
@@ -98,7 +251,12 @@
       }
 
       // Inicializa na aba ativa
+      // Capture legacy private values before switchTab can persist public
+      // preferences; the native archive reads this immutable session copy.
+      const legacyPrivateCachePending = INITIAL.nativeAccounts && hunterLegacyPrivateCacheManifest().length > 0;
       switchTab(currentTab, true);
+      if (legacyPrivateCachePending) setTimeout(() => { window.location.href = 'hunter-legacy://migrate'; }, 0);
+      setTimeout(hunterRequestLinkChecks, 100);
 
       // Dispara streaming ao vivo e sincronização de resgates oficiais
       streamLiveOffers();
@@ -155,31 +313,66 @@
     // HEADER_LAYOUT_END
 
     function saveSettingsToStorage() {
+      if (INITIAL.nativeAccounts && legacyPrivateStorageSnapshot.has('uol_hub_settings')) return false;
       try {
-        localStorage.setItem('uol_hub_settings', JSON.stringify(settings));
-      } catch(e) {}
+        const publicSettings = {
+          schemaVersion: 2,
+          priorizarWords: Array.isArray(settings.priorizarWords) ? settings.priorizarWords : [],
+          despriorizarWords: Array.isArray(settings.despriorizarWords) ? settings.despriorizarWords : [],
+          groupedView: Boolean(settings.groupedView),
+          currentTab: settings.currentTab || currentTab || 'home'
+        };
+        if (!INITIAL.nativeAccounts && ['leosaquetto', 'gaoriel'].includes(settings.currentUser)) publicSettings.currentUser = settings.currentUser;
+        const serialized = JSON.stringify(publicSettings);
+        if (localStorage.getItem('uol_hub_settings') !== serialized) {
+          try { localStorage.setItem('uol_hub_settings', serialized); }
+          catch (_) {
+            // A legacy payload may itself exhaust the quota. Scrub it, then
+            // retry the small preference projection without touching history.
+            localStorage.removeItem('uol_hub_settings');
+            localStorage.setItem('uol_hub_settings', serialized);
+          }
+        }
+        return true;
+      } catch(e) { return false; }
     }
 
     function saveHistoryToStorage() {
       try {
-        localStorage.setItem('uol_offers_history', JSON.stringify(historyData));
-      } catch(e) {}
+        const serialized = JSON.stringify({ schemaVersion: 2, active: historyData.active || [], history: historyData.history || [] });
+        // The native history remains authoritative; an oversized WebView mirror
+        // must not evict other WebKit storage or truncate historical records.
+        if (serialized.length > 2_000_000) return false;
+        if (localStorage.getItem('uol_offers_history') !== serialized) localStorage.setItem('uol_offers_history', serialized);
+        return true;
+      } catch(e) { return false; }
     }
 
     function getCachedDescription(id) {
-      if (!id) return '';
+      if (typeof id !== 'string' || !/^[A-Za-z0-9_-]{1,160}$/.test(id) ||
+        ['__proto__', 'constructor', 'prototype'].includes(id)) return '';
       try {
-        const map = JSON.parse(localStorage.getItem('uol_offer_descriptions') || '{}');
-        return map[id] || '';
+        const raw = localStorage.getItem('uol_offer_descriptions') || '{}';
+        if (raw.length > 2_000_000) return '';
+        const map = JSON.parse(raw);
+        const value = map && !Array.isArray(map) && Object.prototype.hasOwnProperty.call(map, id) ? map[id] : '';
+        return typeof value === 'string' ? value.slice(0, 20_000) : '';
       } catch(e) { return ''; }
     }
 
     function setCachedDescription(id, desc) {
-      if (!id || !desc) return;
+      if (typeof id !== 'string' || !/^[A-Za-z0-9_-]{1,160}$/.test(id) ||
+        ['__proto__', 'constructor', 'prototype'].includes(id) || typeof desc !== 'string' || !desc) return;
       try {
-        const map = JSON.parse(localStorage.getItem('uol_offer_descriptions') || '{}');
-        map[id] = desc;
-        localStorage.setItem('uol_offer_descriptions', JSON.stringify(map));
+        const raw = localStorage.getItem('uol_offer_descriptions') || '{}';
+        if (raw.length > 2_000_000) return;
+        const map = JSON.parse(raw);
+        if (!map || typeof map !== 'object' || Array.isArray(map)) return;
+        const value = desc.slice(0, 20_000);
+        if (map[id] === value) return;
+        map[id] = value;
+        const serialized = JSON.stringify(map);
+        if (serialized.length <= 2_000_000) localStorage.setItem('uol_offer_descriptions', serialized);
       } catch(e) {}
     }
 
@@ -410,13 +603,21 @@
     // ===================================================================
     // CATALOG_ADAPTER_START
     const CATALOG_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/catalog';
+    const AVAILABILITY_EVENTS_URL = CATALOG_URL + '/availability-events';
     const CATALOG_CACHE_KEY = 'uol_shared_catalog_v1';
     const CATALOG_CACHE_MS = 120000;
+    const CATALOG_MAX_BYTES = 2 * 1024 * 1024;
     let catalogRefreshStarted = false;
     let catalogRefreshInFlight = false;
+    const linkCheckOverlay = new Map(); // Session-only: the native checker owns durable evidence.
+    let linkCheckProgress = null;
+    let lastNativeLinkRequestAt = 0;
+    let lastNativeLinkSignature = '';
+    let lastAvailabilityEventsFetchAt = 0;
 
     function catalogCampaign(link) {
       try {
+        if (typeof link !== 'string' || link.length > 2048 || /[\u0000-\u001f\u007f\\]/.test(link)) return null;
         const url = new URL(link, 'https://clube.uol.com.br');
         if (url.protocol !== 'https:' || url.hostname !== 'clube.uol.com.br' || url.port || url.username || url.password) return null;
         const match = url.pathname.match(/^\/campanhasdeingresso\/([a-z0-9][a-z0-9-]*)\/?$/i);
@@ -430,20 +631,166 @@
       return Number.isFinite(time) && time > 0 ? time : 0;
     }
 
+    function captureTime(item) {
+      if (!item || !['worker', 'native', 'portal-client'].includes(item.captureSource)) return 0;
+      return plausibleCaptureTime(item.capturedAt);
+    }
+
+    function plausibleCaptureTime(value) {
+      const time = catalogTime(value);
+      return time && time <= Date.now() + 300000 ? time : 0;
+    }
+
+    function linkCheckGeneration(item) {
+      return String(Math.max(captureTime(item), catalogTime(item && item.restockedAt)) || 0);
+    }
+
+    function linkUnavailableAt(item) {
+      const campaign = catalogCampaign(item && item.link);
+      if (!campaign) return 0;
+      return catalogTime(linkCheckOverlay.get(campaign.key + '|' + linkCheckGeneration(item)));
+    }
+
+    function hunterActiveLinkCandidates(offset = 0, limit = 100) {
+      const seen = new Set();
+      const candidates = [];
+      (historyData.active || []).forEach(item => {
+        const campaign = catalogCampaign(item && item.link);
+        if (!campaign || item.isExpired || item.availability === 'sold_out' || confirmedSoldOutTime(item)) return;
+        const session = sessionDateInfo(item);
+        const today = saoPauloParts(Date.now());
+        if (session && session.timestamp < Date.UTC(today.year, today.month - 1, today.day)) return;
+        const generation = linkCheckGeneration(item);
+        const key = campaign.key + '|' + generation;
+        if (seen.has(key)) return;
+        seen.add(key);
+        candidates.push({ id: String(item.id || campaign.slug), link: campaign.link, generation: generation });
+      });
+      const start = Math.max(0, Math.floor(Number(offset) || 0));
+      const size = Math.min(100, Math.max(1, Math.floor(Number(limit) || 100)));
+      return candidates.slice(start, start + size);
+    }
+
+    function hunterApplyLinkCheckResults(results, progress) {
+      let changed = false;
+      (Array.isArray(results) ? results : []).forEach(result => {
+        const campaign = catalogCampaign(result && result.link);
+        if (!campaign || !['available', 'unavailable', 'unknown'].includes(result.status)) return;
+        const candidate = (historyData.active || []).find(item => String(item.id) === String(result.id) &&
+          catalogCampaign(item.link)?.key === campaign.key && linkCheckGeneration(item) === String(result.generation));
+        if (!candidate) return;
+        const checkedAt = catalogTime(result.checkedAt);
+        if (!checkedAt || checkedAt > Date.now() + 300000) return;
+        const key = campaign.key + '|' + result.generation;
+        if (result.status === 'unavailable') {
+          const at = catalogTime(result.unavailableAt) || checkedAt;
+          if (at && at <= checkedAt && linkCheckOverlay.get(key) !== at) { linkCheckOverlay.set(key, at); changed = true; }
+        } else if (result.status === 'available' && linkCheckOverlay.delete(key)) {
+          changed = true;
+        }
+        // Unknown evidence cannot reverse a previously confirmed unavailable link.
+      });
+      if (progress && [progress.verified, progress.total, progress.pending].every(Number.isSafeInteger)) {
+        linkCheckProgress = { verified: progress.verified, total: progress.total, pending: progress.pending };
+        const status = document.getElementById('liveStatusText');
+        if (status && progress.pending > 0) status.setAttribute('aria-label',
+          'Verificando links: ' + progress.verified + ' de ' + progress.total);
+        updateCatalogStatusTrigger();
+      }
+      if (changed) renderCatalogStatus(false);
+    }
+
+    function hunterRequestLinkChecks() {
+      if (!INITIAL.nativeLinkChecks) return;
+      const candidates = [];
+      for (let offset = 0; ; offset += 100) {
+        const page = hunterActiveLinkCandidates(offset, 100);
+        if (!page.length) break;
+        candidates.push(...page);
+        if (page.length < 100) break;
+      }
+      const signature = candidates.map(item => item.link + '|' + item.generation).sort().join(';');
+      if (!signature || (signature === lastNativeLinkSignature && Date.now() - lastNativeLinkRequestAt < 30000)) return;
+      lastNativeLinkSignature = signature;
+      lastNativeLinkRequestAt = Date.now();
+      const go = () => { window.location.href = 'hunter-links://start'; };
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => setTimeout(go, 0));
+      else setTimeout(go, 0);
+    }
+
+    async function refreshAvailabilityEvents() {
+      if (!INITIAL.nativeBrowser || Date.now() - lastAvailabilityEventsFetchAt < 120000) return;
+      lastAvailabilityEventsFetchAt = Date.now();
+      const known = new Map();
+      [...(historyData.active || []), ...(historyData.history || [])].forEach(o => {
+        known.set(String(o.id), o);
+        if (o.catalogOfferId) known.set(String(o.catalogOfferId), o);
+      });
+      const events = [];
+      let cursor = '';
+      try {
+        for (let page = 0; page < 5; page++) {
+          const controller = typeof AbortController === 'function' ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), 4000) : null;
+          let response;
+          try {
+            response = await fetch(AVAILABILITY_EVENTS_URL + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''),
+              { credentials: 'omit', ...(controller ? { signal: controller.signal } : {}) });
+          } finally { if (timer) clearTimeout(timer); }
+          if (!response.ok) return;
+          const body = await response.text();
+          if (body.length > 131072) return;
+          const data = JSON.parse(body);
+          if (!data || !data.ok || data.schemaVersion !== 1 || !Array.isArray(data.events) || data.events.length > 100) return;
+          data.events.forEach(entry => {
+            if (!entry || !['sold_out', 'restocked'].includes(entry.kind) ||
+                typeof entry.offerId !== 'string' || entry.offerId.length > 160) return;
+            const occurredAt = catalogTime(entry.occurredAt);
+            if (!occurredAt || occurredAt > Date.now() + 300000) return;
+            const offer = known.get(entry.offerId);
+            events.push({ offerId: offer ? offer.id : entry.offerId, eventType: entry.kind, occurredAt: occurredAt,
+              title: offer ? String(offer.rawTitle || offer.title || '').slice(0, 280) : '',
+              imageUrl: offer ? validOfferImage(offer.imageUrl) : '' });
+          });
+          if (!data.nextCursor || typeof data.nextCursor !== 'string' || data.nextCursor.length > 512) break;
+          cursor = data.nextCursor;
+        }
+        if (typeof window !== 'undefined') {
+          window.hunterAvailabilityEvents = events;
+          if (typeof CustomEvent === 'function') window.dispatchEvent(new CustomEvent('hunter-availability-events'));
+        }
+      } catch (e) { /* An unavailable timeline endpoint must not delay the dashboard. */ }
+    }
+    if (typeof window !== 'undefined') {
+      window.hunterAvailabilityEvents = [];
+      window.hunterActiveLinkCandidates = hunterActiveLinkCandidates;
+      window.hunterApplyLinkCheckResults = hunterApplyLinkCheckResults;
+      window.hunterRequestLinkChecks = hunterRequestLinkChecks;
+    }
+
+    function boundedCatalogText(value, maxLength) {
+      return typeof value === 'string' && value.length <= maxLength;
+    }
+
     function isCatalogSnapshot(data) {
       return Boolean(data && data.ok === true && data.schemaVersion === 1 &&
         Array.isArray(data.offers) && data.offers.length <= 300 &&
         Array.isArray(data.stories) && data.stories.length <= 30 &&
         data.coverage && data.coverage.scope === 'recent_tracked' && typeof data.coverage.truncated === 'boolean' &&
         data.sources && ['api', 'ticketListing'].every(key => data.sources[key] && typeof data.sources[key].healthy === 'boolean') &&
-        data.offers.every(o => o && typeof o.id === 'string' && typeof o.title === 'string' && catalogCampaign(o.link) &&
+        data.offers.every(o => o && boundedCatalogText(o.id, 160) && boundedCatalogText(o.title, 280) &&
+          boundedCatalogText(o.description || '', 8192) && boundedCatalogText(o.partner || '', 120) &&
+          boundedCatalogText(o.validity || '', 500) && boundedCatalogText(o.imageUrl || '', 2048) && catalogCampaign(o.link) &&
           ['observed', 'sold_out'].includes(o.availability) && typeof o.isPortal === 'boolean') &&
-        data.stories.every(s => s && typeof s.storyId === 'string' && catalogCampaign(s.link)));
+        data.stories.every(s => s && boundedCatalogText(s.storyId, 100) &&
+          boundedCatalogText(s.imageUrl || '', 2048) && catalogCampaign(s.link)));
     }
 
     function readCatalogCache() {
       try {
-        const cache = JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY));
+        const raw = localStorage.getItem(CATALOG_CACHE_KEY);
+        if (!raw || raw.length > CATALOG_MAX_BYTES) return null;
+        const cache = JSON.parse(raw);
         if (!cache || !isCatalogSnapshot(cache.snapshot) || !Number.isFinite(cache.fetchedAt) ||
             cache.fetchedAt <= 0 || cache.fetchedAt > Date.now() + 300000) return null;
         const etag = typeof cache.etag === 'string' && cache.etag.length <= 200 && !/[\r\n]/.test(cache.etag) ? cache.etag : '';
@@ -453,12 +800,16 @@
 
     function saveCatalogCache(snapshot, etag) {
       // Snapshot, data e validador pertencem à mesma gravação: nunca reutilizar ETag sem seu corpo.
-      try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ snapshot: snapshot, etag: etag || '', fetchedAt: Date.now() })); } catch (e) {}
+      try {
+        const serialized = JSON.stringify({ snapshot: snapshot, etag: etag || '', fetchedAt: Date.now() });
+        if (serialized.length <= CATALOG_MAX_BYTES) localStorage.setItem(CATALOG_CACHE_KEY, serialized);
+      } catch (e) {}
     }
 
     // UI_DATA_HELPERS_START
     function validOfferImage(value) {
       try {
+        if (typeof value !== 'string' || value.length > 2048 || /[\u0000-\u001f\u007f]/.test(value)) return '';
         const u = new URL(value);
         if (u.protocol !== 'https:' || u.username || u.password || u.port ||
             u.href === 'https://i.imgur.com/UdIgTfI.png') return '';
@@ -498,14 +849,18 @@
         const session = o && sessionDateInfo(o, now);
         return !session || session.timestamp >= todayCivil;
       };
-      const activeItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired && o.availability !== 'sold_out' && !confirmedSoldOutTime(o));
+      const activeItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired &&
+        o.availability !== 'sold_out' && !confirmedSoldOutTime(o) && !linkUnavailableAt(o));
+      const unavailableItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired &&
+        o.availability !== 'sold_out' && !confirmedSoldOutTime(o) && linkUnavailableAt(o))
+        .map(o => ({ ...o, linkUnavailableAt: linkUnavailableAt(o) }));
       const key = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : o.id; };
-      const activeIds = new Set(activeItems.map(key));
+      const activeIds = new Set([...activeItems, ...unavailableItems].map(key));
       const soldOutItems = (history || []).filter(o => {
         const at = confirmedSoldOutTime(o);
-        return o && currentSession(o) && !activeIds.has(key(o)) && at > 0 && at <= now && now - at <= 86400000;
+        return o && currentSession(o) && !activeIds.has(key(o)) && at > 0 && at <= now && now - at < 86400000;
       });
-      return { activeItems: activeItems, soldOutItems: soldOutItems };
+      return { activeItems: activeItems, soldOutItems: soldOutItems, unavailableItems: unavailableItems };
     }
 
     function hunterStatusPresentation(status, found, reason, context) {
@@ -669,7 +1024,10 @@
       const caption = document.getElementById('catalogStatusTriggerText');
       const status = document.getElementById('liveStatusText');
       const state = document.getElementById('liveDot')?.getAttribute('data-state') || 'loading';
-      if (caption) caption.textContent = attention ? 'Verificar coleta' : state === 'fresh' ? 'Atualizado' : state === 'cache' ? 'Em cache' : 'Atualizando…';
+      if (caption) caption.textContent = attention ? 'Verificar coleta' :
+        linkCheckProgress && linkCheckProgress.pending > 0 ?
+          'Links ' + linkCheckProgress.verified + '/' + linkCheckProgress.total :
+          state === 'fresh' ? 'Atualizado' : state === 'cache' ? 'Em cache' : 'Atualizando…';
       trigger.setAttribute('data-attention', String(attention));
       trigger.setAttribute('data-state', state);
       trigger.setAttribute('aria-label', (attention ? 'Coleta precisa de atenção. ' : '') + (status?.getAttribute('aria-label') || 'Catálogo') + '. Abrir detalhes do catálogo e da coleta');
@@ -708,7 +1066,9 @@
       const identity = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : 'local:' + o.id; };
       (historyData.history || []).forEach(o => records.set(identity(o), { offer: o, past: true }));
       (historyData.active || []).forEach(o => records.set(identity(o), { offer: o, past: false }));
-      const nonempty = (value, fallback) => typeof value === 'string' && value.trim() ? value : fallback;
+      const bounded = (value, max) => typeof value === 'string'
+        ? value.slice(0, max).replace(/[\u0000-\u001f\u007f]/g, ' ').trim() : '';
+      const nonempty = (value, fallback, max) => bounded(value, max) || bounded(fallback, max);
       const image = validOfferImage;
 
       function upsert(entry, story) {
@@ -716,34 +1076,52 @@
         if (!campaign) return;
         const previous = records.get(campaign.key);
         const old = previous ? previous.offer : {};
-        const id = old.id || campaign.slug;
+        const id = bounded(old.id, 160) || campaign.slug;
         const codeMatch = campaign.slug.match(/^(p[A-Za-z0-9]+)-/i);
-        const rawTitle = nonempty(entry.title, old.rawTitle || old.title || campaign.slug.replace(/^p[a-z0-9]+-/i, '').replace(/-/g, ' '));
-        const cachedDesc = old.description || getCachedDescription(id) || '';
-        const description = nonempty(entry.description, cachedDesc);
+        const rawTitle = nonempty(entry.title, old.rawTitle || old.title || campaign.slug.replace(/^p[a-z0-9]+-/i, '').replace(/-/g, ' '), 1000);
+        const cachedDesc = bounded(old.description || getCachedDescription(id), 20000);
+        const description = nonempty(entry.description, cachedDesc, 20000);
         const richerDescription = description.length >= cachedDesc.length ? description : cachedDesc;
         const isPortal = entry.isPortal === true || old.isPortal === true || old.source === 'Portal';
         const hasStory = Boolean(story || entry.hasStory || old.hasStory || old.source === 'Stories' || old.source === 'Stories_Only' || old.badge === 'Stories');
+        const workerCapture = entry.captureSource === 'portal-client' ? 0 : plausibleCaptureTime(entry.firstSeenAt);
+        const portalCapture = entry.captureSource === 'portal-client' ? plausibleCaptureTime(entry.capturedAt) : 0;
+        const priorCapture = captureTime(old);
+        const capturedAt = workerCapture && old.captureSource === 'worker' && priorCapture
+          ? Math.min(workerCapture, priorCapture) : (workerCapture || priorCapture || portalCapture);
+        const legacyFirstSeen = old.legacyFirstSeen || (!priorCapture && (old.firstSeen || old.capturedAt)) || 0;
+        const captureSource = workerCapture ? 'worker' : (priorCapture ? old.captureSource :
+          (portalCapture ? 'portal-client' : (legacyFirstSeen ? 'legacy' : 'unknown')));
+        const lastSourceSeenAt = Math.max(catalogTime(old.lastSourceSeenAt), catalogTime(old.lastSeen),
+          catalogTime(entry.lastSeenAt));
         const offer = {
           ...old,
           id: id,
-          code: old.code || (codeMatch ? codeMatch[1] : campaign.slug.slice(0, 3)),
+          catalogOfferId: nonempty(entry.id, old.catalogOfferId || '', 160),
+          code: bounded(old.code, 32) || (codeMatch ? codeMatch[1] : campaign.slug.slice(0, 3)),
           link: old.link || campaign.link,
           rawTitle: rawTitle,
           title: toSentenceCase(rawTitle),
           imageUrl: story ? (offerImage(old) || image(entry.imageUrl)) : (image(entry.imageUrl) || old.imageUrl || ''),
           imageSource: story && offerImage(old) ? old.imageSource : (story ? 'story' : (image(entry.imageUrl) ? 'campaign' : old.imageSource)),
           description: richerDescription,
-          partner: nonempty(entry.partner, old.partner || ''),
-          validity: nonempty(entry.validity, '').length > (old.validity || '').length ? entry.validity : (old.validity || ''),
+          partner: nonempty(entry.partner, old.partner || '', 500),
+          validity: nonempty(entry.validity, '', 500).length > bounded(old.validity, 500).length
+            ? nonempty(entry.validity, '', 500) : bounded(old.validity, 500),
           category: classifyCategory(rawTitle, campaign.slug, richerDescription),
           source: isPortal ? 'Portal' : (hasStory ? 'Stories_Only' : 'Worker'),
           isPortal: isPortal,
           hasStory: hasStory,
-          firstSeen: old.firstSeen || catalogTime(entry.firstSeenAt) || catalogTime(entry.publishedAt) || Date.now(),
-          lastSeen: Math.max(old.lastSeen || 0, catalogTime(entry.lastSeenAt) || catalogTime(entry.firstSeenAt) || catalogTime(entry.publishedAt)),
+          capturedAt: capturedAt,
+          captureSource: captureSource,
+          firstSeen: capturedAt, // Legacy consumers read this alias; it is never an event date.
+          legacyFirstSeen: legacyFirstSeen,
+          sourcePublishedAt: Math.max(catalogTime(old.sourcePublishedAt), catalogTime(entry.publishedAt)),
+          lastSourceSeenAt: lastSourceSeenAt,
+          lastSeen: lastSourceSeenAt,
           viewsCount: old.viewsCount || 0
         };
+        offer.eventDate = (sessionDateInfo(offer) || {}).key || old.eventDate || '';
         let past = Boolean(previous && previous.past);
         if (story) {
           offer.storyId = entry.storyId;
@@ -794,6 +1172,63 @@
       saveHistoryToStorage();
     }
 
+    function handleNativeCollectionResult(result, nativeHistory) {
+      if (result && typeof result === 'object') {
+        INITIAL.hunterCollection = { ...(INITIAL.hunterCollection || {}), ...result };
+        if (result.access) INITIAL.hunterAccess = result.access;
+        setHunterCollectionStatus(INITIAL.hunterCollection);
+        if (typeof renderHunterAccessUI === 'function') renderHunterAccessUI();
+      }
+      if (nativeHistory && Array.isArray(nativeHistory.active) && Array.isArray(nativeHistory.history)) {
+        const identity = item => catalogCampaign(item && item.link)?.key || 'local:' + String(item && item.id || '');
+        const records = new Map();
+        (historyData.history || []).forEach(item => records.set(identity(item), { offer: item, past: true }));
+        (historyData.active || []).forEach(item => records.set(identity(item), { offer: item, past: false }));
+        const add = (item, past) => {
+          if (!item || typeof item !== 'object' || !item.id || !item.title) return;
+          const key = identity(item);
+          const previous = records.get(key);
+          const old = previous && previous.offer || {};
+          const incomingCapture = captureTime(item);
+          const oldCapture = captureTime(old);
+          const preserveWorkerCapture = old.captureSource === 'worker' && oldCapture;
+          const capturedAt = preserveWorkerCapture ? oldCapture : (incomingCapture && oldCapture ? Math.min(incomingCapture, oldCapture) : incomingCapture || oldCapture);
+          const incomingTransition = Math.max(catalogTime(item.soldOutAt), catalogTime(item.expiredAt), catalogTime(item.restockedAt));
+          const oldTransition = Math.max(catalogTime(old.soldOutAt), catalogTime(old.expiredAt), catalogTime(old.restockedAt),
+            catalogTime(old.availabilityEvidence && old.availabilityEvidence.observedAt));
+          const incomingObserved = Math.max(incomingTransition, catalogTime(item.lastSourceSeenAt), catalogTime(item.lastSeen));
+          const oldObserved = Math.max(oldTransition, catalogTime(old.lastSourceSeenAt), catalogTime(old.lastSeen));
+          const incomingWins = !previous || incomingTransition > oldTransition ||
+            incomingTransition === oldTransition && (old.cacheUnverified || incomingObserved >= oldObserved);
+          const merged = incomingWins ? { ...old, ...item } : { ...item, ...old };
+          if (incomingWins) delete merged.cacheUnverified;
+          merged.capturedAt = merged.firstSeen = capturedAt || 0;
+          merged.legacyFirstSeen = old.legacyFirstSeen || item.legacyFirstSeen ||
+            (!oldCapture && (old.firstSeen || old.capturedAt)) ||
+            (!incomingCapture && (item.firstSeen || item.capturedAt)) || 0;
+          merged.captureSource = preserveWorkerCapture ? 'worker' :
+            (oldCapture ? old.captureSource : (incomingCapture ? item.captureSource : (merged.legacyFirstSeen ? 'legacy' : 'unknown')));
+          merged.lastSourceSeenAt = merged.lastSeen = Math.max(catalogTime(old.lastSourceSeenAt),
+            catalogTime(old.lastSeen), catalogTime(item.lastSourceSeenAt), catalogTime(item.lastSeen));
+          merged.sourcePublishedAt = Math.max(catalogTime(old.sourcePublishedAt), catalogTime(item.sourcePublishedAt));
+          merged.eventDate = (sessionDateInfo(merged) || {}).key || old.eventDate || '';
+          if (!incomingWins) {
+            merged.description = old.description || item.description || '';
+            merged.imageUrl = old.imageUrl || item.imageUrl || '';
+          }
+          records.set(key, { offer: merged, past: incomingWins ? past : previous.past });
+        };
+        nativeHistory.history.slice(0, 2000).forEach(item => add(item, true));
+        nativeHistory.active.slice(0, 2000).forEach(item => add(item, false));
+        historyData.active = Array.from(records.values()).filter(record => !record.past).map(record => record.offer);
+        historyData.history = Array.from(records.values()).filter(record => record.past).map(record => record.offer);
+        saveHistoryToStorage();
+        renderCatalogStatus(false);
+        hunterRequestLinkChecks();
+      }
+    }
+    if (typeof window !== 'undefined') window.handleNativeCollectionResult = handleNativeCollectionResult;
+
     function setCatalogHeaderStatus(text, state, visibleCount) {
       const status = document.getElementById('liveStatusText');
       const dot = document.getElementById('liveDot');
@@ -815,7 +1250,7 @@
       const sets = homeOfferSets(historyData.active, historyData.history);
       const offers = sets.activeItems;
       const visibleCount = offers.length + sets.soldOutItems.length;
-      if (currentTab === 'home' || currentTab === 'tickets') renderOffers(offers);
+      if (currentTab === 'home' || currentTab === 'tickets') renderOffers(historyData.active);
       else if (currentTab === 'history') renderHistoryScreen();
       updateCategoryCounts(offers);
       document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
@@ -851,7 +1286,9 @@
               saveCatalogCache(snapshot, cache.etag);
             } else {
               if (!response.ok) throw new Error('Catalog unavailable');
-              snapshot = await response.json();
+              const body = await response.text();
+              if (body.length > CATALOG_MAX_BYTES) throw new Error('Catalog too large');
+              snapshot = JSON.parse(body);
               if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
               saveCatalogCache(snapshot, response.headers.get('ETag'));
             }
@@ -878,6 +1315,8 @@
         if (sk) sk.style.display = 'none';
         const status = document.getElementById('liveStatusText');
         if (status) status.setAttribute('aria-busy', 'false');
+        hunterRequestLinkChecks();
+        refreshAvailabilityEvents();
       }
     }
 
@@ -931,7 +1370,7 @@
           const cachedDesc = (old && old.description) ? old.description : getCachedDescription(slug);
           const category = classifyCategory(title, slug, cachedDesc);
 
-          const firstSeen = old && old.firstSeen ? old.firstSeen : now;
+          const firstSeen = captureTime(old) || now;
           const viewsCount = old && old.viewsCount ? old.viewsCount : 0;
 
           // Se estiver nos stories do worker ou histórico anterior, marca como Stories!
@@ -951,6 +1390,9 @@
             isPortal: true,
             hasStory: isStory,
             firstSeen: firstSeen,
+            capturedAt: firstSeen,
+            captureSource: captureTime(old) ? (old.captureSource || 'legacy') : 'portal-client',
+            lastSourceSeenAt: now,
             lastSeen: now,
             viewsCount: viewsCount,
             description: cachedDesc
@@ -959,6 +1401,7 @@
 
         mergeCatalogSnapshot({ offers: liveOffers.map(o => ({ ...o, availability: 'observed', firstSeenAt: o.firstSeen, lastSeenAt: now })), stories: [] });
         renderCatalogStatus(false);
+        hunterRequestLinkChecks();
       } catch (e) {
         renderCatalogStatus(false);
       }
@@ -1008,9 +1451,10 @@
       if (activeFilter) filtered = filtered.filter(o => o.category === activeFilter);
 
       if (isGrouped) {
-        renderGroupedOffers(filtered, home.soldOutItems, container);
+        const unavailable = home.unavailableItems.filter(o => !activeFilter || o.category === activeFilter);
+        renderGroupedOffers(filtered, [...home.soldOutItems, ...unavailable], container);
       } else {
-        renderIndividualOffers(filtered, container);
+        renderIndividualOffers(filtered, container, home.unavailableItems.filter(o => !activeFilter || o.category === activeFilter));
       }
     }
 
@@ -1068,43 +1512,77 @@
       if (!record || typeof record !== 'object') return null;
       const account = String(record.user || record.accountId || '').trim().toLowerCase();
       if (!account) return null;
-      const voucher = typeof record.url === 'string' && record.url.trim() && !catalogCampaign(record.url) ? 'url:' + record.url.trim() :
-        (record.id != null && String(record.id).trim() && !/^redemption-.+-\d+$/.test(String(record.id)) ? 'id:' + String(record.id).trim() : '');
+      const id = record.id != null && /^[A-Za-z0-9_-]{1,200}$/.test(String(record.id).trim()) &&
+        !/^redemption-.+-\d+$/.test(String(record.id).trim()) ? String(record.id).trim() : '';
+      const url = typeof record.url === 'string' ? record.url.trim() : '';
+      const receipt = /^https:\/\/clube\.uol\.com\.br\/perfil\/beneficios\/([A-Za-z0-9_-]{1,200})\/?$/.exec(url);
+      if (id && receipt && receipt[1] !== id) return null;
+      const voucher = id || receipt ? 'id:' + (id || receipt[1]) :
+        (url && !catalogCampaign(url) ? 'url:' + url : '');
       return voucher ? account + '|' + voucher : null;
     }
 
     function getAllRedemptionsList() {
       const records = new Map();
-      const authoritative = new Map();
       const unidentified = new Set();
       const bundled = typeof INITIAL !== 'undefined' && Array.isArray(INITIAL.realRedemptions) ? INITIAL.realRedemptions : [];
-      bundled.forEach(record => { const key = redemptionIdentity(record); if (key) authoritative.set(key, record); });
+      const privateFields = new Set(['voucherImageDataUrl', 'localVoucherFile', 'pdfData', 'voucherData', 'imageData']);
+      const nativeOnlyFields = ['nativeVoucherIndex', 'hasNativeVoucher', 'receiptVerified', 'receiptVerifiedAt'];
+      const safeRecord = record => Object.fromEntries(Object.entries(record).filter(([key, value]) =>
+        !privateFields.has(key) && !(typeof value === 'string' && /^data:/i.test(value))));
+      const verified = new Map();
+      const liveVerified = typeof window !== 'undefined' && window.hunterVerifiedRedemptions instanceof Map
+        ? Array.from(window.hunterVerifiedRedemptions.values()).filter(record => record && typeof record === 'object') : [];
+      bundled.forEach(record => {
+        const key = redemptionIdentity(record);
+        if (key && record.receiptVerified === true) verified.set(key, safeRecord(record));
+      });
+      liveVerified.forEach(record => {
+        const key = redemptionIdentity(record);
+        if (key) verified.set(key, safeRecord(record));
+      });
       const add = (items, origin) => {
         if (!Array.isArray(items)) return;
         items.forEach((record, index) => {
           if (!record || typeof record !== 'object') return;
           const identity = redemptionIdentity(record);
+          const safe = safeRecord(record);
+          if (origin !== 'bundle' && origin !== 'native') {
+            nativeOnlyFields.forEach(field => { delete safe[field]; });
+          }
           if (!identity) {
             // Cópias idênticas entre bundle e cache não são novos resgates.
-            const fingerprint = JSON.stringify(Object.fromEntries(Object.keys(record).sort().map(key => [key, record[key]])));
+            const fingerprint = JSON.stringify(Object.fromEntries(Object.keys(safe).sort().map(key => [key, safe[key]])));
             if (unidentified.has(fingerprint)) return;
             unidentified.add(fingerprint);
           }
+          if (origin !== 'bundle' && origin !== 'native') safe.cacheUnverified = true;
           const key = identity || 'unidentified:' + origin + ':' + index;
           const old = records.get(key) || {};
-          const merged = { ...old, ...record };
-          const auth = identity && authoritative.get(identity);
-          // A data pertence ao resgate da mesma conta, nunca ao título da campanha.
-          const dates = [auth && auth.redeemedAt, record.redeemedAt, old.redeemedAt];
-          merged.redeemedAt = dates.find(value => parseRedemptionMoment(value)) || dates.find(Boolean) || '';
+          const auth = identity && verified.get(identity);
+          const merged = { ...old, ...safe };
+          if (auth) {
+            // Verified receipt wins even when an older WebView cache is visited last.
+            nativeOnlyFields.forEach(field => { delete merged[field]; });
+            for (const field of ['id', 'user', 'accountId', 'url']) {
+              if (!Object.prototype.hasOwnProperty.call(auth, field)) delete merged[field];
+            }
+            Object.assign(merged, auth);
+            delete merged.cacheUnverified;
+            for (const optional of ['cupomCode', 'downloadUrl']) {
+              if (!merged[optional] && (safe[optional] || old[optional])) merged[optional] = safe[optional] || old[optional];
+            }
+          }
           records.set(key, merged);
         });
       };
       add(bundled, 'bundle');
       if (typeof settings !== 'undefined') add(settings.realRedemptions, 'settings');
       try { add(JSON.parse(localStorage.getItem('uol_real_redemptions') || '[]'), 'storage'); } catch (e) {}
-      const all = Array.from(records.values());
-      return all.length ? all : (typeof settings !== 'undefined' && Array.isArray(settings.myRedemptions) ? settings.myRedemptions : []);
+      try { add(JSON.parse(localStorage.getItem('uol_real_redemptions_v2') || '[]'), 'storage-v2'); } catch (e) {}
+      if (typeof settings !== 'undefined') add(settings.myRedemptions, 'myRedemptions');
+      add(liveVerified, 'native');
+      return Array.from(records.values());
     }
     // REDEMPTION_IDENTITY_END
 
@@ -1296,15 +1774,16 @@
     }
 
     function getGroupKey(o) {
-      if (validOfferImage(o.imageUrl)) {
-        const baseImg = o.imageUrl.split('?')[0].split('/').pop().split('_').pop();
-        if (baseImg && baseImg.length > 8) return 'img:' + baseImg;
-      }
-      const clean = (o.rawTitle || o.title || '').toLowerCase()
-        .replace(/^2\s*ingressos\s*:\s*/i, '')
-        .replace(/\b\d{1,2}\/\d{1,2}\b/g, '')
+      const clean = String(o.rawTitle || o.title || '').slice(0, 280).toLowerCase()
+        .replace(/^\d+\s*ingressos?\s*:?\s*/i, '')
+        .replace(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g, '')
         .replace(/\s+/g, ' ')
         .trim();
+      if (validOfferImage(o.imageUrl)) {
+        const baseImg = o.imageUrl.split('?')[0].split('/').pop().split('_').pop();
+        // The same poster can advertise distinct events or cities.
+        if (baseImg && baseImg.length > 8 && clean) return 'img:' + baseImg + '|title:' + clean;
+      }
       return 'title:' + clean;
     }
 
@@ -1324,17 +1803,22 @@
       return toSentenceCase(title);
     }
 
-    function renderIndividualOffers(list, container) {
+    function renderIndividualOffers(list, container, unavailableItems = []) {
       const now = Date.now();
       let viewCounts = {};
       try {
         viewCounts = JSON.parse(localStorage.getItem('uol_offer_view_counts') || '{}');
       } catch(e) {}
 
-      list.forEach((o, index) => {
+      const ordered = [...list].sort((a, b) => {
+        const highlight = Number(checkHighlight(b.title, b.id, b.description)) - Number(checkHighlight(a.title, a.id, a.description));
+        return highlight || (captureTime(b) - captureTime(a)) || String(a.id || '').localeCompare(String(b.id || ''));
+      });
+      ordered.forEach((o, index) => {
         const isHighlight = checkHighlight(o.title, o.id, o.description);
         const views = viewCounts[o.id] != null ? viewCounts[o.id] : (o.viewsCount || 1);
-        const isWithinTime = (now - (o.firstSeen || now)) < (48 * 60 * 60 * 1000);
+        const capturedAt = captureTime(o);
+        const isWithinTime = capturedAt > 0 && now >= capturedAt && now - capturedAt < (48 * 60 * 60 * 1000);
         const isNew = isWithinTime && (views <= 2);
 
         const card = document.createElement('div');
@@ -1346,12 +1830,12 @@
           newTagHtml = '<span class="card-tag tag-new"><svg viewBox="0 0 24 24" width="8.5" height="8.5" fill="currentColor"><path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z"/></svg> NOVA</span>';
         }
 
-        const relativeTimeStr = formatRelativeTime(o.firstSeen || now, now);
+        const relativeTimeStr = capturedAt ? formatRelativeTime(capturedAt, now) : 'Data não confirmada';
         // Tag de tempo alinhada à direita do card
         const timeTagHtml = '<span class="card-tag tag-age" style="margin-left: auto;">' + relativeTimeStr + '</span>';
 
         const imageMarkup = posterImageMarkup(o);
-        const codeBadge = o.code ? '<div class="thumb-code-badge">' + o.code + '</div>' : '';
+        const codeBadge = o.code ? '<div class="thumb-code-badge">' + htmlAttribute(o.code) + '</div>' : '';
         const displayTitle = o.rawTitle || o.title;
 
         // Se estiver no portal E stories, mostra as duas tags juntas!
@@ -1370,8 +1854,9 @@
         }
 
         // Tag de categoria com ícone
-        const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
-        const catTagHtml = '<span class="card-tag tag-category tag-cat-' + o.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
+        const catKey = CATEGORY_MAP[o.category] ? o.category : 'OUTROS';
+        const catDef = CATEGORY_MAP[catKey];
+        const catTagHtml = '<span class="card-tag tag-category tag-cat-' + catKey + '">' + catDef.icon + ' ' + catDef.label + '</span>';
 
         // Amigos que resgataram
         const redeemedUsers = getRedeemedUsersForOffer(o);
@@ -1389,18 +1874,21 @@
               ${newTagHtml}
               ${timeTagHtml}
             </div>
-            <div class="card-title">${displayTitle}</div>
+            <div class="card-title">${htmlAttribute(displayTitle)}</div>
             ${redeemedFriendsHtml}
             <div class="card-actions-row">
-              <button class="btn-action-small btn-details" onclick="openDetails('${o.id}')">
+              <button class="btn-action-small btn-details" type="button">
                 ${ICONS.notes} Detalhes
               </button>
-              <button class="btn-action-small btn-redeem" onclick="openConfirm('${o.id}')">
+              <button class="btn-action-small btn-redeem" type="button">
                 ${ICONS.tickets} Resgatar
               </button>
             </div>
           </div>
         `;
+        card.querySelector?.('.btn-details')?.addEventListener?.('click', () => openDetails(o.id));
+        card.querySelector?.('.btn-redeem')?.addEventListener?.('click', () => openConfirm(o.id));
+        wirePosterImages(card);
 
         container.appendChild(card);
       });
@@ -1425,13 +1913,13 @@
         recentSoldOut.forEach((o, index) => {
           const card = document.createElement('div');
           card.className = 'card card-expired';
-          card.style.setProperty('--delay', list.length + index);
+          card.style.setProperty('--delay', ordered.length + index);
 
           const expTimeStr = formatExpiredAgo(confirmedSoldOutTime(o), now);
           const timeTagHtml = '<span class="card-tag tag-expired-age" style="margin-left: auto;">' + expTimeStr + '</span>';
 
           const imageMarkup = posterImageMarkup(o);
-          const codeBadge = o.code ? '<div class="thumb-code-badge">' + o.code + '</div>' : '';
+          const codeBadge = o.code ? '<div class="thumb-code-badge">' + htmlAttribute(o.code) + '</div>' : '';
           const displayTitle = o.rawTitle || o.title;
 
           const isStoriesOnly = isStoriesOnlyOffer(o);
@@ -1447,8 +1935,9 @@
             sourcesBadgeHtml = '<div class="source-stack" title="Stories"><div class="source-mini mini-insta">' + ICONS.instagram + '</div></div>';
           }
 
-          const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
-          const catTagHtml = '<span class="card-tag tag-category tag-cat-' + o.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
+          const catKey = CATEGORY_MAP[o.category] ? o.category : 'OUTROS';
+          const catDef = CATEGORY_MAP[catKey];
+          const catTagHtml = '<span class="card-tag tag-category tag-cat-' + catKey + '">' + catDef.icon + ' ' + catDef.label + '</span>';
           const expiredTagHtml = '<span class="card-tag" style="background: rgba(248, 113, 113, 0.14); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35);">Esgotado</span>';
 
           const redeemedUsers = getRedeemedUsersForOffer(o);
@@ -1466,10 +1955,10 @@
                 ${expiredTagHtml}
                 ${timeTagHtml}
               </div>
-              <div class="card-title" style="color: #94a3b8;">${displayTitle}</div>
+              <div class="card-title" style="color: #94a3b8;">${htmlAttribute(displayTitle)}</div>
               ${redeemedFriendsHtml}
               <div class="card-actions-row">
-                <button class="btn-action-small btn-details" onclick="openDetails('${o.id}')">
+                <button class="btn-action-small btn-details" type="button">
                   ${ICONS.notes} Detalhes
                 </button>
                 <button class="btn-action-small" disabled style="opacity: 0.55; cursor: not-allowed; background: rgba(248, 113, 113, 0.12); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.25);">
@@ -1478,7 +1967,28 @@
               </div>
             </div>
           `;
+          card.querySelector?.('.btn-details')?.addEventListener?.('click', () => openDetails(o.id));
+          wirePosterImages(card);
 
+          container.appendChild(card);
+        });
+      }
+      if (unavailableItems.length) {
+        const heading = document.createElement('div');
+        heading.className = 'soldout-24h-divider';
+        heading.textContent = 'Links indisponíveis (' + unavailableItems.length + ')';
+        container.appendChild(heading);
+        unavailableItems.forEach((o, index) => {
+          const card = document.createElement('div');
+          card.className = 'card card-expired';
+          card.style.setProperty('--delay', ordered.length + recentSoldOut.length + index);
+          card.innerHTML = `<div class="thumb-wrap">${posterImageMarkup(o)}</div><div class="card-content">
+            <div class="tag-row"><span class="card-tag tag-expired-age">Link indisponível</span></div>
+            <div class="card-title">${htmlAttribute(o.rawTitle || o.title || '')}</div>
+            <div class="card-actions-row"><button class="btn-action-small btn-details" type="button">${ICONS.notes} Detalhes</button>
+            <button class="btn-action-small" type="button" disabled>Indisponível</button></div></div>`;
+          card.querySelector?.('.btn-details')?.addEventListener?.('click', () => openDetails(o.id));
+          wirePosterImages(card);
           container.appendChild(card);
         });
       }
@@ -1489,15 +1999,26 @@
     // ===================================================================
     function extractSmartTitleFromBody(desc) {
       if (!desc || typeof desc !== "string") return null;
+      // Campaign prose comes with Markdown; legal terms after the lead are not event names.
+      const lead = desc.slice(0, 5000)
+        .split(/\n\s*(?:REGRAS? DE RESGATE|RECEBIMENTO DOS INGRESSOS|TERMOS E CONDIÇÕES|COMO RESGATAR)\b/i)[0]
+        .replace(/<[^>]*>/g, ' ').replace(/\*\*|__|[`]/g, '').replace(/\r/g, '');
+      const trustworthy = candidate => {
+        const value = String(candidate || '').replace(/\s+/g, ' ').trim();
+        const lower = value.toLocaleLowerCase('pt-BR');
+        return value.length >= 3 && value.length <= 70 &&
+          !/\b(?:qualquer evento|m[eê]s vigente|assinante|ingressos?|regras? de resgate|tempo limitado|promo[çc][ãa]o v[aá]lida)\b/i.test(lower) &&
+          !/^(?:show|espet[aá]culo|evento|sess[aã]o|teatro|festival)$/i.test(value);
+      };
 
       // 1. Títulos entre aspas no corpo (padrão oficial de redação das campanhas do Clube UOL)
       for (const qOpen of ['“', '"', '«']) {
         const qClose = qOpen === '“' ? '”' : (qOpen === '«' ? '»' : '"');
-        const startIdx = desc.indexOf(qOpen);
+        const startIdx = lead.indexOf(qOpen);
         if (startIdx !== -1) {
-          const endIdx = desc.indexOf(qClose, startIdx + 1);
+          const endIdx = lead.indexOf(qClose, startIdx + 1);
           if (endIdx !== -1 && (endIdx - startIdx) >= 3 && (endIdx - startIdx) <= 80) {
-            const candidate = desc.substring(startIdx + 1, endIdx).trim();
+            const candidate = lead.substring(startIdx + 1, endIdx).trim();
             const low = candidate.toLowerCase();
             if (
               !low.includes('ingressos') &&
@@ -1507,7 +2028,7 @@
               !low.includes('abrir no safari') &&
               !low.includes('promoção válida') &&
               !low.includes('\n') &&
-              candidate.length >= 3
+              trustworthy(candidate)
             ) {
               return formatProperTitle(candidate);
             }
@@ -1516,7 +2037,7 @@
       }
 
       // 2. Ações e palavras-chave estruturadas no corpo
-      const lower = desc.toLowerCase();
+      const lower = lead.toLowerCase();
       const triggers = [
         'resgate 1 par de ingressos para o premiado espetáculo ',
         'resgate 1 par de ingressos para o premiado musical ',
@@ -1559,7 +2080,7 @@
       for (const trig of triggers) {
         const idx = lower.indexOf(trig);
         if (idx !== -1) {
-          const sub = desc.substring(idx + trig.length).trim();
+          const sub = lead.substring(idx + trig.length).trim();
           // Não corta em "em" (ex: "Uma Noite em Buenos Aires") nem em traço (ex: "Percy Jackson – O Ladrão...")
           // Para apenas em pontuação, "e aproveite", "com direito" ou transição explícita de local
           const stopMatch = sub.match(/[,.\n\r]|(\s+(?:e\s+aproveite|com\s+direito|v[aá]lido)\b)|(\s+(?:no|na|em|[-–—])\s+(?:teatro|pavilhao|pavilhão|centro|audit[oó]rio|espa[çc]o|arena|allianz|vibra|qualistage|morumbi|maracan[ãa]|parque|museu|sala)\b)/i);
@@ -1567,10 +2088,7 @@
           const candidate = sub.substring(0, stopIdx).replace(/^["'“«]+|["'”»]+$/g, '').trim();
           const low = candidate.toLowerCase();
           if (
-            !low.includes('ingressos') &&
-            !low.includes('assinante') &&
-            candidate.length >= 3 &&
-            candidate.length <= 70
+            trustworthy(candidate)
           ) {
             return formatProperTitle(candidate);
           }
@@ -1659,11 +2177,16 @@
       const anchor = saoPauloParts(catalogTime(item.firstSeen) || catalogTime(item.lastSeen) || now);
       let year = anchor.year;
       const text = [item.rawTitle || item.title || '', item.description || '', item.validity || ''].join(' ');
-      const explicit = Array.from(text.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g))
+      const explicit = Array.from(text.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})\b/g))
         .find(m => Number(m[1]) === day && Number(m[2]) === month);
       const explicitNamed = Array.from(text.matchAll(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\s+(?:de\s+)?(\d{4})\b/gi))
         .find(m => Number(m[1]) === day && months.indexOf(m[2].toUpperCase()) + 1 === month);
-      if (explicit || explicitNamed) year = Number((explicit || explicitNamed)[3]);
+      if (explicit || explicitNamed) {
+        const writtenYear = (explicit || explicitNamed)[3];
+        // Contemporary ticket dates use 20YY for two-digit years. Four-digit
+        // years retain their literal value and still pass calendar validation.
+        year = writtenYear.length === 2 ? 2000 + Number(writtenYear) : Number(writtenYear);
+      }
       else if (anchor.month === 12 && month === 1) year += 1;
       else if (anchor.month === 1 && month === 12) year -= 1;
       if (!validCalendarDate(year, month, day)) return null;
@@ -1685,7 +2208,11 @@
         const date = sessionDateInfo(item, now);
         if (!date) return;
         const old = dates.get(date.key);
-        if (!old || !soldOut) dates.set(date.key, { ...date, soldOut: soldOut });
+        const unverified = item.cacheUnverified === true;
+        if (!old || old.unverified && !unverified || old.unverified === unverified && old.soldOut && !soldOut) {
+          dates.set(date.key, { ...date, soldOut: soldOut, unverified,
+            unavailable: Boolean(item.linkUnavailableAt || linkUnavailableAt(item)), itemId: item.id });
+        }
       };
       (soldOutItems || []).forEach(item => add(item, true));
       (activeItems || []).forEach(item => add(item, false));
@@ -1694,13 +2221,65 @@
 
     function renderSessionDatePills(activeItems, soldOutItems) {
       return groupSessionDates(activeItems, soldOutItems).map(date =>
-        `<span class="micro-date-pill${date.soldOut ? ' pill-soldout' : ''}${date.label === 'HOJE' && !date.soldOut ? ' pill-today' : ''}">${ICONS.calendar}<span>${date.label}</span></span>`
+        `<button type="button" class="micro-date-pill${date.unverified ? ' pill-unverified' : date.soldOut ? ' pill-soldout' : ''}${date.label === 'HOJE' && !date.unverified && !date.soldOut ? ' pill-today' : ''}" data-offer-id="${htmlAttribute(date.itemId)}" aria-label="${htmlAttribute(date.label + (date.unverified ? ', não verificado' : date.unavailable ? ', indisponível' : date.soldOut ? ', esgotada' : ', disponível'))}">${ICONS.calendar}<span>${htmlAttribute(date.label + (date.unverified ? ' · Não verificado' : ''))}</span></button>`
       ).join('');
     }
 
     function dateStrip(datesHtml, compact = false) {
       const count = (datesHtml.match(/class="micro-date-pill(?:\s|")/g) || []).length;
-      return datesHtml ? `<div class="micro-dates-inline${compact ? ' dates-compact' : count > 3 ? ' dates-scroll' : ''}" role="group" aria-label="Datas das sessões" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${datesHtml}</div>` : '';
+      return datesHtml ? `<div class="micro-dates-inline${compact ? ' dates-compact' : ''}${count > 3 ? ' dates-scroll' : ''}" role="group" aria-label="Datas das sessões">${datesHtml}</div>` : '';
+    }
+
+    const historyDateScrollPositions = new Map();
+
+    function wireDateStrips(card, history = false) {
+      if (!card || typeof card.querySelectorAll !== 'function') return;
+      card.querySelectorAll('.micro-dates-inline').forEach(strip => {
+        for (const eventName of ['click', 'touchstart', 'touchmove', 'touchend']) {
+          strip.addEventListener(eventName, event => event.stopPropagation());
+        }
+        strip.querySelectorAll('[data-offer-id]').forEach(button => {
+          button.addEventListener('click', event => {
+            event.stopPropagation();
+            if (button.dataset.offerId) openDetails(button.dataset.offerId);
+          });
+        });
+        if (history) {
+          strip.dataset.historyEnd = 'true';
+          const key = card.hunterHistoryDateKey;
+          if (key) {
+            for (const eventName of ['touchstart', 'pointerdown', 'wheel', 'keydown']) {
+              strip.addEventListener(eventName, () => { strip.hunterHistoryUserScroll = true; });
+            }
+            strip.addEventListener('scroll', () => {
+              if (!strip.hunterHistoryUserScroll) return;
+              const max = Math.max(0, strip.scrollWidth - strip.clientWidth);
+              if (!max) return;
+              const left = Math.max(0, Math.min(max, Number(strip.scrollLeft) || 0));
+              historyDateScrollPositions.set(key, { left, atEnd: max - left <= 2 });
+            });
+          }
+        }
+      });
+    }
+
+    function wirePosterImages(card) {
+      if (!card || typeof card.querySelectorAll !== 'function') return;
+      card.querySelectorAll('.poster-img').forEach(image => image.addEventListener('error', () => image.remove(), { once: true }));
+    }
+
+    function alignHistoryDateStrips(card) {
+      if (!card || typeof card.querySelectorAll !== 'function') return;
+      card.querySelectorAll('.micro-dates-inline[data-history-end="true"]').forEach(strip => {
+        const align = () => {
+          if (strip.hunterHistoryUserScroll) return;
+          const max = Math.max(0, strip.scrollWidth - strip.clientWidth);
+          const prior = historyDateScrollPositions.get(card.hunterHistoryDateKey);
+          strip.scrollLeft = prior && !prior.atEnd ? Math.min(max, prior.left) : max;
+        };
+        if (typeof requestAnimationFrame === 'function') requestAnimationFrame(align);
+        else align();
+      });
     }
 
     function htmlAttribute(value) {
@@ -1710,7 +2289,7 @@
     function posterImageMarkup(items) {
       const image = offerImage(items);
       const placeholder = `<div class="poster-placeholder" aria-label="Imagem indisponível">${ICONS.tickets}</div>`;
-      return placeholder + (image ? `<img class="poster-img" src="${htmlAttribute(image)}" alt="Pôster" loading="lazy" onerror="this.remove()" />` : '');
+      return placeholder + (image ? `<img class="poster-img" src="${htmlAttribute(image)}" alt="Pôster" loading="lazy" />` : '');
     }
     // UI_DATE_HELPERS_END
 
@@ -1719,56 +2298,12 @@
       let venue = '';
 
       const parent = (items && items[0]) || {};
-      const fullItemText = [
-        parent.title || '',
-        parent.rawTitle || '',
-        parent.description || '',
-        parent.link || '',
-        parent.id || '',
-        parent.imageUrl || '',
-        (Array.isArray(items) ? items : []).map(function(it) { return (it ? (it.title || '') + ' ' + (it.rawTitle || '') + ' ' + (it.description || '') : ''); }).join(' ')
-      ].join(' ').toLowerCase();
 
       // Se o item já tiver eventTitle e venue explícitos (ex: Curadoria)
       if (parent.eventTitle) {
         return {
           eventTitle: parent.eventTitle,
           venue: formatVenueString(parent.venue || 'Nubank Parque SP')
-        };
-      }
-
-      // Mapeamento prioritário direto para campanhas conhecidas do Clube UOL
-      if (fullItemText.includes('zayn')) {
-        return {
-          eventTitle: 'Zayn – The Konnakol Tour',
-          venue: 'Nubank Parque SP'
-        };
-      }
-      if (fullItemText.includes('maroon 5') || fullItemText.includes('maroon5')) {
-        return {
-          eventTitle: 'Maroon 5 – Turnê Love Is Like World Tour',
-          venue: 'Nubank Parque SP'
-        };
-      }
-      if (fullItemText.includes('c6 fest') || fullItemText.includes('c6fest')) {
-        return {
-          eventTitle: 'C6 Fest 2026',
-          venue: 'Parque Ibirapuera SP'
-        };
-      }
-      if (fullItemText.includes('percy') || fullItemText.includes('teatro liberdade') || fullItemText.includes('teatro-liberdade') || fullItemText.includes('ladrao de raios') || fullItemText.includes('ladrão de raios')) {
-        return {
-          eventTitle: 'Percy Jackson – O Ladrão de Raios: O Musical',
-          venue: 'Teatro Liberdade'
-        };
-      }
-      if (fullItemText.includes('buenos aires') || fullItemText.includes('buenos') || fullItemText.includes('uma noite em')) {
-        let v = 'Theatro Municipal';
-        if (fullItemText.includes('bradesco')) v = 'Teatro Bradesco';
-        else if (parent.location_summary) v = formatVenueString(parent.location_summary);
-        return {
-          eventTitle: 'Uma Noite em Buenos Aires',
-          venue: v
         };
       }
 
@@ -1813,7 +2348,8 @@
       if (eventTitle) {
         let venueCandidate = cleanedRaw;
         if (venueCandidate.toLowerCase().includes(eventTitle.toLowerCase())) {
-          venueCandidate = venueCandidate.replace(new RegExp(eventTitle, 'gi'), '').replace(/^[\s\-:]+|[\s\-:]+$/g, '').trim();
+          const literalTitle = eventTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          venueCandidate = venueCandidate.replace(new RegExp(literalTitle, 'gi'), '').replace(/^[\s\-:]+|[\s\-:]+$/g, '').trim();
         }
         if (!venueCandidate && parent.location_summary) {
           venueCandidate = parent.location_summary;
@@ -1867,6 +2403,7 @@
               }
             }
             if (desc && desc.length >= 25) {
+              desc = desc.slice(0, 20000);
               o.description = desc;
               o.category = classifyCategory(o.rawTitle || o.title, o.link || o.id, desc);
               setCachedDescription(o.id, desc);
@@ -1898,13 +2435,18 @@
             category: o.category || 'OUTROS',
             activeItems: [],
             soldOutItems: [],
-            firstSeen: o.firstSeen || Date.now()
+            firstSeen: 0,
+            latestCapturedAt: 0
           });
         }
         const g = groups.get(key);
-        g.activeItems.push({ ...o, isExpired: false });
+        const unavailableAt = o.linkUnavailableAt || linkUnavailableAt(o);
+        if (unavailableAt) g.soldOutItems.push({ ...o, linkUnavailableAt: unavailableAt, isExpired: false });
+        else g.activeItems.push({ ...o, isExpired: false });
         if (o.category) g.category = o.category;
-        if (o.firstSeen && o.firstSeen < g.firstSeen) g.firstSeen = o.firstSeen;
+        const capturedAt = captureTime(o);
+        if (capturedAt && (!g.firstSeen || capturedAt < g.firstSeen)) g.firstSeen = capturedAt;
+        if (capturedAt > g.latestCapturedAt) g.latestCapturedAt = capturedAt;
       });
 
       // 2. Processa histórico (esgotadas)
@@ -1914,17 +2456,22 @@
           const g = groups.get(key);
           const already = g.activeItems.some(x => x.id === o.id) || g.soldOutItems.some(x => x.id === o.id);
           if (!already) {
-            g.soldOutItems.push({ ...o, isExpired: true });
+            g.soldOutItems.push({ ...o, isExpired: !o.linkUnavailableAt });
           }
         } else {
           groups.set(key, {
             key: key,
             category: o.category || 'OUTROS',
             activeItems: [],
-            soldOutItems: [{ ...o, isExpired: true }],
-            firstSeen: o.firstSeen || Date.now()
+            soldOutItems: [{ ...o, isExpired: !o.linkUnavailableAt }],
+            firstSeen: 0,
+            latestCapturedAt: 0
           });
         }
+        const g = groups.get(key);
+        const capturedAt = captureTime(o);
+        if (capturedAt && (!g.firstSeen || capturedAt < g.firstSeen)) g.firstSeen = capturedAt;
+        if (capturedAt > g.latestCapturedAt) g.latestCapturedAt = capturedAt;
       });
 
       const groupList = Array.from(groups.values());
@@ -1942,9 +2489,11 @@
         g.isHighlight = allItems.some(x => checkHighlight(x.title, x.id, x.description));
         g.hasNew = g.activeItems.some(x => {
           const v = viewCounts[x.id] != null ? viewCounts[x.id] : (x.viewsCount || 1);
-          return ((now - (x.firstSeen || now)) < (48 * 60 * 60 * 1000)) && (v <= 2);
+          const capturedAt = captureTime(x);
+          return capturedAt > 0 && now >= capturedAt && (now - capturedAt < 48 * 60 * 60 * 1000) && v <= 2;
         });
         g.isAllSoldOut = (g.activeItems.length === 0 && g.soldOutItems.length > 0);
+        g.isAllUnavailable = g.isAllSoldOut && g.soldOutItems.every(x => x.linkUnavailableAt);
         const isStoriesOnly = allItems.length > 0 && allItems.every(x => isStoriesOnlyOffer(x));
         g.hasStory = isStoriesOnly || allItems.some(x => x.source === 'Stories' || x.hasStory || x.badge === 'Stories');
         g.hasPortal = isStoriesOnly ? false : allItems.some(x => x.isPortal !== false && !isStoriesOnlyOffer(x));
@@ -2101,7 +2650,8 @@
         sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle mini-insta">${ICONS.instagram}</div></div>`;
       }
 
-      const relativeTimeStr = formatRelativeTime(group.firstSeen || (parent && parent.firstSeen) || Date.now(), Date.now());
+      const capturedAt = group.latestCapturedAt || captureTime(parent);
+      const relativeTimeStr = capturedAt ? formatRelativeTime(capturedAt, Date.now()) : 'Data não confirmada';
       const timePillHtml = `<span class="poster-pill-badge">${relativeTimeStr}</span>`;
 
       // Top-right status pill
@@ -2114,7 +2664,7 @@
         }
       } else {
         const stateCode = extractStateCode(parent, norm);
-        rightPillHtml = `<span class="poster-status-pill pill-state">${stateCode}</span>`;
+        rightPillHtml = `<span class="poster-status-pill pill-state">${htmlAttribute(stateCode)}</span>`;
       }
 
       // Container de datas micro inline [ 📅 DATA ]
@@ -2125,7 +2675,7 @@
           microDatePillsHtml = `
             <span class="micro-date-pill pill-soldout">
               ${ICONS.calendar}
-              <span>Esgotado</span>
+              <span>${group.isAllUnavailable ? 'Indisponível' : 'Esgotado'}</span>
             </span>
           `;
         } else {
@@ -2142,21 +2692,17 @@
       // Action buttons: Apenas no Destaque (somente Resgatar alinhado à direita no rodapé).
       let actionButtonsHtml = '';
       if (isHeroFullWidth && activeCount > 0) {
-        const targetAction = activeCount === 1
-          ? `event.stopPropagation(); openConfirm('${activeItems[0].id}')`
-          : `event.stopPropagation(); openGroupSessionsModal('${group.key}')`;
         actionButtonsHtml = `
-          <button class="btn-poster-redeem" onclick="${targetAction}">
+          <button class="btn-poster-redeem" type="button">
             ${ICONS.tickets} Resgatar
           </button>
         `;
       }
 
-      const defaultTapAction = (activeCount === 1)
-        ? `openDetails('${activeItems[0].id}')`
-        : `openGroupSessionsModal('${group.key}')`;
-
-      card.setAttribute('onclick', defaultTapAction);
+      card.addEventListener?.('click', () => {
+        if (activeCount === 1) openDetails(activeItems[0].id);
+        else openGroupSessionsModal(group.key);
+      });
 
       const imageMarkup = posterImageMarkup([...activeItems, ...soldOutItems]);
 
@@ -2176,9 +2722,9 @@
             <div>${rightPillHtml}</div>
           </div>
           <div class="poster-bottom-content">
-            <div class="poster-venue">${norm.venue || 'Clube UOL'}</div>
+            <div class="poster-venue">${htmlAttribute(norm.venue || 'Clube UOL')}</div>
             <div class="destaque-bottom-row">
-              <div class="destaque-hero-title">${norm.eventTitle}</div>
+              <div class="destaque-hero-title">${htmlAttribute(norm.eventTitle)}</div>
               ${actionButtonsHtml}
             </div>
             ${dateStrip(microDatePillsHtml, true)}
@@ -2197,13 +2743,21 @@
             <div>${rightPillHtml}</div>
           </div>
           <div class="poster-bottom-content">
-            <div class="poster-venue">${norm.venue || 'Clube UOL'}</div>
-            <div class="poster-title">${norm.eventTitle}</div>
+            <div class="poster-venue">${htmlAttribute(norm.venue || 'Clube UOL')}</div>
+            <div class="poster-title">${htmlAttribute(norm.eventTitle)}</div>
             ${dateStrip(microDatePillsHtml)}
             ${redeemedFriendsHtml}
           </div>
         `;
       }
+
+      card.querySelector?.('.btn-poster-redeem')?.addEventListener?.('click', event => {
+        event.stopPropagation();
+        if (activeCount === 1) openConfirm(activeItems[0].id);
+        else openGroupSessionsModal(group.key);
+      });
+      wireDateStrips(card);
+      wirePosterImages(card);
 
       return card;
     }
@@ -2222,7 +2776,7 @@
       const badgesEl = document.getElementById('gsmStatusBadges');
       const listEl = document.getElementById('gsmSessionsList');
 
-      if (thumbEl) thumbEl.src = (g.parent && g.parent.imageUrl) || 'https://i.imgur.com/UdIgTfI.png';
+      if (thumbEl) thumbEl.src = validOfferImage(g.parent && g.parent.imageUrl) || 'https://i.imgur.com/UdIgTfI.png';
       venueEl.textContent = g.norm.venue || 'CLUBE UOL';
       titleEl.textContent = g.norm.eventTitle;
 
@@ -2231,10 +2785,12 @@
       const totalCount = activeCount + soldCount;
 
       let badgesHtml = '';
-      const catDef = CATEGORY_MAP[g.category] || CATEGORY_MAP['OUTROS'];
-      badgesHtml += '<span class="card-tag tag-category tag-cat-' + g.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
+      const catKey = CATEGORY_MAP[g.category] ? g.category : 'OUTROS';
+      const catDef = CATEGORY_MAP[catKey];
+      badgesHtml += '<span class="card-tag tag-category tag-cat-' + catKey + '">' + catDef.icon + ' ' + catDef.label + '</span>';
 
-      const relTime = formatRelativeTime(g.firstSeen || (g.parent && g.parent.firstSeen) || Date.now(), Date.now());
+      const at = g.latestCapturedAt || captureTime(g.parent);
+      const relTime = at ? formatRelativeTime(at, Date.now()) : 'Data não confirmada';
       badgesHtml += '<span class="card-tag tag-age">' + relTime + '</span>';
 
       if (activeCount > 0 && soldCount > 0) {
@@ -2242,7 +2798,7 @@
       } else if (activeCount > 0) {
         badgesHtml += `<span class="poster-pill-badge">${activeCount} ${activeCount === 1 ? 'disponível' : 'disponíveis'}</span>`;
       } else {
-        badgesHtml += `<span class="poster-pill-badge badge-expired">Esgotado (${soldCount})</span>`;
+        badgesHtml += `<span class="poster-pill-badge badge-expired">${g.isAllUnavailable ? 'Indisponível' : 'Esgotado'} (${soldCount})</span>`;
       }
       badgesEl.innerHTML = badgesHtml;
 
@@ -2255,16 +2811,16 @@
         rowsHtml += `
           <div class="session-item">
             <div class="session-info">
-              <span class="card-tag tag-code" style="font-size: 9.5px; padding: 2px 6px;">[${it.code}]</span>
+              <span class="card-tag tag-code" style="font-size: 9.5px; padding: 2px 6px;">[${htmlAttribute(it.code || '')}]</span>
               ${itStoryBadge}
               <div style="display: flex; flex-direction: column; gap: 1px;">
-                <span style="font-weight: 700; font-size: 13px; color: #fff;">${dateLabel}</span>
+                <span style="font-weight: 700; font-size: 13px; color: #fff;">${htmlAttribute(dateLabel)}</span>
                 <span style="font-size: 10.5px; color: #00e676; font-weight: 600;">● Disponível para resgate</span>
               </div>
             </div>
             <div class="session-btns">
-              <button class="btn-mini btn-mini-details" onclick="openDetails('${it.id}')">${ICONS.notes} Detalhes</button>
-              <button class="btn-mini btn-mini-redeem" onclick="proceedToRedeemSession('${it.id}')">${ICONS.tickets} Resgatar</button>
+              <button class="btn-mini btn-mini-details" type="button" data-session-action="details" data-offer-id="${htmlAttribute(it.id)}">${ICONS.notes} Detalhes</button>
+              <button class="btn-mini btn-mini-redeem" type="button" data-session-action="redeem" data-offer-id="${htmlAttribute(it.id)}">${ICONS.tickets} Resgatar</button>
             </div>
           </div>
         `;
@@ -2273,27 +2829,36 @@
       // Sessões esgotadas em seguida
       g.soldOutItems.forEach(it => {
         const dateLabel = getSessionDateLabel(it.rawTitle || it.title);
+        const unavailable = Boolean(it.linkUnavailableAt);
         const itStory = it.source === 'Stories' || it.hasStory || it.badge === 'Stories';
         const itStoryBadge = itStory ? '<span class="card-tag tag-stories" style="font-size: 8.5px; padding: 2px 5px;">' + ICONS.instagram + ' Stories</span>' : '';
         rowsHtml += `
           <div class="session-item session-item-soldout">
             <div class="session-info">
-              <span class="card-tag tag-code" style="font-size: 9.5px; padding: 2px 6px; opacity: 0.7;">[${it.code}]</span>
+              <span class="card-tag tag-code" style="font-size: 9.5px; padding: 2px 6px; opacity: 0.7;">[${htmlAttribute(it.code || '')}]</span>
               ${itStoryBadge}
               <div style="display: flex; flex-direction: column; gap: 1px;">
-                <span style="font-weight: 700; font-size: 13px; color: #94a3b8; text-decoration: line-through;">${dateLabel}</span>
-                <span style="font-size: 10.5px; color: #f87171; font-weight: 600;">● Esgotado</span>
+                <span style="font-weight: 700; font-size: 13px; color: #94a3b8; text-decoration: line-through;">${htmlAttribute(dateLabel)}</span>
+                <span style="font-size: 10.5px; color: #f87171; font-weight: 600;">● ${unavailable ? 'Link indisponível' : 'Esgotado'}</span>
               </div>
             </div>
             <div class="session-btns">
-              <button class="btn-mini btn-mini-details" onclick="openDetails('${it.id}')">${ICONS.notes} Detalhes</button>
-              <button class="btn-mini btn-mini-expired" disabled style="opacity: 0.6; cursor: not-allowed; background: rgba(248, 113, 113, 0.15); color: #f87171;">Esgotado</button>
+              <button class="btn-mini btn-mini-details" type="button" data-session-action="details" data-offer-id="${htmlAttribute(it.id)}">${ICONS.notes} Detalhes</button>
+              <button class="btn-mini btn-mini-expired" disabled style="opacity: 0.6; cursor: not-allowed; background: rgba(248, 113, 113, 0.15); color: #f87171;">${unavailable ? 'Indisponível' : 'Esgotado'}</button>
             </div>
           </div>
         `;
       });
 
       listEl.innerHTML = rowsHtml;
+      listEl.querySelectorAll('[data-session-action]').forEach(button => {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          const id = button.dataset.offerId;
+          if (button.dataset.sessionAction === 'details') openDetails(id);
+          else proceedToRedeemSession(id);
+        });
+      });
       modal.style.display = 'flex';
     }
 
@@ -2479,6 +3044,7 @@
         const key = o.id || (o.rawTitle || o.title);
         if (key && !seen.has(key)) seen.set(key, o);
       });
+
       (CURATED_EDITORS_CHOICE_SEEDS || []).forEach(seed => {
         const key = seed.id || (seed.rawTitle || seed.title);
         if (key && !seen.has(key)) {
@@ -2488,7 +3054,7 @@
             return EDITORS_CHOICE_KEYWORDS.some(k => seedKw.includes(k) && s.includes(k));
           });
           if (!covered) {
-            seen.set(key, seed);
+            seen.set(key, { ...seed, isCuratedSeed: true });
           }
         }
       });
@@ -2528,11 +3094,18 @@
     let historyDateCache = new WeakMap();
     function getOfferYearAndMonth(o) {
       if (historyDateCache.has(o)) return historyDateCache.get(o);
-      const session = sessionDateInfo(o);
-      const parts = session || saoPauloParts(catalogTime(o.firstSeen) || catalogTime(o.expiredAt) || catalogTime(o.lastSeen) || Date.now());
-      const result = { year: parts.year, month: parts.month - 1 };
+      const capturedAt = catalogTime(o.latestCapturedAt) || captureTime(o);
+      const parts = capturedAt ? saoPauloParts(capturedAt) : null;
+      const result = parts ? { year: parts.year, month: parts.month - 1 } : { year: 'unknown', month: -1 };
       historyDateCache.set(o, result);
       return result;
+    }
+
+    function buildHistoryGroups(allOffers) {
+      const observed = (allOffers || []).filter(o => o && !o.isCuratedSeed);
+      const activeIds = new Set((historyData.active || []).map(o => o.id));
+      const groups = buildOfferGroups(observed.filter(o => activeIds.has(o.id)), observed.filter(o => !activeIds.has(o.id)));
+      return groups.sort((a, b) => (b.latestCapturedAt - a.latestCapturedAt) || String(a.key).localeCompare(String(b.key)));
     }
 
     let historySearchQuery = '';
@@ -2541,6 +3114,7 @@
       const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
       const query = normalize(historySearchQuery).trim();
       if (!query) return true;
+      if (Array.isArray(offer.allItems)) return offer.allItems.some(historyMatchesSearch);
       const text = normalize([offer.title, offer.rawTitle, offer.partner, offer.venue, offer.location_summary].filter(Boolean).join(' '));
       return query.split(/\s+/).every(word => text.includes(word));
     }
@@ -2550,9 +3124,10 @@
       clearTimeout(historySearchTimer);
       historySearchTimer = setTimeout(() => {
         const allOffers = getAllCatalogOffers();
-        renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+        const groups = buildHistoryGroups(allOffers);
+        renderHistoryMonthSelector(selectedHistoryYear, groups);
         renderHistoryCurated(allOffers);
-        renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+        renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
       }, 180);
     }
 
@@ -2561,16 +3136,17 @@
       if (!container) return;
 
       const allOffers = getAllCatalogOffers();
+      const historyGroups = buildHistoryGroups(allOffers);
       const today = saoPauloParts(Date.now());
       if (!Number.isInteger(selectedHistoryYear)) selectedHistoryYear = today.year;
       if (selectedHistoryMonth === null) selectedHistoryMonth = today.month - 1;
 
       // 1. Insights & Métricas
-      const totalCount = allOffers.length;
+      const totalCount = historyGroups.length;
 
       // Categoria mais frequente
       const catCounts = { MUSEU: 0, TEATRO: 0, MUSICA: 0, FUTEBOL: 0, EXPOSICOES: 0, OUTROS: 0 };
-      allOffers.forEach(o => {
+      historyGroups.forEach(o => {
         if (catCounts[o.category] != null) catCounts[o.category]++;
         else catCounts.OUTROS++;
       });
@@ -2594,12 +3170,13 @@
 
       // Mês recorde
       const monthBuckets = new Map();
-      allOffers.forEach(o => {
+      historyGroups.forEach(o => {
         const ym = getOfferYearAndMonth(o);
+        if (ym.year === 'unknown') return;
         const k = ym.month + '-' + ym.year;
         monthBuckets.set(k, (monthBuckets.get(k) || 0) + 1);
       });
-      let recordMonthLabel = 'Out 2026';
+      let recordMonthLabel = 'Sem data';
       let recordMonthCount = 0;
       monthBuckets.forEach((cnt, k) => {
         if (cnt > recordMonthCount) {
@@ -2613,9 +3190,10 @@
       }
 
       // Anos únicos no catálogo
-      let years = Array.from(new Set(allOffers.map(o => getOfferYearAndMonth(o).year))).sort((a, b) => b - a);
+      let years = Array.from(new Set(historyGroups.map(o => getOfferYearAndMonth(o).year)))
+        .sort((a, b) => a === 'unknown' ? 1 : b === 'unknown' ? -1 : b - a);
       if (!years.includes(selectedHistoryYear)) years.push(selectedHistoryYear);
-      years.sort((a, b) => b - a);
+      years.sort((a, b) => a === 'unknown' ? 1 : b === 'unknown' ? -1 : b - a);
 
       // Constrói HTML do topo e Editor's Choice
       container.innerHTML = `
@@ -2630,7 +3208,7 @@
         <div class="history-metrics-row">
           <div class="metric-pill">
             <div class="metric-label">TOTAL CATALOGADO</div>
-            <div class="metric-val">${totalCount} ofertas</div>
+            <div class="metric-val">${totalCount} eventos</div>
           </div>
           <div class="metric-pill">
             <div class="metric-label">CATEGORIA TOP</div>
@@ -2664,7 +3242,7 @@
 
           <div class="history-year-selector" id="historyYearSelector">
             ${years.map(y => `
-              <button class="year-chip ${y === selectedHistoryYear ? 'active' : ''}" onclick="selectHistoryYear(${y})">${y}</button>
+              <button class="year-chip ${y === selectedHistoryYear ? 'active' : ''}" data-year="${y}" onclick="selectHistoryYear(${y === 'unknown' ? "'unknown'" : y})">${y === 'unknown' ? 'Sem data' : y}</button>
             `).join('')}
           </div>
 
@@ -2676,9 +3254,9 @@
         </div>
       `;
 
-      renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+      renderHistoryMonthSelector(selectedHistoryYear, historyGroups);
       renderHistoryCurated(allOffers);
-      renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+      renderHistoryMonths(historyGroups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
     }
 
     function renderHistoryCurated(allOffers) {
@@ -2691,6 +3269,7 @@
         editorsChoice.forEach((item, idx) => {
           const card = createHistoryPosterCard(item, idx, true);
           edTrack.appendChild(card);
+          alignHistoryDateStrips(card);
         });
       }
 
@@ -2699,22 +3278,23 @@
     function selectHistoryYear(year) {
       selectedHistoryYear = year;
       document.querySelectorAll('.year-chip').forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.textContent, 10) === year);
+        btn.classList.toggle('active', btn.dataset.year === String(year));
       });
       const allOffers = getAllCatalogOffers();
+      const groups = buildHistoryGroups(allOffers);
       const today = saoPauloParts(Date.now());
-      const months = allOffers.filter(o => getOfferYearAndMonth(o).year === year).map(o => getOfferYearAndMonth(o).month);
-      selectedHistoryMonth = year === today.year || !months.length ? today.month - 1 : Math.max(...months);
-      renderHistoryMonthSelector(year, allOffers);
+      const months = groups.filter(o => getOfferYearAndMonth(o).year === year).map(o => getOfferYearAndMonth(o).month);
+      selectedHistoryMonth = year === 'unknown' ? 'all' : year === today.year || !months.length ? today.month - 1 : Math.max(...months);
+      renderHistoryMonthSelector(year, groups);
       renderHistoryCurated(allOffers);
-      renderHistoryMonths(allOffers, year, document.getElementById('historyMonthsContainer'));
+      renderHistoryMonths(groups, year, document.getElementById('historyMonthsContainer'));
     }
 
-    function renderHistoryMonthSelector(year, allOffers) {
+    function renderHistoryMonthSelector(year, groups) {
       const monthSelector = document.getElementById('historyMonthSelector');
       if (!monthSelector) return;
 
-      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year && historyMatchesSearch(o));
+      const yearOffers = groups.filter(o => getOfferYearAndMonth(o).year === year && historyMatchesSearch(o));
       const monthsMap = new Map();
       yearOffers.forEach(o => {
         const m = getOfferYearAndMonth(o).month;
@@ -2730,7 +3310,7 @@
       const monthGroupsCounts = new Map();
       sortedMonths.forEach(m => {
         const mOffers = monthsMap.get(m);
-        const count = new Set(mOffers.map(getGroupKey)).size;
+        const count = mOffers.length;
         monthGroupsCounts.set(m, count);
         totalGroupCount += count;
       });
@@ -2741,7 +3321,7 @@
         </button>
         ${sortedMonths.map(m => `
           <button class="month-chip ${selectedHistoryMonth === m ? 'active' : ''}" onclick="selectHistoryMonth(${m})">
-            ${MONTH_SHORT_LABELS[m]} (${monthGroupsCounts.get(m)})
+            ${m === -1 ? 'Sem data' : MONTH_SHORT_LABELS[m]} (${monthGroupsCounts.get(m)})
           </button>
         `).join('')}
       `;
@@ -2750,24 +3330,26 @@
     function selectHistoryMonth(m) {
       selectedHistoryMonth = m;
       const allOffers = getAllCatalogOffers();
-      renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+      const groups = buildHistoryGroups(allOffers);
+      renderHistoryMonthSelector(selectedHistoryYear, groups);
       renderHistoryCurated(allOffers);
-      renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+      renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
     }
 
-    function renderHistoryMonths(allOffers, year, container) {
+    function renderHistoryMonths(groups, year, container) {
       if (!container) return;
       if (historyRenderState && historyRenderState.observer) historyRenderState.observer.disconnect();
       container.innerHTML = '';
       historyRenderState = null;
 
-      const yearOffers = allOffers.filter(o => {
+      const yearOffers = groups.filter(o => {
         const period = getOfferYearAndMonth(o);
         return period.year === year && (selectedHistoryMonth === 'all' || period.month === selectedHistoryMonth) && historyMatchesSearch(o);
       });
 
       if (yearOffers.length === 0) {
-        const period = selectedHistoryMonth === 'all' ? String(year) : MONTH_FULL_NAMES[selectedHistoryMonth] + ' de ' + year;
+        const period = year === 'unknown' ? 'data de captura desconhecida' :
+          selectedHistoryMonth === 'all' ? String(year) : MONTH_FULL_NAMES[selectedHistoryMonth] + ' de ' + year;
         container.innerHTML = '<div style="color: #64748b; font-size: 13px; text-align: center; padding: 32px 0;">Nenhuma oferta encontrada para ' + period + '.</div>';
         return;
       }
@@ -2787,13 +3369,10 @@
         sortedMonths = sortedMonths.filter(m => m === selectedHistoryMonth);
       }
 
-      const activeIds = new Set((historyData.active || []).map(o => o.id));
       const rows = [];
       sortedMonths.forEach(m => {
-        const monthOffers = monthsMap.get(m);
-        const monthActive = monthOffers.filter(o => activeIds.has(o.id));
-        const monthHistory = monthOffers.filter(o => !activeIds.has(o.id));
-        const monthGroups = buildOfferGroups(monthActive, monthHistory);
+        const monthGroups = monthsMap.get(m).sort((a, b) =>
+          (b.latestCapturedAt - a.latestCapturedAt) || String(a.key).localeCompare(String(b.key)));
         monthGroups.forEach((group, index) => rows.push({ month: m, group: group, index: index, total: monthGroups.length }));
       });
 
@@ -2827,7 +3406,7 @@
           sec.style.marginBottom = '22px';
           const header = document.createElement('div');
           header.className = 'category-carousel-header';
-          header.innerHTML = `<div class="category-carousel-title"><span>${MONTH_FULL_NAMES[row.month]} ${state.year}</span><span class="cat-badge">${row.total} ${row.total === 1 ? 'evento' : 'eventos'}</span></div>`;
+          header.innerHTML = `<div class="category-carousel-title"><span>${row.month === -1 ? 'Sem data de captura' : MONTH_FULL_NAMES[row.month] + ' ' + state.year}</span><span class="cat-badge">${row.total} ${row.total === 1 ? 'evento' : 'eventos'}</span></div>`;
           sec.appendChild(header);
           track = document.createElement('div');
           track.className = 'category-carousel-track';
@@ -2836,7 +3415,9 @@
           state.tracks.set(row.month, track);
         }
         currentRenderedGroups.set(row.group.key, row.group);
-        track.appendChild(createHistoryPosterCard(row.group, state.cursor - start, false));
+        const card = createHistoryPosterCard(row.group, state.cursor - start, false);
+        track.appendChild(card);
+        alignHistoryDateStrips(card);
       }
       const remaining = state.rows.length - state.cursor;
       if (remaining) {
@@ -2861,7 +3442,8 @@
         isAllSoldOut: !(historyData.active || []).some(a => a.id === target.id),
         hasStory: isStoriesOnlyOffer(target) || Boolean(target.hasStory || target.source === 'Stories' || target.badge === 'Stories'),
         hasPortal: isStoriesOnlyOffer(target) ? false : (target.isPortal !== false),
-        firstSeen: target.firstSeen || Date.now(),
+        firstSeen: captureTime(target),
+        latestCapturedAt: captureTime(target),
         norm: normalizeEventInfo([target])
       };
       currentRenderedGroups.set(group.key, group);
@@ -2870,12 +3452,15 @@
       const activeCount = (activeItems || []).length;
       const soldOutCount = (soldOutItems || []).length;
       const totalSessions = activeCount + soldOutCount;
+      const hasUnverifiedSessions = (allItems || []).some(item => item.cacheUnverified === true);
+      const allSessionsUnverified = totalSessions > 0 && (allItems || []).every(item => item.cacheUnverified === true);
 
       const card = document.createElement('div');
+      card.hunterHistoryDateKey = (isCuratedSection ? 'curated:' : 'timeline:') + String(group.key);
       const curated = isEditorsChoice(parent) || (allItems || []).some(x => isEditorsChoice(x)) || isCuratedSection;
       let cardClass = 'poster-card history-clean-card';
       if (curated) cardClass += ' card-editors-choice-poster';
-      if (isAllSoldOut) cardClass += ' card-sold-out-grouped';
+      if (isAllSoldOut && !hasUnverifiedSessions) cardClass += ' card-sold-out-grouped';
       card.className = cardClass;
       card.style.setProperty('--delay', index);
 
@@ -2898,27 +3483,37 @@
       const venueText = norm.venue || (parent && (parent.venue || parent.partner || parent.location_summary)) || 'Clube UOL';
       const eventTitle = norm.eventTitle || toSentenceCase(((parent && (parent.rawTitle || parent.title)) || '').replace(/^2\s*ingressos\s*:\s*/i, '').trim());
 
-      const relTime = formatRelativeTime(group.firstSeen || (parent && parent.firstSeen) || Date.now(), Date.now());
+      const capturedAt = group.latestCapturedAt || captureTime(parent);
+      const relTime = capturedAt ? formatRelativeTime(capturedAt, Date.now()) : 'Data não confirmada';
       const timePillHtml = `<span class="poster-pill-badge">${relTime}</span>`;
 
       // Status pill à direita: ★ Curadoria se for Editor's Choice, senão sigla do estado
       let rightPillHtml = '';
-      if (curated) {
+      if (allSessionsUnverified) {
+        rightPillHtml = `<span class="poster-status-pill pill-state">Não verificado</span>`;
+      } else if (curated) {
         rightPillHtml = `<span class="pill-editors-choice">★ Curadoria</span>`;
       } else {
         const stateCode = extractStateCode(parent, { venue: venueText });
-        rightPillHtml = `<span class="poster-status-pill pill-state">${stateCode}</span>`;
+        rightPillHtml = `<span class="poster-status-pill pill-state">${htmlAttribute(stateCode)}</span>`;
       }
 
       // Container de datas micro inline [ 📅 DATA ]
       let microDatePillsHtml = renderSessionDatePills(activeItems, soldOutItems);
 
       if (!microDatePillsHtml) {
-        if (isAllSoldOut) {
+        if (allSessionsUnverified) {
+          microDatePillsHtml = `
+            <span class="micro-date-pill pill-unverified">
+              ${ICONS.calendar}
+              <span>Não verificado</span>
+            </span>
+          `;
+        } else if (isAllSoldOut) {
           microDatePillsHtml = `
             <span class="micro-date-pill pill-soldout">
               ${ICONS.calendar}
-              <span>Esgotado</span>
+              <span>${group.isAllUnavailable ? 'Indisponível' : 'Esgotado'}</span>
             </span>
           `;
         } else if (activeCount > 0) {
@@ -2957,12 +3552,15 @@
           <div>${rightPillHtml}</div>
         </div>
         <div class="poster-bottom-content">
-          <div class="poster-venue">${venueText}</div>
-          <div class="poster-title">${eventTitle}</div>
+          <div class="poster-venue">${htmlAttribute(venueText)}</div>
+          <div class="poster-title">${htmlAttribute(eventTitle)}</div>
           ${dateStrip(microDatePillsHtml)}
           ${redeemedFriendsHtml}
         </div>
       `;
+
+      wireDateStrips(card, true);
+      wirePosterImages(card);
 
       return card;
     }
@@ -3110,6 +3708,16 @@
       } catch (_) { return ''; }
     }
 
+    function isVerifiedReceipt(record) {
+      const key = redemptionIdentity(record);
+      if (!key) return false;
+      const native = typeof window !== 'undefined' && window.hunterVerifiedRedemptions instanceof Map
+        && window.hunterVerifiedRedemptions.has(key);
+      const initial = typeof INITIAL !== 'undefined' && Array.isArray(INITIAL.realRedemptions)
+        && INITIAL.realRedemptions.some(row => row.receiptVerified === true && redemptionIdentity(row) === key);
+      return Boolean(native || initial);
+    }
+
     function renderRedemptionsScreen() {
       const container = document.getElementById('viewRedemptions');
       if (!container) return;
@@ -3122,9 +3730,6 @@
       // 1. Consolida todos os resgates sem perder nenhum perfil, filtrando exclusivamente "Campanhas de ingressos"
       const rawAllList = getAllRedemptionsList();
       const allList = rawAllList.filter(r => (r.partner || '').trim().toLowerCase() === 'campanhas de ingressos');
-      try {
-        localStorage.setItem('uol_real_redemptions', JSON.stringify(rawAllList));
-      } catch(e) {}
 
       // 2. Contagens por perfil
       const totalCount = allList.length;
@@ -3151,22 +3756,23 @@
       let cardsHtml = '';
       if (list.length > 0) {
         list.forEach((r, idx) => {
+          const verified = isVerifiedReceipt(r);
           const isCardLeo = ((r.user || 'leosaquetto') === 'leosaquetto');
           const cardOwnerName = isCardLeo ? 'Leonardo' : 'Gabriel';
           const cardOwnerHandle = isCardLeo ? 'leosaquetto' : 'gaoriel';
 
           const thumbnail = receiptSafeUrl(r.thumb);
           const thumbHtml = thumbnail
-            ? `<img src="${escapeReceiptHtml(thumbnail)}" class="redemption-thumb" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />`
+            ? `<img src="${escapeReceiptHtml(thumbnail)}" class="redemption-thumb" />`
             : `<div class="redemption-thumb" style="display:flex;align-items:center;justify-content:center;color:#00e676;font-size:24px;">🎟️</div>`;
 
-          const timeText = r.redeemedAt
-            ? `Resgatado em ${formatRedemptionDateTime(r.redeemedAt)}`
-            : '✓ Resgate Confirmado';
+          const timeText = verified
+            ? r.redeemedAt ? `Resgatado em ${formatRedemptionDateTime(r.redeemedAt)}` : 'Data não informada'
+            : r.redeemedAt ? `Registro local • ${formatRedemptionDateTime(r.redeemedAt)}` : 'Registro local não verificado';
 
           const ownerBadgeHtml = `
             <div class="redemption-owner-pill ${isCardLeo ? 'owner-leo' : 'owner-gaoriel'}">
-              <img src="${getAvatarUrl(cardOwnerHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+              <img src="${getAvatarUrl(cardOwnerHandle)}" />
               <span>${cardOwnerName}</span>
             </div>
           `;
@@ -3186,11 +3792,11 @@
                 </div>
               </div>
               <div class="redemption-actions-row">
-                <button class="btn-voucher-action btn-voucher-details" onclick="openRedemptionDetailsModal(${idx})">
+                <button class="btn-voucher-action btn-voucher-details" data-redemption-details="${idx}">
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                   Ver Detalhes
                 </button>
-                <button class="btn-voucher-action btn-voucher-primary" onclick="openVoucherModal(${idx})">
+                <button class="btn-voucher-action btn-voucher-primary" data-redemption-voucher="${idx}">
                   ${ICONS.tickets}
                   Ver Voucher
                 </button>
@@ -3208,13 +3814,13 @@
           <!-- Card de Conta Ativa para Novos Resgates -->
           <div class="redemptions-profile-card">
             <div class="redemptions-profile-left">
-              <img class="redemptions-avatar" src="${activeAvatarSrc}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+              <img class="redemptions-avatar" src="${activeAvatarSrc}" />
               <div class="redemptions-user-info">
                 <div class="redemptions-user-name">${activeDisplayName}</div>
                 <div class="redemptions-user-handle">Conta Ativa para Novos Resgates</div>
               </div>
             </div>
-            <button class="btn-switch-account" onclick="requestUserSwitch('${isLeo ? 'gaoriel' : 'leosaquetto'}')">
+            <button class="btn-switch-account" data-switch-account="${isLeo ? 'gaoriel' : 'leosaquetto'}">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
               Alternar
             </button>
@@ -3226,7 +3832,7 @@
               <span class="session-dot ${uolSessionPresentation().dot}"></span>
               <span id="redemptionsSessionStatusLabel">${uolSessionPresentation().label}</span>
             </div>
-            <button class="btn-reconnect-session" onclick="openAuthAssistantModal()">
+            <button class="btn-reconnect-session" data-open-auth>
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
               Verificar sessão
             </button>
@@ -3238,7 +3844,7 @@
                 <strong>⚠️ Sessão de ${activeDisplayName} não conectada:</strong><br/>
                 Para sincronizar os últimos ingressos e realizar resgates na conta de ${activeDisplayName}, conecte-se ao Clube UOL.
               </div>
-              <button class="btn-connect-account" onclick="openAuthAssistantModal()">
+              <button class="btn-connect-account" data-open-auth>
                 Conectar
               </button>
             </div>
@@ -3247,13 +3853,13 @@
           <!-- Filtros de Ingressos (Todos / Gabriel / Leonardo) -->
           <div class="redemptions-filter-bar">
             <div class="redemptions-filter-pills">
-              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'all' ? 'active' : ''}" onclick="setRedemptionsFilter('all')">
+              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'all' ? 'active' : ''}" data-redemptions-filter="all">
                 Todos (${totalCount})
               </button>
-              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'gaoriel' ? 'active' : ''}" onclick="setRedemptionsFilter('gaoriel')">
+              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'gaoriel' ? 'active' : ''}" data-redemptions-filter="gaoriel">
                 <span class="filter-dot dot-gaoriel"></span> Gabriel (${gaoCount})
               </button>
-              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'leosaquetto' ? 'active' : ''}" onclick="setRedemptionsFilter('leosaquetto')">
+              <button class="redemptions-filter-pill ${currentRedemptionsFilter === 'leosaquetto' ? 'active' : ''}" data-redemptions-filter="leosaquetto">
                 <span class="filter-dot dot-leo"></span> Leonardo (${leoCount})
               </button>
             </div>
@@ -3277,16 +3883,59 @@
             <div class="empty-desc">
               Não encontramos resgates cadastrados para a opção selecionada. Toque em "Todos" para visualizar todos os vouchers.
             </div>
-            <button class="btn-empty-explore" onclick="setRedemptionsFilter('all')">
+            <button class="btn-empty-explore" data-redemptions-filter="all">
               Ver Todos os Resgates
             </button>
           </div>
         `}
       `;
+      if (typeof container.querySelectorAll === 'function') {
+        container.querySelectorAll('[data-redemption-details]').forEach(button => button.addEventListener('click', () =>
+          openRedemptionDetailsModal(Number(button.dataset.redemptionDetails))));
+        container.querySelectorAll('[data-redemption-voucher]').forEach(button => button.addEventListener('click', () =>
+          openVoucherModal(Number(button.dataset.redemptionVoucher))));
+        container.querySelectorAll('[data-redemptions-filter]').forEach(button => button.addEventListener('click', () =>
+          setRedemptionsFilter(button.dataset.redemptionsFilter)));
+        container.querySelector('[data-switch-account]')?.addEventListener?.('click', () => requestUserSwitch(isLeo ? 'gaoriel' : 'leosaquetto'));
+        container.querySelectorAll('[data-open-auth]').forEach(button => button.addEventListener('click', openAuthAssistantModal));
+        container.querySelectorAll('img').forEach(image => image.addEventListener('error', () => {
+          image.src = 'https://i.imgur.com/UdIgTfI.png';
+        }, { once: true }));
+      }
     }
 
     let currentVoucherBlob = null;
     let currentVoucherFileName = 'voucher-clube-uol.pdf';
+    let voucherGeneration = 0;
+    let pendingNativeVoucher = null;
+    const ownedModalOrigins = new WeakMap();
+
+    function enterOwnedModal(modal, close) {
+      if (!modal) return;
+      const focused = document.activeElement;
+      if (focused && focused !== document.body && !modal.contains?.(focused)) ownedModalOrigins.set(modal, focused);
+      modal.setAttribute?.('role', 'dialog');
+      modal.setAttribute?.('aria-modal', 'true');
+      modal.tabIndex = -1;
+      const focusGeneration = (modal._hunterFocusGeneration || 0) + 1;
+      modal._hunterFocusGeneration = focusGeneration;
+      modal.onkeydown = event => {
+        if (event.key === 'Escape') { event.preventDefault(); close(event); }
+      };
+      setTimeout(() => {
+        if (modal._hunterFocusGeneration === focusGeneration && modal.style.display === 'flex')
+          (modal.querySelector?.('.modal-close-icon, .btn-modal-cancel, [role="tab"]') || modal).focus?.();
+      }, 0);
+    }
+
+    function leaveOwnedModal(modal) {
+      if (!modal) return;
+      modal.onkeydown = null;
+      modal._hunterFocusGeneration = (modal._hunterFocusGeneration || 0) + 1;
+      const origin = ownedModalOrigins.get(modal);
+      ownedModalOrigins.delete(modal);
+      if (origin && origin.isConnected !== false) origin.focus?.();
+    }
 
     // ===================================================================
     // MODAIS DE VOUCHER & DETALHES DO RESGATE (IN-APP)
@@ -3295,6 +3944,10 @@
       activeRedemptionIndex = index;
       const r = currentRedemptionsList[index];
       if (!r) return;
+      const generation = ++voucherGeneration;
+      const account = r.user || r.accountId || '';
+      const isCurrent = () => generation === voucherGeneration &&
+        activeRedemptionIndex === index;
 
       const vmTitle = document.getElementById('vmTitle');
       if (vmTitle) vmTitle.textContent = formatRedemptionTitle(r.title);
@@ -3316,16 +3969,61 @@
       }
 
       const modal = document.getElementById('voucherModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) {
+        const statusPill = modal.querySelector?.('.ticket-status-pill');
+        if (statusPill) statusPill.textContent = isVerifiedReceipt(r) ? '✓ Resgate Confirmado' : 'Registro local não verificado';
+        modal.style.display = 'flex';
+        enterOwnedModal(modal, closeVoucherModal);
+      }
 
-      loadVoucherContent(r);
+      if (INITIAL.nativeAccounts && (r.hasNativeVoucher || isVerifiedReceipt(r)) && Number.isInteger(r.nativeVoucherIndex) &&
+          ['leosaquetto', 'gaoriel'].includes(account) && /^[A-Za-z0-9_-]{1,200}$/.test(String(r.id || ''))) {
+        const id = String(r.id);
+        pendingNativeVoucher = { generation, account, id, index: r.nativeVoucherIndex, record: r };
+        const container = document.getElementById('voucherViewerContainer');
+        if (container) container.innerHTML = '<div class="voucher-loading-state">Carregando voucher salvo neste iPhone…</div>';
+        window.location.href = 'hunter-voucher://get?index=' + r.nativeVoucherIndex + '&account=' + account + '&id=' + encodeURIComponent(id) + '&request=' + generation;
+        return;
+      }
+      loadVoucherContent(r, isCurrent);
     }
 
     function closeVoucherModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
+      voucherGeneration++;
+      pendingNativeVoucher = null;
       const modal = document.getElementById('voucherModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+        leaveOwnedModal(modal);
+      }
       currentVoucherBlob = null;
+    }
+
+    function handleNativeVoucherResult(account, index, result) {
+      const pending = pendingNativeVoucher;
+      const r = pending?.record;
+      if (!pending || pending.generation !== voucherGeneration || result?.request !== pending.generation ||
+          pending.account !== account || pending.index !== index || result?.id !== pending.id ||
+          document.getElementById('voucherModal')?.style.display !== 'flex') return;
+      pendingNativeVoucher = null;
+      const safeDataUrl = result?.status === 'available'
+        ? receiptSafeUrl(result.dataUrl, result.mime === 'application/pdf' ? 'pdf' : 'image') : '';
+      const blob = safeDataUrl ? voucherBlobFromDataUrl(safeDataUrl) : null;
+      if (blob && (!result.mime || result.mime === blob.type)) {
+        currentVoucherBlob = blob;
+        currentVoucherFileName = voucherFileName(blob.type);
+        const container = document.getElementById('voucherViewerContainer');
+        container.innerHTML = blob.type === 'application/pdf'
+          ? '<iframe class="voucher-pdf-frame" src="' + escapeReceiptHtml(safeDataUrl) + '" title="Voucher Oficial"></iframe>'
+          : '<img class="voucher-preview-img" src="' + escapeReceiptHtml(safeDataUrl) + '" alt="Voucher Oficial" />';
+        const share = document.getElementById('btnShareVoucher');
+        if (share) share.style.display = 'flex';
+        return;
+      }
+      const generation = voucherGeneration;
+      const selectedIndex = activeRedemptionIndex;
+      loadVoucherContent(r, () => generation === voucherGeneration && activeRedemptionIndex === selectedIndex);
     }
 
     async function extractVoucherImage(arrayBuffer) {
@@ -3406,7 +4104,47 @@
     const voucherSessionCache = new Map();
 
     function getVoucherCacheKey(r) {
-      return 'uol_vc_' + (r.cupomCode || r.id || encodeURIComponent(r.downloadUrl || ''));
+      const account = String(r.user || r.accountId || '').toLowerCase();
+      if (!['leosaquetto', 'gaoriel'].includes(account)) return '';
+      const identifier = r.id || r.url || r.cupomCode || r.downloadUrl;
+      return identifier ? 'uol_vc_v2_' + account + '_' + encodeURIComponent(String(identifier)) : '';
+    }
+
+    function voucherFileName(mime) {
+      const extension = mime === 'application/pdf' ? 'pdf' : mime === 'image/png' ? 'png'
+        : mime === 'image/jpeg' ? 'jpg' : mime === 'image/webp' ? 'webp' : 'gif';
+      return 'voucher-clube-uol.' + extension;
+    }
+
+    function voucherBlobFromDataUrl(dataUrl) {
+      const match = /^data:(image\/(?:png|jpe?g|webp|gif)|application\/pdf);base64,([A-Za-z0-9+/=]+)$/i.exec(dataUrl || '');
+      if (!match) return null;
+      try {
+        const bytes = base64ToUint8Array(match[2]);
+        if (bytes.byteLength > 5 * 1024 * 1024) return null;
+        const claimed = match[1].toLowerCase().replace('image/jpg', 'image/jpeg');
+        if (voucherMimeFromBytes(bytes.buffer) !== claimed) return null;
+        return new Blob([bytes], { type: claimed });
+      } catch (_) { return null; }
+    }
+
+    function voucherMimeFromBytes(buffer) {
+      const b = new Uint8Array(buffer);
+      if (b.length >= 5 && b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46 && b[4] === 0x2d) return 'application/pdf';
+      if (b.length >= 8 && [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((v, i) => b[i] === v)) return 'image/png';
+      if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+      if (b.length >= 12 && String.fromCharCode(...b.slice(0, 4)) === 'RIFF' && String.fromCharCode(...b.slice(8, 12)) === 'WEBP') return 'image/webp';
+      if (b.length >= 6 && (String.fromCharCode(...b.slice(0, 6)) === 'GIF87a' || String.fromCharCode(...b.slice(0, 6)) === 'GIF89a')) return 'image/gif';
+      return '';
+    }
+
+    function trustedVoucherDownloadUrl(value) {
+      const safe = receiptSafeUrl(value, 'download');
+      if (!safe) return '';
+      try {
+        const host = new URL(safe).hostname.toLowerCase();
+        return host === 'uol.com.br' || host.endsWith('.uol.com.br') ? safe : '';
+      } catch (_) { return ''; }
     }
 
     function arrayBufferToBase64(buffer) {
@@ -3430,25 +4168,26 @@
 
     function getStoredVoucher(r) {
       const key = getVoucherCacheKey(r);
+      if (!key) return null;
       // 1. Memória rápida da sessão ativa (0 ms)
       if (voucherSessionCache.has(key)) {
         return voucherSessionCache.get(key);
       }
+      // Native receipts and saved files are read through the on-demand bridge;
+      // keep newly downloaded bytes in memory for this WebView session only.
+      if (INITIAL.nativeAccounts) return null;
       // 2. LocalStorage persistente do dispositivo (0 ms, offline)
       try {
         const raw = localStorage.getItem(key);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && parsed.imgDataUrl) {
-            let blob = null;
-            if (parsed.pdfBase64) {
-              const bytes = base64ToUint8Array(parsed.pdfBase64);
-              blob = new Blob([bytes], { type: parsed.mimeType || 'application/pdf' });
-            }
+          if (parsed && parsed.dataUrl && receiptSafeUrl(parsed.dataUrl, parsed.mimeType === 'application/pdf' ? 'pdf' : 'image')) {
+            const blob = voucherBlobFromDataUrl(parsed.dataUrl);
+            if (!blob || blob.type !== parsed.mimeType) return null;
             const entry = {
-              imgDataUrl: parsed.imgDataUrl,
-              blob: blob,
-              fileName: parsed.fileName || r.cupomCode || 'voucher-uol.pdf',
+              dataUrl: parsed.dataUrl,
+              blob,
+              fileName: voucherFileName(blob.type),
               fromCache: true
             };
             voucherSessionCache.set(key, entry);
@@ -3459,26 +4198,18 @@
       return null;
     }
 
-    function storeVoucherInCache(r, imgDataUrl, blob, fileName, mimeType, rawArrayBuffer) {
+    function storeVoucherInCache(r, dataUrl, blob) {
       const key = getVoucherCacheKey(r);
-      voucherSessionCache.set(key, {
-        imgDataUrl: imgDataUrl,
-        blob: blob,
-        fileName: fileName,
-        fromCache: true
-      });
+      if (!key || !blob || !receiptSafeUrl(dataUrl, blob.type === 'application/pdf' ? 'pdf' : 'image')) return;
+      const entry = { dataUrl, blob, fileName: voucherFileName(blob.type), fromCache: true };
+      voucherSessionCache.set(key, entry);
+      if (INITIAL.nativeAccounts) return;
 
-      // Grava no LocalStorage persistente para futuros acessos sem nova requisição
+      // Persist only the validated original bytes; the preview is never a second copy.
       try {
-        let pdfB64 = '';
-        if (rawArrayBuffer) {
-          pdfB64 = arrayBufferToBase64(rawArrayBuffer);
-        }
         localStorage.setItem(key, JSON.stringify({
-          imgDataUrl: imgDataUrl,
-          pdfBase64: pdfB64,
-          fileName: fileName,
-          mimeType: mimeType || (blob ? blob.type : 'application/pdf'),
+          dataUrl,
+          mimeType: blob.type,
           savedAt: Date.now()
         }));
       } catch(e) {
@@ -3486,27 +4217,20 @@
       }
     }
 
-    async function loadVoucherContent(r) {
+    async function loadVoucherContent(r, isCurrent = () => true) {
       const container = document.getElementById('voucherViewerContainer');
       const btnShare = document.getElementById('btnShareVoucher');
-      if (!container) return;
+      if (!container || !isCurrent()) return;
 
       currentVoucherBlob = null;
       if (btnShare) btnShare.style.display = 'none';
 
       // 0. Prioridade máxima: Imagem de alta resolução vinda direto do Banco de Dados Permanente (Zero rede, Offline)
       const storedImage = receiptSafeUrl(r.voucherImageDataUrl);
-      if (storedImage) {
-        currentVoucherFileName = r.cupomCode || 'voucher-uol.pdf';
-        try {
-          const parts = r.voucherImageDataUrl.split(',');
-          const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/jpeg';
-          const bstr = atob(parts[1]);
-          let n = bstr.length;
-          const u8arr = new Uint8Array(n);
-          while (n--) u8arr[n] = bstr.charCodeAt(n);
-          currentVoucherBlob = new Blob([u8arr], { type: mime });
-        } catch(e) {}
+      const storedBlob = storedImage ? voucherBlobFromDataUrl(storedImage) : null;
+      if (storedBlob && storedBlob.type.startsWith('image/')) {
+        currentVoucherFileName = voucherFileName(storedBlob.type);
+        currentVoucherBlob = storedBlob;
 
         container.innerHTML = `
           <img class="voucher-preview-img" src="${escapeReceiptHtml(storedImage)}" alt="Voucher Oficial" />
@@ -3515,20 +4239,20 @@
         return;
       }
 
+      const cached = getStoredVoucher(r);
+      if (cached && receiptSafeUrl(cached.dataUrl, cached.blob.type === 'application/pdf' ? 'pdf' : 'image')) {
+        currentVoucherBlob = cached.blob;
+        currentVoucherFileName = cached.fileName;
+        container.innerHTML = cached.blob.type === 'application/pdf'
+          ? `<iframe class="voucher-pdf-frame" src="${escapeReceiptHtml(cached.dataUrl)}" title="Voucher Oficial"></iframe>`
+          : `<img class="voucher-preview-img" src="${escapeReceiptHtml(cached.dataUrl)}" alt="Voucher Oficial" />`;
+        if (btnShare) btnShare.style.display = 'flex';
+        return;
+      }
+
       // 1. Caso seja voucher com arquivo (PDF ou imagem)
-      const downloadUrl = receiptSafeUrl(r.downloadUrl, 'download');
+      const downloadUrl = trustedVoucherDownloadUrl(r.downloadUrl);
       if (downloadUrl) {
-        // Checagem imediata no Cache (Zero requisições à rede!)
-        const cached = getStoredVoucher(r);
-        if (cached && receiptSafeUrl(cached.imgDataUrl)) {
-          currentVoucherBlob = cached.blob;
-          currentVoucherFileName = cached.fileName;
-          container.innerHTML = `
-            <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(cached.imgDataUrl))}" alt="Voucher Oficial" />
-          `;
-          if (btnShare && currentVoucherBlob) btnShare.style.display = 'flex';
-          return;
-        }
 
         // Se ainda não estiver em cache, faz o download apenas uma vez
         container.innerHTML = `
@@ -3541,58 +4265,41 @@
 
         try {
           const res = await fetch(downloadUrl);
+          if (!isCurrent()) return;
           if (!res.ok) throw new Error('Status HTTP ' + res.status);
+          if (res.url && !trustedVoucherDownloadUrl(res.url)) throw new Error('Origem do voucher não verificada');
           const arrayBuffer = await res.arrayBuffer();
-          const contentType = res.headers.get('content-type') || 'application/pdf';
-          const blob = new Blob([arrayBuffer], { type: contentType });
-          currentVoucherBlob = blob;
-          currentVoucherFileName = r.cupomCode || 'voucher-uol.pdf';
-
-          // Tenta extrair a imagem de alta definição com arestas perfeitas
-          const extracted = await extractVoucherImage(arrayBuffer);
-
-          if (extracted) {
-            const imgBlob = new Blob([extracted.data], { type: extracted.type });
-            const reader = new FileReader();
-            reader.onloadend = function() {
-              const imgDataUrl = reader.result;
-              storeVoucherInCache(r, imgDataUrl, blob, currentVoucherFileName, contentType, arrayBuffer);
-              container.innerHTML = `
-                <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(imgDataUrl))}" alt="Voucher Oficial" />
-              `;
-              if (btnShare) btnShare.style.display = 'flex';
-            };
-            reader.readAsDataURL(imgBlob);
-          } else {
-            const isPdf = currentVoucherFileName.toLowerCase().endsWith('.pdf') || blob.type.includes('pdf');
-            const reader = new FileReader();
-            reader.onloadend = function() {
-              const base64Data = reader.result;
-              storeVoucherInCache(r, base64Data, blob, currentVoucherFileName, contentType, arrayBuffer);
-              if (isPdf) {
-                container.innerHTML = `
-                  <iframe class="voucher-pdf-frame" src="${escapeReceiptHtml(receiptSafeUrl(base64Data, 'pdf'))}"></iframe>
-                `;
-              } else {
-                container.innerHTML = `
-                  <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(base64Data))}" alt="Voucher Oficial" />
-                `;
-              }
-              if (btnShare) btnShare.style.display = 'flex';
-            };
-            reader.readAsDataURL(blob);
+          if (!isCurrent()) return;
+          if (arrayBuffer.byteLength > 5 * 1024 * 1024) throw new Error('Arquivo acima do limite');
+          const mime = voucherMimeFromBytes(arrayBuffer);
+          if (!mime) throw new Error('Formato do voucher não reconhecido');
+          const blob = new Blob([arrayBuffer], { type: mime });
+          const originalDataUrl = 'data:' + mime + ';base64,' + arrayBufferToBase64(arrayBuffer);
+          let previewDataUrl = originalDataUrl;
+          if (mime === 'application/pdf') {
+            const extracted = await extractVoucherImage(arrayBuffer);
+            if (!isCurrent()) return;
+            if (extracted?.type === 'image/jpeg') {
+              previewDataUrl = 'data:image/jpeg;base64,' + arrayBufferToBase64(extracted.data.buffer.slice(
+                extracted.data.byteOffset, extracted.data.byteOffset + extracted.data.byteLength));
+            }
           }
-
+          currentVoucherBlob = blob;
+          currentVoucherFileName = voucherFileName(mime);
+          storeVoucherInCache(r, originalDataUrl, blob);
+          container.innerHTML = previewDataUrl.startsWith('data:application/pdf;')
+            ? `<iframe class="voucher-pdf-frame" src="${escapeReceiptHtml(previewDataUrl)}" title="Voucher Oficial"></iframe>`
+            : `<img class="voucher-preview-img" src="${escapeReceiptHtml(previewDataUrl)}" alt="Voucher Oficial" />`;
           if (btnShare) btnShare.style.display = 'flex';
 
         } catch (e) {
+          if (!isCurrent()) return;
           console.log('Aviso ao carregar voucher:', e.message);
           container.innerHTML = `
             <div style="padding: 24px 16px; text-align: center;">
-              <div style="font-size: 13px; color: #00e676; font-weight: 700; margin-bottom: 6px;">✓ Voucher Confirmado</div>
+              <div style="font-size: 13px; color: #fbbf24; font-weight: 700; margin-bottom: 6px;">Voucher não carregado</div>
               <div style="font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
-                Benefício autenticado no Clube UOL.<br/>
-                Seus ingressos também foram enviados para o e-mail cadastrado.
+                Não foi possível abrir o arquivo agora. Consulte os detalhes do resgate ou tente novamente.
               </div>
             </div>
           `;
@@ -3614,11 +4321,12 @@
         container.style.display = 'block';
       } else {
         // 3. Fallback informativo
+        const verified = isVerifiedReceipt(r);
         container.innerHTML = `
           <div style="padding: 24px 16px; text-align: center;">
-            <div style="font-size: 13px; color: #00e676; font-weight: 700; margin-bottom: 6px;">✓ Benefício Ativo</div>
+            <div style="font-size: 13px; color: ${verified ? '#00e676' : '#fbbf24'}; font-weight: 700; margin-bottom: 6px;">${verified ? '✓ Benefício Ativo' : 'Registro local não verificado'}</div>
             <div style="font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
-              Apresente o e-mail cadastrado ou documento com foto na entrada do evento.
+              ${verified ? 'Consulte as instruções oficiais do benefício antes de apresentar o comprovante.' : 'Confirme este registro no histórico oficial da conta antes de utilizá-lo.'}
             </div>
           </div>
         `;
@@ -3629,9 +4337,9 @@
     async function shareVoucherAction() {
       if (!currentVoucherBlob) return;
       try {
-        const isPdf = currentVoucherFileName.toLowerCase().endsWith('.pdf');
-        const mime = isPdf ? 'application/pdf' : 'image/png';
-        const file = new File([currentVoucherBlob], currentVoucherFileName, { type: mime });
+        const mime = currentVoucherBlob.type;
+        if (!['application/pdf', 'image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(mime)) return;
+        const file = new File([currentVoucherBlob], voucherFileName(mime), { type: mime });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
@@ -3716,7 +4424,7 @@
         if (r.redeemedAt) {
           rdmTimeBadge.innerHTML = `
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Resgatado em ${escapeReceiptHtml(formatRedemptionDateTime(r.redeemedAt))}</span>
+            <span>${isVerifiedReceipt(r) ? 'Resgatado em' : 'Registro local em'} ${escapeReceiptHtml(formatRedemptionDateTime(r.redeemedAt))}</span>
           `;
           rdmTimeBadge.style.display = 'inline-flex';
         } else {
@@ -3726,7 +4434,9 @@
 
       const rdmDesc = document.getElementById('rdmDesc');
       if (rdmDesc) {
-        rdmDesc.textContent = r.description || 'Benefício resgatado com sucesso no Clube UOL. Acompanhe a entrega dos ingressos pelo seu e-mail cadastrado.';
+        rdmDesc.textContent = r.description || (isVerifiedReceipt(r)
+          ? 'Resgate confirmado no Clube UOL. Consulte o comprovante e as instruções oficiais do benefício.'
+          : 'Registro local ainda não confirmado no histórico oficial. Consulte os detalhes do benefício.');
       }
 
       const rdmRulesArea = document.getElementById('rdmRulesArea');
@@ -3749,13 +4459,13 @@
       }
 
       const modal = document.getElementById('redemptionDetailsModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) { modal.style.display = 'flex'; enterOwnedModal(modal, closeRedemptionDetailsModal); }
     }
 
     function closeRedemptionDetailsModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
       const modal = document.getElementById('redemptionDetailsModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) { modal.style.display = 'none'; leaveOwnedModal(modal); }
     }
 
     function updateCategoryCounts(list) {
@@ -3851,22 +4561,31 @@
       return (historyData.history || []).find(x => x.id === id) || null;
     }
 
+    let detailsGeneration = 0;
+    function isOfferUnavailableForRedeem(offer) {
+      return Boolean(offer && (offer.expiredAt || offer.isExpired || offer.unavailableAt ||
+        typeof linkUnavailableAt === 'function' && linkUnavailableAt(offer)));
+    }
+
     async function openDetails(id) {
-      activeOffer = findOffer(id);
-      if (!activeOffer) return;
+      const offer = findOffer(id);
+      if (!offer) return;
+      activeOffer = offer;
+      const generation = ++detailsGeneration;
 
       const isStoriesOnly = isStoriesOnlyOffer(activeOffer);
       const isStory = isStoriesOnly || Boolean(activeOffer.source === 'Stories' || activeOffer.hasStory || activeOffer.badge === 'Stories');
       const isPortal = isStoriesOnly ? false : (activeOffer.isPortal !== false);
       const catDef = CATEGORY_MAP[activeOffer.category] || CATEGORY_MAP.OUTROS;
-      const firstDateStr = activeOffer.firstSeen ? new Date(activeOffer.firstSeen).toLocaleDateString('pt-BR') : 'Hoje';
+      const capturedAt = captureTime(activeOffer);
+      const firstDateStr = capturedAt ? new Date(capturedAt).toLocaleDateString('pt-BR') : 'Data não informada';
 
       let dtTagsHtml = '';
       if (isEditorsChoice(activeOffer)) {
         dtTagsHtml += '<span class="pill-editors-choice" style="font-size: 11px; padding: 3px 8px; margin-right: 4px;">★ Curadoria</span>';
       }
       if (activeOffer.code) {
-        dtTagsHtml += '<span class="card-tag tag-code">[' + activeOffer.code + ']</span>';
+        dtTagsHtml += '<span class="card-tag tag-code">[' + escapeReceiptHtml(activeOffer.code) + ']</span>';
       }
       if (isPortal) {
         dtTagsHtml += '<span class="card-tag tag-portal">' + ICONS.globe + ' Portal</span>';
@@ -3874,8 +4593,8 @@
       if (isStory) {
         dtTagsHtml += '<span class="card-tag tag-stories">' + ICONS.instagram + ' Stories</span>';
       }
-      dtTagsHtml += '<span class="card-tag tag-category tag-cat-' + activeOffer.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
-      dtTagsHtml += '<span class="card-tag tag-age">' + firstDateStr + '</span>';
+      dtTagsHtml += '<span class="card-tag tag-category tag-cat-' + escapeReceiptHtml(catDef.id) + '">' + catDef.icon + ' ' + escapeReceiptHtml(catDef.label) + '</span>';
+      dtTagsHtml += '<span class="card-tag tag-age">' + escapeReceiptHtml(firstDateStr) + '</span>';
 
       const redeemedUsers = getRedeemedUsersForOffer(activeOffer);
       const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
@@ -3888,7 +4607,7 @@
 
       const normDt = normalizeEventInfo([activeOffer]);
       document.getElementById('dtTitle').textContent = normDt.eventTitle || activeOffer.title;
-      document.getElementById('dtImg').src = activeOffer.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+      document.getElementById('dtImg').src = receiptSafeUrl(activeOffer.imageUrl) || 'https://i.imgur.com/UdIgTfI.png';
 
       // Se há outras sessões (esgotadas ou ativas) do mesmo benefício
       const gKey = getGroupKey(activeOffer);
@@ -3900,10 +4619,11 @@
           const otherItems = [...g.activeItems, ...g.soldOutItems].filter(x => x.id !== activeOffer.id);
           otherItems.forEach(ot => {
             const dLabel = getSessionDateLabel(ot.rawTitle || ot.title);
-            const isOtExpired = Boolean(ot.expiredAt || ot.isExpired);
-            const stText = isOtExpired ? 'Esgotado' : 'Disponível';
+            const linkUnavailable = typeof linkUnavailableAt === 'function' && linkUnavailableAt(ot);
+            const isOtExpired = Boolean(ot.expiredAt || ot.isExpired || ot.unavailableAt || linkUnavailable);
+            const stText = ot.unavailableAt || linkUnavailable ? 'Indisponível' : isOtExpired ? 'Esgotado' : 'Disponível';
             const stClass = isOtExpired ? 'st-soldout' : 'st-active';
-            relatedHtml += `<div class="dt-related-item ${stClass}"><span>${dLabel}</span><span class="dt-related-status">${stText}</span></div>`;
+            relatedHtml += `<div class="dt-related-item ${stClass}"><span>${escapeReceiptHtml(dLabel)}</span><span class="dt-related-status">${stText}</span></div>`;
           });
           relatedHtml += '</div></div>';
           relEl.innerHTML = relatedHtml;
@@ -3918,14 +4638,16 @@
       const btnRedeemModal = document.getElementById('dtBtnRedeem');
       if (btnRedeemModal) {
         const isCurated = Boolean(activeOffer.id && String(activeOffer.id).startsWith('curated-'));
-        if (activeOffer.expiredAt || currentTab === 'history' || isCurated) {
+        if (isOfferUnavailableForRedeem(activeOffer) || currentTab === 'history' || isCurated) {
           btnRedeemModal.style.display = 'none';
         } else {
           btnRedeemModal.style.display = 'flex';
         }
       }
 
-      document.getElementById('detailsModal').style.display = 'flex';
+      const detailsModal = document.getElementById('detailsModal');
+      detailsModal.style.display = 'flex';
+      enterOwnedModal(detailsModal, closeDetailsModal);
 
       // 1. Verifica cache rápido de descrição
       if (!activeOffer.description || activeOffer.description.length < 50) {
@@ -3941,7 +4663,8 @@
         return;
       }
 
-      if (!activeOffer.link) {
+      const detailCampaign = typeof catalogCampaign === 'function' ? catalogCampaign(offer.link) : null;
+      if (!detailCampaign) {
         renderModalDescription(activeOffer.description || 'Benefício exclusivo para assinantes Clube UOL.');
         return;
       }
@@ -3949,7 +4672,7 @@
       // 2. Se não estiver em cache, busca na web
       document.getElementById('dtDesc').innerHTML = '<span class="status-dot"></span> Buscando texto oficial completo e regras...';
       try {
-        const res = await fetch(activeOffer.link);
+        const res = await fetch(detailCampaign.link);
         if (res.ok) {
           const html = await res.text();
           const mAssinante = html.match(/<p>\s*<p><strong>Assinante UOL[\s\S]*?<\/p>\s*<\/p>/i);
@@ -3964,29 +4687,30 @@
               .replace(/&#39;/g, "'")
               .replace(/&bull;/g, '•')
               .trim();
-            activeOffer.description = clean;
+            offer.description = clean;
           } else {
             const mMeta = html.match(/<meta\s+property="og:description"\s+content="([^"]+)"/i);
             if (mMeta && !mMeta[1].toLowerCase().includes('vantagens exclusivas')) {
-              activeOffer.description = mMeta[1];
+              offer.description = mMeta[1];
             }
           }
         }
       } catch (e) {}
 
-      if (!activeOffer.description || activeOffer.description.length < 20) {
-        activeOffer.description = 'Benefício exclusivo para assinantes Clube UOL.\n\nToque em "Abrir oferta no navegador" para visualizar todos os detalhes.';
+      if (generation !== detailsGeneration || activeOffer !== offer) return;
+      if (!offer.description || offer.description.length < 20) {
+        offer.description = 'Benefício exclusivo para assinantes Clube UOL.\n\nToque em "Abrir oferta no navegador" para visualizar todos os detalhes.';
       }
 
       // Salva no cache permanente e no histórico local
-      setCachedDescription(activeOffer.id, activeOffer.description);
+      setCachedDescription(offer.id, offer.description);
       saveHistoryToStorage();
 
-      renderModalDescription(activeOffer.description);
+      renderModalDescription(offer.description);
     }
 
     function renderModalDescription(text) {
-      document.getElementById('dtDesc').innerHTML = (text || '')
+      document.getElementById('dtDesc').innerHTML = escapeReceiptHtml(text || '')
         .replace(/\n/g, '<br/>')
         .replace(/(Assinante UOL[\s\S]*?:)/g, '<strong>$1</strong>');
       if (activeOffer) {
@@ -3995,7 +4719,7 @@
           activeOffer.category = category;
           const tag = document.querySelector('#dtTagRow .tag-category');
           const definition = CATEGORY_MAP[category] || CATEGORY_MAP.OUTROS;
-          if (tag) { tag.className = 'card-tag tag-category tag-cat-' + category; tag.innerHTML = definition.icon + ' ' + definition.label; }
+          if (tag) { tag.className = 'card-tag tag-category tag-cat-' + definition.id; tag.innerHTML = definition.icon + ' ' + escapeReceiptHtml(definition.label); }
           saveHistoryToStorage();
           updateCategoryCounts(historyData.active || []);
           if (currentTab === 'home' || currentTab === 'tickets') renderOffers(historyData.active || []);
@@ -4007,7 +4731,10 @@
 
     function closeDetailsModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
-      document.getElementById('detailsModal').style.display = 'none';
+      detailsGeneration++;
+      const modal = document.getElementById('detailsModal');
+      modal.style.display = 'none';
+      leaveOwnedModal(modal);
     }
 
     function proceedToRedeemFromDetails() {
@@ -4039,6 +4766,8 @@
     function openConfirm(id) {
       activeOffer = findOffer(id);
       if (!activeOffer) return;
+      detailsGeneration++;
+      if (isOfferUnavailableForRedeem(activeOffer)) { showToast('Esta sessão não está disponível para resgate.'); return; }
 
       document.getElementById('cfEventTitle').textContent = activeOffer.title + ' • Conta: ' + ((settings.currentUser || 'leosaquetto') === 'gaoriel' ? 'Gabriel' : 'Leonardo');
       document.getElementById('cfFeedbackArea').className = 'feedback-banner feedback-warning';
@@ -4049,7 +4778,7 @@
       if (g && g.soldOutItems.length > 0) {
         const soldDates = g.soldOutItems.map(extractSessionDate).filter(Boolean);
         if (soldDates.length > 0) {
-          sessionNote = `<div style="margin-top: 6px; font-size: 11.5px; color: #f87171;">Nota: Outra(s) sessão(ões) deste benefício (${soldDates.join(', ')}) já esgotaram.</div>`;
+          sessionNote = `<div style="margin-top: 6px; font-size: 11.5px; color: #f87171;">Nota: Outra(s) sessão(ões) deste benefício (${soldDates.map(escapeReceiptHtml).join(', ')}) já esgotaram.</div>`;
         }
       }
 
@@ -4060,18 +4789,23 @@
       btn.innerHTML = ICONS.tickets + ' Sim, Resgatar Agora';
       document.getElementById('btnConfirmOpenWeb').style.display = 'none';
 
-      document.getElementById('confirmModal').style.display = 'flex';
+      const confirmModal = document.getElementById('confirmModal');
+      confirmModal.style.display = 'flex';
+      enterOwnedModal(confirmModal, closeConfirmModal);
     }
 
     function closeConfirmModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
-      document.getElementById('confirmModal').style.display = 'none';
+      const modal = document.getElementById('confirmModal');
+      modal.style.display = 'none';
+      leaveOwnedModal(modal);
     }
 
     let nativeRedemptionPending = null;
     const nativeHistoryPending = new Set();
     async function executeRedemption() {
       if (!activeOffer || nativeRedemptionPending) return;
+      if (isOfferUnavailableForRedeem(activeOffer)) { showToast('Esta sessão não está disponível para resgate.'); return; }
       const account = settings.currentUser || 'leosaquetto';
       if (!INITIAL.nativeAccounts) { showToast('Resgate seguro disponível no Scriptable.'); return; }
       let url;
@@ -4120,22 +4854,49 @@
 
     function mergeNativeAccountRecords(account, records) {
       if (!Array.isArray(records)) return;
+      const publicFields = new Set(['id', 'url', 'title', 'user', 'accountId', 'partner', 'thumb',
+        'redeemedAt', 'description', 'rules', 'downloadUrl', 'cupomCode', 'code', 'category',
+        'imageUrl', 'offerUrl', 'redemptionDate', 'date', 'nativeVoucherIndex', 'hasNativeVoucher']);
+      const publicRecord = record => Object.fromEntries(Object.entries(record || {}).filter(([field, value]) =>
+        publicFields.has(field) && (
+          typeof value === 'string' && !/^data:/i.test(value) && value.length <= (field === 'description' || field === 'rules' ? 20000 : 4096) ||
+          field === 'nativeVoucherIndex' && Number.isSafeInteger(value) && value >= 0 ||
+          field === 'id' && Number.isSafeInteger(value) ||
+          field === 'hasNativeVoucher' && typeof value === 'boolean'
+        )));
+      const liveVerified = window.hunterVerifiedRedemptions instanceof Map
+        ? window.hunterVerifiedRedemptions : new Map();
+      window.hunterVerifiedRedemptions = liveVerified;
       const merged = new Map();
-      (settings.realRedemptions || []).forEach((record, index) => merged.set(redemptionIdentity(record) || 'legacy:' + index, record));
+      (settings.realRedemptions || []).forEach((record, index) => {
+        const safe = publicRecord(record);
+        delete safe.nativeVoucherIndex;
+        delete safe.hasNativeVoucher;
+        merged.set(redemptionIdentity(safe) || 'legacy:' + index, safe);
+      });
       for (const incoming of records) {
         if (!incoming || (incoming.user && incoming.user !== account)) continue;
-        const verified = { ...incoming, user: account, thumb: incoming.thumb || incoming.imageUrl || '',
-          partner: incoming.partner || 'Campanhas de Ingressos', redeemedAt: incoming.redeemedAt || incoming.redemptionDate || '' };
+        const source = publicRecord(incoming);
+        const verified = { ...source, user: account,
+          thumb: source.thumb || source.imageUrl || '',
+          partner: source.partner || 'Campanhas de Ingressos' };
         const key = redemptionIdentity(verified);
         if (!key) continue;
         const old = merged.get(key) || {};
-        // Observation time never becomes the redemption date. Preserve original vouchers and dates.
-        const record = { ...old, ...verified, redeemedAt: old.redeemedAt || verified.redeemedAt || '', date: old.date || incoming.date || '' };
+        const priorVerified = liveVerified.get(key) || (Array.isArray(INITIAL.realRedemptions)
+          ? INITIAL.realRedemptions.find(record => redemptionIdentity(record) === key) : null) || {};
+        // Native verified metadata wins. Legacy values fill only absent presentation fields.
+        const presentVerified = Object.fromEntries(Object.entries(verified).filter(([, value]) => value !== '' && value != null));
+        const authoritative = { ...publicRecord(priorVerified), ...presentVerified };
+        authoritative.redeemedAt = [verified.redeemedAt, verified.redemptionDate,
+          priorVerified.redeemedAt, priorVerified.redemptionDate].find(value => parseRedemptionMoment(value)) || '';
+        authoritative.date = [verified.date, priorVerified.date].find(value => parseRedemptionMoment(value)) || '';
+        const record = { ...old, ...authoritative };
+        liveVerified.set(key, authoritative);
         merged.set(key, record);
       }
       settings.realRedemptions = Array.from(merged.values());
       saveSettingsToStorage();
-      try { localStorage.setItem('uol_real_redemptions', JSON.stringify(settings.realRedemptions)); } catch (_) {}
       updateTimelineBadgeDot();
       if (currentTab === 'redemptions') renderRedemptionsScreen();
     }
@@ -4352,13 +5113,16 @@
       if (!container.children.length) {
         const icons = ['navHome', 'navTickets', 'navHistory', 'navRedemptions'];
         container.innerHTML = NAVIGATION_THEMES.map(theme => `
-          <button class="navigation-theme-option" data-theme-option="${theme.id}" aria-pressed="false" onclick="chooseNavigationTheme('${theme.id}')">
+          <button class="navigation-theme-option" data-theme-option="${theme.id}" aria-pressed="false">
             <span class="bottom-nav navigation-theme-preview" data-navigation-theme="${theme.id}" aria-hidden="true">
               ${icons.map((icon, index) => `<span class="bottom-nav-item${index === 0 ? ' active' : ''}"><span class="nav-icon-wrap">${ICONS[icon] || ''}</span><span class="active-dot"></span></span>`).join('')}
             </span>
             <span class="navigation-theme-label">${theme.label}<span class="navigation-theme-check" aria-hidden="true">✓</span></span>
             <span class="navigation-theme-description">${theme.description}</span>
           </button>`).join('');
+        container.querySelectorAll?.('[data-theme-option]')?.forEach(button => {
+          button.addEventListener?.('click', () => chooseNavigationTheme(button.getAttribute('data-theme-option')));
+        });
       }
       applyNavigationTheme(settings.navigationBarTheme);
     }
@@ -4373,7 +5137,7 @@
         window.location.href = 'hunter-theme://set?value=' + theme;
       } else {
         try {
-          localStorage.setItem('uol_hub_settings', JSON.stringify(settings));
+          if (saveSettingsToStorage() === false) throw new Error('storage unavailable');
           savedNavigationTheme = theme;
           status.textContent = 'Salvo neste navegador.';
         } catch (_) {
@@ -4416,22 +5180,53 @@
       const verLabel = document.getElementById('currentVersionLabel');
       if (verLabel) verLabel.textContent = 'v' + SCRIPT_VERSION;
 
-      document.getElementById('settingsModal').style.display = 'flex';
+      const modal = document.getElementById('settingsModal');
+      modal.style.display = 'flex';
+      enterOwnedModal(modal, closeSettingsModal);
     }
 
     function closeSettingsModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
-      document.getElementById('settingsModal').style.display = 'none';
+      const modal = document.getElementById('settingsModal');
+      modal.style.display = 'none';
+      leaveOwnedModal(modal);
+    }
+
+    let pendingAccountPreference = null;
+    function persistNativeAccountChoice(user, previous) {
+      if (!INITIAL.nativeAccounts || user === previous) return;
+      pendingAccountPreference = { user, previous };
+      window.location.href = 'hunter-preference://account?value=' + user;
+    }
+
+    function handleNativePreferenceResult(value, saved) {
+      const pending = pendingAccountPreference;
+      if (!pending || pending.user !== value) return;
+      pendingAccountPreference = null;
+      if (saved) return;
+      selectUser(pending.previous, false);
+      saveSettingsToStorage();
+      updateCredsStatusUI();
+      showToast('Não foi possível salvar a conta ativa. A seleção anterior foi restaurada.');
     }
 
     function selectUser(user, autoSave = true) {
+      if (!['leosaquetto', 'gaoriel'].includes(user)) return;
+      const previous = settings.currentUser || 'leosaquetto';
+      if (settings.currentUser !== user) {
+        if (document.getElementById('voucherModal')?.style.display === 'flex') closeVoucherModal();
+        if (document.getElementById('detailsModal')?.style.display === 'flex') closeDetailsModal();
+      }
       settings.currentUser = user;
       const pLeo = document.getElementById('pillUserLeo');
       if (pLeo) pLeo.classList.toggle('active', user === 'leosaquetto');
       const pGao = document.getElementById('pillUserGao');
       if (pGao) pGao.classList.toggle('active', user === 'gaoriel');
       updateUserAvatar();
-      if (autoSave) saveSettingsToStorage();
+      if (autoSave) {
+        saveSettingsToStorage();
+        persistNativeAccountChoice(user, previous);
+      }
       if (currentTab === 'redemptions') {
         renderRedemptionsScreen();
       }
@@ -4471,7 +5266,7 @@
       if (preview) {
         preview.innerHTML = `
           <div class="switch-acc-side">
-            <img class="switch-acc-avatar" src="${getAvatarUrl(currHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img class="switch-acc-avatar" src="${getAvatarUrl(currHandle)}" />
             <div class="switch-acc-name">${currDisplayName.split(' ')[0]}</div>
             <span class="switch-acc-badge badge-curr">Atual</span>
           </div>
@@ -4479,35 +5274,38 @@
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
           <div class="switch-acc-side">
-            <img class="switch-acc-avatar target" src="${getAvatarUrl(targetHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img class="switch-acc-avatar target" src="${getAvatarUrl(targetHandle)}" />
             <div class="switch-acc-name">${targetDisplayName.split(' ')[0]}</div>
             <span class="switch-acc-badge badge-next">Próxima</span>
           </div>
         `;
+        preview.querySelectorAll?.('img').forEach(image => image.addEventListener?.('error', () => {
+          image.src = 'https://i.imgur.com/UdIgTfI.png';
+        }, { once: true }));
       }
 
       const credsItem = document.getElementById('switchCredsStatusText');
       const accounts = credentials && credentials.accounts ? credentials.accounts : {};
       const targetCreds = accounts[targetUser] || {};
-      const hasCreds = Boolean(targetCreds.login && targetCreds.senha);
+      const hasCreds = Boolean(targetCreds.hasLogin && targetCreds.hasPassword);
 
       if (credsItem) {
         if (hasCreds) {
-          const maskedLogin = targetCreds.login.length > 5 ? (targetCreds.login.slice(0, 3) + '••••' + targetCreds.login.slice(-2)) : '••••••';
-          credsItem.innerHTML = `<strong>Credenciais prontas (${maskedLogin}):</strong> Salvas em <code>clubeuolscrip.txt</code>. A sessão será conferida antes de qualquer resgate.`;
+          const maskedLogin = targetCreds.maskedLogin || '••••••';
+          credsItem.innerHTML = `<strong>Credenciais prontas (${escapeReceiptHtml(maskedLogin)}):</strong> Salvas em <code>clubeuolscrip.txt</code>. A sessão será conferida antes de qualquer resgate.`;
         } else {
           credsItem.innerHTML = `<strong>Aviso de credenciais:</strong> Nenhuma credencial específica de ${targetDisplayName} em <code>clubeuolscrip.txt</code>. A sessão dependerá dos cookies locais.`;
         }
       }
 
       const modal = document.getElementById('confirmSwitchUserModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) { modal.style.display = 'flex'; enterOwnedModal(modal, closeConfirmSwitchModal); }
     }
 
     function closeConfirmSwitchModal() {
       pendingSwitchUser = null;
       const modal = document.getElementById('confirmSwitchUserModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) { modal.style.display = 'none'; leaveOwnedModal(modal); }
     }
 
     async function executeUserSwitch() {
@@ -4516,6 +5314,8 @@
       const prevUser = settings.currentUser || 'leosaquetto';
 
       if (nativeRedemptionPending) { showToast('Aguarde a confirmação da tentativa atual.'); return; }
+      if (document.getElementById('voucherModal')?.style.display === 'flex') closeVoucherModal();
+      if (document.getElementById('detailsModal')?.style.display === 'flex') closeDetailsModal();
       // Selection changes presentation only. Native requests keep separate verified cookie jars.
       settings.currentUser = targetUser;
       currentSessionStatus = 'unknown'; currentSessionReason = '';
@@ -4523,6 +5323,7 @@
 
       // 5. Salva configurações e atualiza interface
       saveSettingsToStorage();
+      persistNativeAccountChoice(targetUser, prevUser);
       updateUserAvatar();
       updateCredsStatusUI();
 
@@ -4554,45 +5355,6 @@
     // ===================================================================
     // ASSISTENTE DE LOGIN & CONEXÃO UOL
     // ===================================================================
-    function copyToClipboard(text, btnEl, successLabel = 'Copiado!') {
-      if (!text) return;
-      const originalHtml = btnEl ? btnEl.innerHTML : '';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          if (btnEl) {
-            btnEl.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${successLabel}`;
-            setTimeout(() => { if (btnEl) btnEl.innerHTML = originalHtml; }, 2000);
-          }
-          showToast('Copiado para a área de transferência');
-        }).catch(() => {
-          fallbackCopy(text, btnEl, originalHtml, successLabel);
-        });
-      } else {
-        fallbackCopy(text, btnEl, originalHtml, successLabel);
-      }
-    }
-
-    function fallbackCopy(text, btnEl, originalHtml, successLabel) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        document.execCommand('copy');
-        if (btnEl) {
-          btnEl.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${successLabel}`;
-          setTimeout(() => { if (btnEl) btnEl.innerHTML = originalHtml; }, 2000);
-        }
-        showToast('Copiado para a área de transferência');
-      } catch(e) {}
-      document.body.removeChild(ta);
-    }
-
-    let isAuthPassVisible = false;
-
     function openAuthAssistantModal() {
       const user = settings.currentUser || 'leosaquetto';
       const isLeo = (user !== 'gaoriel');
@@ -4611,81 +5373,89 @@
       updateSessionStatusUI();
 
       const loginVal = document.getElementById('authModalLoginVal');
-      if (loginVal) loginVal.textContent = userCreds.login || 'Não configurado';
-
-      const passVal = document.getElementById('authModalPassVal');
-      if (passVal) {
-        passVal.textContent = isAuthPassVisible ? (userCreds.senha || '') : '••••••••';
+      if (loginVal) {
+        loginVal.textContent = userCreds.hasLogin ? userCreds.maskedLogin || '••••••' : 'Não configurado';
+        loginVal.title = userCreds.hasLogin ? 'Mostrar login no Scriptable' : '';
+        loginVal.tabIndex = userCreds.hasLogin ? 0 : -1;
+        loginVal.setAttribute?.('role', userCreds.hasLogin ? 'button' : 'text');
+        loginVal.onclick = userCreds.hasLogin ? showAuthLogin : null;
+        loginVal.onkeydown = userCreds.hasLogin ? event => {
+          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showAuthLogin(); }
+        } : null;
       }
 
+      const passVal = document.getElementById('authModalPassVal');
+      if (passVal) passVal.textContent = userCreds.hasPassword ? '••••••••' : 'Não configurado';
+
       const modal = document.getElementById('authAssistantModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) { modal.style.display = 'flex'; enterOwnedModal(modal, closeAuthAssistantModal); }
     }
 
     function closeAuthAssistantModal() {
-      isAuthPassVisible = false;
       const modal = document.getElementById('authAssistantModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) { modal.style.display = 'none'; leaveOwnedModal(modal); }
+    }
+
+    let pendingNativeSecret = null;
+    function requestNativeSecret(action, redirect = '') {
+      const user = settings.currentUser || 'leosaquetto';
+      if (!INITIAL.nativeAccounts || !['leosaquetto', 'gaoriel'].includes(user)) {
+        showToast('Abra no Scriptable para consultar os dados da conta.');
+        return;
+      }
+      if (pendingNativeSecret) { showToast('Aguarde a ação anterior terminar.'); return; }
+      pendingNativeSecret = { action, account: user, redirect };
+      window.location.href = 'hunter-secret://' + action + '?account=' + user;
+    }
+
+    function showAuthLogin() {
+      requestNativeSecret('show-login');
     }
 
     function toggleAuthPassVisibility(btn) {
-      isAuthPassVisible = !isAuthPassVisible;
-      const user = settings.currentUser || 'leosaquetto';
-      const accounts = credentials && credentials.accounts ? credentials.accounts : {};
-      const userCreds = accounts[user] || {};
-      const passVal = document.getElementById('authModalPassVal');
-      if (passVal) {
-        passVal.textContent = isAuthPassVisible ? (userCreds.senha || '') : '••••••••';
-      }
+      requestNativeSecret('show');
     }
 
     function copyAuthLogin(btn) {
-      const user = settings.currentUser || 'leosaquetto';
-      const accounts = credentials && credentials.accounts ? credentials.accounts : {};
-      const userCreds = accounts[user] || {};
-      copyToClipboard(userCreds.login || '', btn, 'Copiado!');
+      requestNativeSecret('copy-login');
     }
 
     function copyAuthPassword(btn) {
-      const user = settings.currentUser || 'leosaquetto';
-      const accounts = credentials && credentials.accounts ? credentials.accounts : {};
-      const userCreds = accounts[user] || {};
-      copyToClipboard(userCreds.senha || '', btn, 'Copiado!');
+      requestNativeSecret('copy');
+    }
+
+    function handleNativeSecretResult(action, account, result) {
+      const pending = pendingNativeSecret;
+      if (!pending || pending.action !== action || pending.account !== account) return;
+      pendingNativeSecret = null;
+      if (result?.status === 'copied') {
+        showToast(action === 'copy-login' ? 'Login copiado pelo Scriptable.' : 'Senha copiada pelo Scriptable.');
+        if (action === 'copy-login' && pending.redirect && (settings.currentUser || 'leosaquetto') === account) {
+          setTimeout(() => {
+            if ((settings.currentUser || 'leosaquetto') !== account) return;
+            if (pending.redirect === 'logout') {
+              const dest = encodeURIComponent('https://conta.uol.com.br/login?dest=https%3A%2F%2Fclube.uol.com.br%2Fperfil%2Fbeneficios&t=clubeuol');
+              window.location.href = 'https://conta.uol.com.br/logout?dest=' + dest;
+            } else if (pending.redirect === 'direct') {
+              window.location.href = 'https://conta.uol.com.br/login?dest=' + encodeURIComponent('https://clube.uol.com.br/perfil/beneficios') + '&t=clubeuol';
+            }
+          }, 700);
+        }
+      } else if (result?.status === 'shown') {
+        showToast(action === 'show-login' ? 'Login exibido pelo Scriptable.' : 'Senha exibida pelo Scriptable.');
+      } else if (result?.status === 'missing') {
+        showToast(action.endsWith('-login') ? 'Login não configurado para este perfil.' : 'Senha não configurada para este perfil.');
+      } else if (result?.status !== 'cancelled') {
+        showToast('Não foi possível concluir a ação no Scriptable.');
+      }
     }
 
     function openUolLogoutAndLogin() {
-      const user = settings.currentUser || 'leosaquetto';
-      const accounts = (credentials && credentials.accounts) ? credentials.accounts : {};
-      const userCreds = accounts[user] || {};
-      const loginText = userCreds.login || '';
-
-      if (loginText && navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(loginText).catch(() => {});
-      }
-
-      showToast('Login copiado! Redirecionando para Logout Geral...');
-
-      setTimeout(() => {
-        const destParam = encodeURIComponent('https://conta.uol.com.br/login?dest=https%3A%2F%2Fclube.uol.com.br%2Fperfil%2Fbeneficios&t=clubeuol');
-        window.location.href = 'https://conta.uol.com.br/logout?dest=' + destParam;
-      }, 700);
+      requestNativeSecret('copy-login', 'logout');
     }
 
     function openUolDirectLogin() {
-      const user = settings.currentUser || 'leosaquetto';
-      const accounts = (credentials && credentials.accounts) ? credentials.accounts : {};
-      const userCreds = accounts[user] || {};
-      const loginText = userCreds.login || '';
-
-      if (loginText && navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(loginText).catch(() => {});
-      }
-
-      showToast('Login copiado! Abrindo tela de login...');
-
-      setTimeout(() => {
-        window.location.href = 'https://conta.uol.com.br/login?dest=' + encodeURIComponent('https://clube.uol.com.br/perfil/beneficios') + '&t=clubeuol';
-      }, 700);
+      requestNativeSecret('copy-login', 'direct');
     }
 
     function reconnectUolSession() {
@@ -4704,7 +5474,8 @@
         toast.className = 'hub-toast';
         document.body.appendChild(toast);
       }
-      toast.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffb300" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>${message}</span>`;
+      toast.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffb300" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span></span>';
+      toast.querySelector('span').textContent = String(message || '');
       toast.classList.add('show');
       clearTimeout(window._toastTimeout);
       window._toastTimeout = setTimeout(() => {
@@ -4741,29 +5512,30 @@
       const user = settings.currentUser || 'leosaquetto';
       const accounts = credentials && credentials.accounts ? credentials.accounts : {};
       const userCreds = accounts[user] || {};
-      const hasCreds = Boolean(userCreds.login && userCreds.senha);
+      const hasCreds = Boolean(userCreds.hasLogin && userCreds.hasPassword);
       const name = (user === 'gaoriel' ? 'Gabriel' : 'Leonardo');
 
       const state = uolSessionPresentation();
       const statusHtml = '<span style="color: ' + (currentSessionStatus === 'valid' ? '#10b981' : '#94a3b8') + '; font-weight: 600;">' + state.label + '</span>';
 
       if (hasCreds) {
-        const masked = userCreds.login.length > 5 ? (userCreds.login.slice(0, 3) + '••••' + userCreds.login.slice(-2)) : '••••••';
+        const masked = userCreds.maskedLogin || '••••••';
         box.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <div><strong>Perfil Ativo:</strong> ${name} (@${user})</div>
             ${statusHtml}
           </div>
           <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">
-            <strong>Credenciais:</strong> ${masked} (clubeuolscrip.txt)
+            <strong>Credenciais:</strong> ${escapeReceiptHtml(masked)} (clubeuolscrip.txt)
           </div>
-          <button onclick="openAuthAssistantModal()" style="width: 100%; background: rgba(255, 179, 0, 0.15); border: 1px solid rgba(255, 179, 0, 0.35); color: #ffb300; font-size: 11.5px; font-weight: 700; padding: 7px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <button data-open-auth style="width: 100%; background: rgba(255, 179, 0, 0.15); border: 1px solid rgba(255, 179, 0, 0.35); color: #ffb300; font-size: 11.5px; font-weight: 700; padding: 7px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Reconectar / Assistente de Login UOL
           </button>
         `;
-      } else if (credentials && credentials.email) {
-        box.innerHTML = '🟢 <strong>Credenciais Ativas:</strong> ' + credentials.email + '<br/><span style="font-size: 10.5px; color: #64748b;">Fonte: ' + credentials.source + '</span>';
+        box.querySelector?.('[data-open-auth]')?.addEventListener?.('click', openAuthAssistantModal);
+      } else if (credentials && credentials.source) {
+        box.innerHTML = '🟢 <strong>Credenciais configuradas:</strong> Fonte: ' + escapeReceiptHtml(credentials.source);
       } else {
         box.innerHTML = '⚪ Nenhuma credencial automática encontrada em <code>clubeuolscrip.txt</code>.';
       }
@@ -4853,7 +5625,7 @@
           title: o.rawTitle || o.title,
           badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
           desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
-          timestamp: catalogTime(o.firstSeen) || null,
+          timestamp: captureTime(o) || null,
           imageUrl: timelineOfferImage(o),
           source: srcLabel
         });
@@ -4862,10 +5634,11 @@
       // 2. Ofertas do Histórico (Esgotadas e Descobertas)
       (historyData.history || []).forEach(o => {
         const expTime = confirmedSoldOutTime(o);
+        const capturedAt = captureTime(o);
         if (expTime) {
           let durationText = '';
-          if (o.firstSeen && expTime > o.firstSeen) {
-            durationText = ` • Tempo no ar: ${formatStopwatchDuration(o.firstSeen, expTime)}`;
+          if (capturedAt && expTime > capturedAt) {
+            durationText = ` • Tempo no ar: ${formatStopwatchDuration(capturedAt, expTime)}`;
           }
           events.push({
             id: 'esgotada-' + o.id,
@@ -4879,7 +5652,7 @@
           });
         }
 
-        if (o.firstSeen) {
+        if (capturedAt) {
           const isStoriesOnly = isStoriesOnlyOffer(o);
           const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
           const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
@@ -4895,11 +5668,37 @@
             title: o.rawTitle || o.title,
             badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
             desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
-            timestamp: catalogTime(o.firstSeen) || null,
+            timestamp: capturedAt,
             imageUrl: timelineOfferImage(o),
             source: srcLabel
           });
         }
+      });
+
+      // Future availability transitions are append-only; older missing transitions
+      // cannot be reconstructed from the current offer state.
+      const availabilityEvents = typeof window !== 'undefined' && Array.isArray(window.hunterAvailabilityEvents)
+        ? window.hunterAvailabilityEvents : [];
+      const offerById = new Map(allOffers.map(offer => [String(offer.id), offer]));
+      const seenSoldOut = new Set(events.filter(event => event.type === 'esgotada' && event.timestamp)
+        .map(event => String(event.offerId) + '|' + event.timestamp));
+      availabilityEvents.forEach(entry => {
+        if (!entry || !['sold_out', 'restocked'].includes(entry.eventType)) return;
+        const timestamp = catalogTime(entry.occurredAt);
+        if (!timestamp || timestamp > now + 300000) return;
+        const offerId = String(entry.offerId || '');
+        if (!offerId || entry.eventType === 'sold_out' && seenSoldOut.has(offerId + '|' + timestamp)) return;
+        const offer = offerById.get(offerId);
+        events.push({
+          id: 'transition-' + entry.eventType + '-' + offerId + '-' + timestamp,
+          offerId: offer ? offer.id : null,
+          type: entry.eventType === 'sold_out' ? 'esgotada' : 'reaberta',
+          title: offer?.rawTitle || offer?.title || entry.title || 'Oferta do Clube UOL',
+          badgeText: entry.eventType === 'sold_out' ? 'Esgotada' : 'Reaberta',
+          desc: entry.eventType === 'sold_out' ? 'Sessão esgotada no Clube UOL' : 'Sessão disponível novamente no Clube UOL',
+          timestamp,
+          imageUrl: offer ? timelineOfferImage(offer) : entry.imageUrl || ''
+        });
       });
 
       // 3. Resgates Realizados (Filtrados para Campanhas de Ingressos)
@@ -4914,14 +5713,13 @@
           const candidate = catalogCampaign(o.link);
           return candidate && candidate.key === campaign.key;
         }) : [];
-        const avatar = ['leosaquetto', 'gaoriel'].includes(userHandle)
-          ? `<img class="timeline-user-avatar" src="${getAvatarUrl(userHandle)}" alt="${userName}" /> ` : '';
         events.push({
           id: 'resgate-' + (redemptionIdentity(r) || 'unidentified-' + index),
           type: 'resgate',
           title: formatRedemptionTitle(r.title),
           badgeText: 'Resgate',
-          desc: `${avatar}<span style="color: #f1f5f9; font-weight: 600;">${userName}</span> • ${r.partner || 'Campanhas de Ingressos'}`,
+          desc: `${userName} • ${r.partner || 'Campanhas de Ingressos'}`,
+          avatarUrl: ['leosaquetto', 'gaoriel'].includes(userHandle) ? getAvatarUrl(userHandle) : '',
           timestamp: moment ? moment.timestamp : null,
           datePrecision: moment ? moment.precision : null,
           dateLabel: moment ? moment.label : '',
@@ -4959,6 +5757,7 @@
       currentTimelineFilter = 'all';
       renderTimelineList();
       modal.style.display = 'flex';
+      enterOwnedModal(modal, closeActivityTimelineModal);
 
       try {
         localStorage.setItem('uol_last_seen_timeline_ts', String(Date.now()));
@@ -4970,7 +5769,7 @@
     function closeActivityTimelineModal(e) {
       if (e && e.stopPropagation) e.stopPropagation();
       const modal = document.getElementById('activityTimelineModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) { modal.style.display = 'none'; leaveOwnedModal(modal); }
     }
 
     function setTimelineFilter(filter) {
@@ -4984,7 +5783,7 @@
 
       const allEvents = getTimelineEvents();
       const countAll = allEvents.length;
-      const countNew = allEvents.filter(e => e.type === 'nova').length;
+      const countNew = allEvents.filter(e => e.type === 'nova' || e.type === 'reaberta').length;
       const countExp = allEvents.filter(e => e.type === 'esgotada').length;
       const countRed = allEvents.filter(e => e.type === 'resgate').length;
 
@@ -5011,7 +5810,8 @@
 
       let filtered = allEvents;
       if (currentTimelineFilter !== 'all') {
-        filtered = allEvents.filter(e => e.type === currentTimelineFilter);
+        filtered = allEvents.filter(e => e.type === currentTimelineFilter ||
+          currentTimelineFilter === 'nova' && e.type === 'reaberta');
       }
 
       if (filtered.length === 0) {
@@ -5025,10 +5825,10 @@
 
       const now = Date.now();
       let html = '';
-      filtered.forEach(ev => {
+      filtered.forEach((ev, index) => {
         let iconHtml = '';
         let badgeClass = '';
-        if (ev.type === 'nova') {
+        if (ev.type === 'nova' || ev.type === 'reaberta') {
           iconHtml = `<div class="timeline-icon-box type-nova"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>`;
           badgeClass = 'badge-nova';
         } else if (ev.type === 'esgotada') {
@@ -5039,33 +5839,51 @@
           badgeClass = 'badge-resgate';
         }
 
-        if (validOfferImage(ev.imageUrl)) iconHtml = iconHtml.replace('</div>', `<img class="timeline-thumbnail" src="${htmlAttribute(ev.imageUrl)}" alt="" loading="lazy" onerror="this.remove()" /></div>`);
+        if (validOfferImage(ev.imageUrl)) iconHtml = iconHtml.replace('</div>', `<img class="timeline-thumbnail" src="${htmlAttribute(ev.imageUrl)}" alt="" loading="lazy" /></div>`);
         const timeStr = timelineTimeLabel(ev, now);
         const title = htmlAttribute(ev.title).replace(/\s+(?:([-–—])\s*)?(SP|RJ|BA|MG|PR|RS|SC|DF|PE|CE|GO|ES|AM|PA|RN|PB|AL|SE|MT|MS|TO|RO|RR|AP|AC|PI|MA)\s*$/, (_, separator, state) => '\u00a0' + (separator ? separator + '\u00a0' : '') + state);
-        let clickHandler = '';
-        if (ev.offerId) {
-          clickHandler = `onclick="closeActivityTimelineModal(); openDetails('${ev.offerId}');"`;
-        } else if (ev.redemption) {
-          clickHandler = `onclick="closeActivityTimelineModal(); switchTab('redemptions');"`;
-        }
+        const actionable = Boolean(ev.offerId || ev.redemption);
+        const avatar = ev.avatarUrl ? `<img class="timeline-user-avatar" src="${escapeReceiptHtml(ev.avatarUrl)}" alt="" /> ` : '';
 
         html += `
-          <div class="timeline-item" ${clickHandler}>
+          <div class="timeline-item" ${actionable ? `data-timeline-index="${index}" role="button" tabindex="0"` : ''}>
             ${iconHtml}
             <div class="timeline-content">
               <div class="timeline-top-row">
-                <span class="timeline-badge ${badgeClass}">${ev.badgeText}</span>
-                <span class="timeline-time">${timeStr}</span>
+                <span class="timeline-badge ${badgeClass}">${escapeReceiptHtml(ev.badgeText)}</span>
+                <span class="timeline-time">${escapeReceiptHtml(timeStr)}</span>
               </div>
               <div class="timeline-item-title">${title}</div>
-              <div class="timeline-item-desc">${ev.desc}</div>
+              <div class="timeline-item-desc">${avatar}${escapeReceiptHtml(ev.desc)}</div>
             </div>
           </div>
         `;
       });
 
       listEl.innerHTML = html;
+      if (typeof listEl.querySelectorAll === 'function') {
+        listEl.querySelectorAll('[data-timeline-index]').forEach(node => {
+          const event = filtered[Number(node.getAttribute('data-timeline-index'))];
+          const activate = () => {
+            closeActivityTimelineModal();
+            if (event.offerId) openDetails(event.offerId);
+            else if (event.redemption) switchTab('redemptions');
+          };
+          node.addEventListener('click', activate);
+          node.addEventListener('keydown', keyEvent => {
+            if (keyEvent.key === 'Enter' || keyEvent.key === ' ') { keyEvent.preventDefault(); activate(); }
+          });
+        });
+        listEl.querySelectorAll('.timeline-thumbnail').forEach(image => {
+          image.addEventListener('error', () => image.remove(), { once: true });
+        });
+      }
     }
+
+    window.addEventListener('hunter-availability-events', () => {
+      updateTimelineBadgeDot();
+      if (document.getElementById('activityTimelineModal')?.style.display === 'flex') renderTimelineList();
+    });
 
     function handleBackdropClick(e) {
       if (!e) return;

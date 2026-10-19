@@ -19,13 +19,17 @@ function harness({ native = true, saved, cached = 'default' } = {}) {
     const button = element(theme); button.setAttribute('data-theme-option', theme); return button;
   });
   const writes = [], settings = { navigationBarTheme: cached, currentUser: 'gaoriel', priorizarWords: ['museu'] };
+  const storage = { setItem: (key, value) => writes.push([key, value]) };
   const context = vm.createContext({
     INITIAL: { nativeBrowser: native, navigationBarTheme: saved }, settings,
     ICONS: Object.fromEntries(['navHome', 'navTickets', 'navHistory', 'navRedemptions'].map(key => [key, '<svg></svg>'])),
     document: { getElementById: element, querySelectorAll: () => buttons },
     window: { location: { href: 'dashboard' } },
-    localStorage: { setItem: (key, value) => writes.push([key, value]) },
-    saveSettingsToStorage: () => writes.push(['settings', JSON.stringify(settings)]),
+    localStorage: storage,
+    saveSettingsToStorage: () => {
+      try { storage.setItem('settings', JSON.stringify(settings)); return true; }
+      catch (_) { return false; }
+    },
   });
   vm.runInContext(code, context);
   context.initializeNavigationTheme();

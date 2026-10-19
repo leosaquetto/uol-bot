@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.9.4";
+const SCRIPT_VERSION = "5.9.5";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -29,6 +29,8 @@ const SETTINGS_FILE_NAME = "uol_hub_settings.json";
 const CREDS_FILE_NAME = "clubeuolscrip.txt";
 const COOKIES_FILE_NAME = "uol_session_cookies.json";
 const REDEMPTIONS_DB_FILE_NAME = "uol_redemptions_database.json";
+const LINK_CHECK_FILE_NAME = "uol_link_checks_v1.json";
+const LEGACY_PRIVATE_ARCHIVE_FILE_NAME = "uol_webview_private_legacy_v1.json";
 const STARTUP_HTML = __BUILD_STARTUP_HTML__;
 const HUNTER_LOGO_BASE64 = __BUILD_LOGO__;
 
@@ -42,22 +44,24 @@ __BUILD_COLLECTOR__
 __BUILD_INSTAGRAM_BROWSER__
 __BUILD_ACCESS__
 __BUILD_REDEMPTION__
+__BUILD_LINK_CHECKS__
 const UOL_RECEIPT_PARSER = __BUILD_PARSER__;
 
 let nativeAccountManager = null;
+async function parseHunterReceiptHtml(html, kind, url) {
+  // Server HTML is parsed as data in a locked WebView, never displayed.
+  const parser = new WebView();
+  await parser.loadHTML('<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;">', "https://clube.uol.com.br");
+  parser.shouldAllowRequest = () => false;
+  const input = JSON.stringify(html).replace(/</g, "\\u003c");
+  const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
+  const result = await parser.evaluateJavaScript("(() => {" + UOL_RECEIPT_PARSER + "; return JSON.stringify(" + expression + ");})()");
+  return JSON.parse(result);
+}
+
 function createNativeAccountManager() {
   if (nativeAccountManager) return nativeAccountManager;
   const identityDigests = {"leosaquetto":"37aa92d73c736fe04c4b0cd15a704b3d6883ae51745fff565e74b0e412500cc6","gaoriel":"bfa637efa5334c167f2d2a1cd39f75af599d6e35e071b2d6ee0b8af44973f14d"};
-  async function parse(html, kind, url) {
-    // The server HTML is data, never a loaded document or executable markup.
-    const parser = new WebView();
-    await parser.loadHTML('<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;">', "https://clube.uol.com.br");
-    parser.shouldAllowRequest = () => false;
-    const input = JSON.stringify(html).replace(/</g, "\\u003c");
-    const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
-    const result = await parser.evaluateJavaScript("(() => {" + UOL_RECEIPT_PARSER + "; return JSON.stringify(" + expression + ");})()");
-    return JSON.parse(result);
-  }
   nativeAccountManager = HunterRedemption.create({ keychain: Keychain, now: Date.now,
     uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
     authorizeAccount: async user => {
@@ -98,7 +102,7 @@ function createNativeAccountManager() {
       await login.present();
       return callback;
     },
-    parseHistory: html => parse(html, "history"), parseOffer: (html, url) => parse(html, "offer", url) });
+    parseHistory: html => parseHunterReceiptHtml(html, "history"), parseOffer: (html, url) => parseHunterReceiptHtml(html, "offer", url) });
   return nativeAccountManager;
 }
 
@@ -111,8 +115,59 @@ async function manageNativeAccount(view, action, user, url) {
     confirm.addAction("Resgatar nesta conta"); confirm.addCancelAction("Cancelar");
     result = await confirm.presentAlert() < 0 ? { status: "cancelled", account: user } : await manager.redeem(user, url);
   } else result = action === "reconnect" ? await manager.reconnect(user) : await manager.history(user);
-  const safe = JSON.stringify(result).replace(/</g, "\\u003c");
+  const displayResult = publicHunterAccountResult(view, user, result);
+  const safe = JSON.stringify(displayResult).replace(/</g, "\\u003c");
   await view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(action) + "," + JSON.stringify(user) + "," + safe + ");");
+}
+
+function publicHunterAccountResult(view, user, result) {
+  const safe = {
+    status: String(result?.status || "unavailable").slice(0, 80),
+    account: user,
+    ...(typeof result?.reason === "string" ? { reason: result.reason.slice(0, 160) } : {})
+  };
+  if (result?.account !== user) return { status: "unavailable", account: user };
+  const verified = result.status === "authenticated" && Array.isArray(result.records) ? result.records
+    : result.status === "confirmed" && result.receipt ? [result.receipt] : [];
+  if (!verified.length) {
+    if (result.status === "authenticated") safe.records = [];
+    return safe;
+  }
+  const database = loadRedemptionsDatabase();
+  const existing = new Map(database.map((item, index) => [nativeRedemptionKey(item), index]).filter(([key]) => key));
+  let changed = false;
+  const presented = [];
+  for (const record of verified) {
+    if (!record || typeof record.id !== "string" || !/^[A-Za-z0-9_-]{1,200}$/.test(record.id) ||
+      record.url !== "https://clube.uol.com.br/perfil/beneficios/" + record.id ||
+      typeof record.title !== "string" || !record.title.trim() || record.title.length > 1000) continue;
+    const incoming = { user, receiptVerifiedAt: new Date().toISOString() };
+    for (const field of ["id", "url", "title", "category", "imageUrl", "offerUrl", "redemptionDate"]) {
+      if (typeof record[field] === "string" && record[field].length <= 4096) incoming[field] = record[field];
+    }
+    if (incoming.category === "campanhasdeingresso") incoming.partner = "Campanhas de Ingressos";
+    const key = nativeRedemptionKey(incoming);
+    if (!key) continue;
+    let index = existing.get(key);
+    if (index === undefined) {
+      index = database.length;
+      database.push(incoming);
+      existing.set(key, index);
+      changed = true;
+    } else {
+      const previous = database[index];
+      const updated = { ...previous, ...incoming };
+      if (JSON.stringify(previous) !== JSON.stringify(updated)) { database[index] = updated; changed = true; }
+    }
+    const projection = publicHunterRedemptions([database[index]])[0];
+    projection.nativeVoucherIndex = index;
+    presented.push(projection);
+  }
+  if (changed) saveRedemptionsDatabase(database);
+  view.hunterPrivateRedemptions = database;
+  if (result.status === "authenticated") safe.records = presented;
+  else safe.receipt = presented[0] || null;
+  return safe;
 }
 
 __BUILD_UPDATER__
@@ -330,37 +385,50 @@ async function main() {
   installHunterBrowser(uiView);
   await uiView.loadHTML(buildHunterStartupHTML(), "https://clube.uol.com.br");
   let dismissed = false;
-  const presentation = uiView.present(true).then(() => { dismissed = true; });
+  const presentation = uiView.present(true).then(() => { dismissed = true; uiView.hunterDismissed = true; });
   // A readable loading state also lets native presentation settle before the
   // one document replacement. No evaluateJavaScript is used during startup.
   const readable = new Promise(resolve => Timer.schedule(800, false, resolve));
-  const collection = collectionPausedForUpdate
-    ? createHunterAccess().status().then(access => ({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {}, access }))
-    : runNativeHunterCollector();
+  let collection = null;
   try {
     await preparePrivateFiles();
     persistPrivateBootstrap();
     const settings = loadSettings();
     const historyData = loadHistory();
     const credentials = loadCredentials();
-    const sessionCookies = loadSessionCookies(settings.currentUser || "leosaquetto");
     const realRedemptions = loadRedemptionsDatabase();
-    const collectionResult = await collection;
-    const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions,
+    uiView.hunterPrivateRedemptions = realRedemptions.length ? realRedemptions
+      : (typeof BUNDLED_REDEMPTIONS !== "undefined" && Array.isArray(BUNDLED_REDEMPTIONS) ? BUNDLED_REDEMPTIONS : []);
+    uiView.hunterCurrentUser = settings.currentUser;
+    const collectionResult = collectionPausedForUpdate
+      ? { status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {}, access: await createHunterAccess().status() }
+      : { status: "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} };
+    const html = buildDashboardHTML(historyData, settings, credentials, [], realRedemptions,
       collectionPausedForUpdate, collectionResult);
     await readable;
     if (!dismissed) {
       await uiView.loadHTML(html, "https://clube.uol.com.br");
       if (!dismissed && typeof showHunterStartupUpdateNotice === "function")
         showHunterStartupUpdateNotice(uiView).catch(() => {});
+      if (!dismissed && !collectionPausedForUpdate) {
+        collection = Promise.resolve().then(() => runNativeHunterCollector()).then(async result => {
+          if (!dismissed && typeof uiView.evaluateJavaScript === "function") {
+            const safeResult = JSON.stringify(result).replace(/</g, "\\u003c");
+            const safeHistory = JSON.stringify(loadHistory()).replace(/</g, "\\u003c");
+            await uiView.evaluateJavaScript("handleNativeCollectionResult(" + safeResult + "," + safeHistory + ");").catch(() => {});
+          }
+          return result;
+        });
+      }
     }
   } catch (_) {
     await readable;
     if (!dismissed) await uiView.loadHTML(buildHunterStartupHTML(true), "https://clube.uol.com.br");
   }
   await presentation;
-  await collection;
+  if (collection) await collection;
   if (uiView.hunterActionTask) await uiView.hunterActionTask;
+  if (uiView.hunterLegacyMigrationTask) await uiView.hunterLegacyMigrationTask;
   Script.complete();
 }
 
@@ -377,6 +445,378 @@ function buildHunterStartupHTML(failed = false) {
     .replace('<progress aria-label="Carregando o Clube UOL Premium"></progress>', failed ? "" : '<progress aria-label="Carregando o Clube UOL Premium"></progress>');
 }
 
+async function performNativeSecretAction(view, action, account) {
+  const entry = loadCredentials().accounts?.[account] || {};
+  let status = "missing";
+  const loginAction = action.endsWith("-login");
+  const value = loginAction ? entry.login : entry.senha;
+  const copyAction = action.startsWith("copy");
+  if (value) {
+    const label = account === "gaoriel" ? "Gabriel" : "Leonardo";
+    const alert = new Alert();
+    const field = loginAction ? "login" : "senha";
+    alert.title = (copyAction ? "Copiar " : "Mostrar ") + field + " de " + label;
+    alert.message = copyAction ? "O " + field + " ficará na área de transferência do aparelho." : String(value);
+    alert.addAction(copyAction ? "Copiar " + field : "Fechar");
+    if (copyAction) alert.addCancelAction("Cancelar");
+    const selected = await alert.presentAlert();
+    if (selected >= 0) {
+      if (copyAction) {
+        Pasteboard.copyString(String(value));
+        status = "copied";
+      } else status = "shown";
+    } else status = "cancelled";
+  }
+  await view.evaluateJavaScript("handleNativeSecretResult(" + JSON.stringify(action) + "," + JSON.stringify(account) + "," + JSON.stringify({ status }) + ");");
+}
+
+async function nativeVoucherDataUrl(record) {
+  const inline = [record?.voucherImageDataUrl, record?.downloadUrl].find(value => /^data:(image\/(?:png|jpeg|jpg)|application\/pdf);base64,[A-Za-z0-9+/=]+$/i.test(String(value || "")));
+  if (inline && inline.length <= 2_800_000) {
+    const match = /^data:([^;]+);base64,/i.exec(inline);
+    const declared = match[1].toLowerCase().replace("image/jpg", "image/jpeg");
+    const base64 = inline.slice(match[0].length);
+    const actual = base64.startsWith("JVBERi0") ? "application/pdf" :
+      base64.startsWith("iVBORw0KGgo") ? "image/png" : base64.startsWith("/9j/") ? "image/jpeg" : "";
+    if (actual === declared) return { status: "available", dataUrl: inline, mime: actual };
+  }
+  const file = typeof record?.localVoucherFile === "string" ? record.localVoucherFile : "";
+  if (!file || /[\\\u0000-\u001f]/.test(file) || /(?:^|\/)\.{1,2}(?:\/|$)/.test(file) ||
+    !/\.(?:pdf|png|jpe?g)$/i.test(file)) return { status: "missing" };
+  for (const fm of [FileManager.local(), getFileManager()]) {
+    try {
+      const root = fm.documentsDirectory().replace(/\/+$/, "") + "/";
+      if (!file.startsWith(root) || !fm.fileExists(file)) continue;
+      if (fm.isFileDownloaded && !fm.isFileDownloaded(file)) {
+        await fm.downloadFileFromiCloud(file);
+        if (!fm.isFileDownloaded(file)) continue;
+      }
+      const data = fm.read(file);
+      const base64 = data.toBase64String();
+      if (!base64 || base64.length > 2_800_000) return { status: "missing" };
+      const extension = file.split(".").pop().toLowerCase();
+      const mime = extension === "pdf" ? "application/pdf" : extension === "png" ? "image/png" : "image/jpeg";
+      if (mime === "application/pdf" && !base64.startsWith("JVBERi0") || mime === "image/png" && !base64.startsWith("iVBORw0KGgo") || mime === "image/jpeg" && !base64.startsWith("/9j/")) return { status: "missing" };
+      return { status: "available", dataUrl: "data:" + mime + ";base64," + base64, mime };
+    } catch (_) {}
+  }
+  return { status: "missing" };
+}
+
+async function nativeArchivedVoucherDataUrl(record) {
+  // Legacy WebView bytes are an untrusted backup. Only an exact v2 key for a
+  // receipt already verified by the native account manager can be reused.
+  if (!record || !["leosaquetto", "gaoriel"].includes(record.user) ||
+    typeof record.id !== "string" || !/^[A-Za-z0-9_-]{1,200}$/.test(record.id) ||
+    record.url !== "https://clube.uol.com.br/perfil/beneficios/" + record.id ||
+    typeof record.receiptVerifiedAt !== "string" || !Number.isFinite(Date.parse(record.receiptVerifiedAt))) {
+    return { status: "missing" };
+  }
+  const exactKey = "uol_vc_v2_" + record.user + "_" + encodeURIComponent(record.id);
+  try {
+    const fm = FileManager.local();
+    const archivePath = fm.joinPath(fm.documentsDirectory(), LEGACY_PRIVATE_ARCHIVE_FILE_NAME);
+    if (!fm.fileExists(archivePath)) return { status: "missing" };
+    const raw = fm.readString(archivePath);
+    if (typeof raw !== "string" || raw.length > 16 * 1024 * 1024) return { status: "missing" };
+    const archive = JSON.parse(raw);
+    if (archive?.version !== 1 || !Array.isArray(archive.entries) || archive.entries.length > 200) {
+      return { status: "missing" };
+    }
+    // The archive appends newer versions. A malformed current entry must not
+    // silently fall back to older bytes for the same receipt.
+    for (let index = archive.entries.length - 1; index >= 0; index--) {
+      const entry = archive.entries[index];
+      if (entry?.key !== exactKey) continue;
+      if (typeof entry.value !== "string" || entry.value.length > 6 * 1024 * 1024) return { status: "missing" };
+      const cached = JSON.parse(entry.value);
+      if (!cached || typeof cached.dataUrl !== "string" || cached.dataUrl.length > 2_800_000) {
+        return { status: "missing" };
+      }
+      const result = await nativeVoucherDataUrl({ voucherImageDataUrl: cached.dataUrl });
+      if (result.status !== "available" || cached.mimeType && cached.mimeType !== result.mime) {
+        return { status: "missing" };
+      }
+      return result;
+    }
+  } catch (_) {}
+  return { status: "missing" };
+}
+
+async function deliverNativeVoucher(view, account, index, receiptId, requestId) {
+  const rows = Array.isArray(view.hunterPrivateRedemptions) ? view.hunterPrivateRedemptions : [];
+  const item = rows[index];
+  let result = item && item.user === account && String(item.id) === receiptId
+    ? await nativeVoucherDataUrl(item) : { status: "missing" };
+  if (result.status !== "available" && item && item.user === account && String(item.id) === receiptId) {
+    result = await nativeArchivedVoucherDataUrl(item);
+  }
+  result.id = receiptId;
+  result.request = requestId;
+  const safe = JSON.stringify(result).replace(/</g, "\\u003c");
+  await view.evaluateJavaScript("handleNativeVoucherResult(" + JSON.stringify(account) + "," + index + "," + safe + ");");
+}
+
+const HUNTER_LEGACY_MAX_KEYS = 200;
+const HUNTER_LEGACY_MAX_VALUE_BYTES = 6 * 1024 * 1024;
+const HUNTER_LEGACY_MAX_TOTAL_BYTES = 12 * 1024 * 1024;
+const HUNTER_LEGACY_CHUNK_SIZE = 32768;
+
+function hunterLegacyPrivateKeyAllowed(key) {
+  return key === "uol_hub_settings" || key === "uol_real_redemptions" ||
+    (typeof key === "string" && /^uol_vc_[^\u0000-\u001f\u007f]{1,2048}$/.test(key));
+}
+
+function hunterLegacyUtf8ByteLength(value) {
+  let bytes = 0;
+  for (let index = 0; index < value.length; index++) {
+    const code = value.charCodeAt(index);
+    if (code < 0x80) bytes++;
+    else if (code < 0x800) bytes += 2;
+    else if (code >= 0xd800 && code <= 0xdbff && index + 1 < value.length &&
+      value.charCodeAt(index + 1) >= 0xdc00 && value.charCodeAt(index + 1) <= 0xdfff) {
+      bytes += 4; index++;
+    } else bytes += 3;
+  }
+  return bytes;
+}
+
+function hunterLegacyJsString(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+}
+
+async function hunterLegacyEvaluateJson(view, expression) {
+  const raw = await view.evaluateJavaScript("completion(JSON.stringify(" + expression + "))", true);
+  return typeof raw === "string" ? JSON.parse(raw) : raw;
+}
+
+async function hunterLegacyPrivateCacheStatus(view, result) {
+  if (view.hunterDismissed || typeof view.evaluateJavaScript !== "function") return;
+  const safe = JSON.stringify(result);
+  try {
+    await view.evaluateJavaScript("if (typeof window.hunterLegacyPrivateCacheMigrationResult === 'function') " +
+      "window.hunterLegacyPrivateCacheMigrationResult(" + safe + ");");
+  } catch (_) {}
+}
+
+async function runNativeLegacyPrivateMigration(view) {
+  if (view.hunterDismissed) return { status: "closed" };
+  let manifest;
+  try { manifest = await hunterLegacyEvaluateJson(view, "window.hunterLegacyPrivateCacheManifest()"); }
+  catch (_) { return { status: "retry", reason: "manifest_unavailable" }; }
+  if (!Array.isArray(manifest) || manifest.length > HUNTER_LEGACY_MAX_KEYS) {
+    return { status: "retry", reason: "manifest_limit" };
+  }
+  const seen = new Set();
+  let declaredLength = 0;
+  for (const item of manifest) {
+    if (!item || !hunterLegacyPrivateKeyAllowed(item.key) || seen.has(item.key) ||
+      !Number.isSafeInteger(item.length) || item.length < 0 || item.length > HUNTER_LEGACY_MAX_VALUE_BYTES) {
+      return { status: "retry", reason: "invalid_manifest" };
+    }
+    seen.add(item.key);
+    declaredLength += item.length;
+    if (declaredLength > HUNTER_LEGACY_MAX_TOTAL_BYTES) return { status: "retry", reason: "manifest_limit" };
+  }
+  if (!manifest.length) return { status: "empty", count: 0 };
+
+  const captured = [];
+  let capturedBytes = 0;
+  for (const item of manifest) {
+    const pieces = [];
+    for (let offset = 0; offset < item.length; offset += HUNTER_LEGACY_CHUNK_SIZE) {
+      if (view.hunterDismissed) return { status: "closed" };
+      let chunk;
+      try {
+        chunk = await hunterLegacyEvaluateJson(view, "window.hunterLegacyPrivateCacheChunk(" +
+          hunterLegacyJsString(item.key) + "," + offset + "," + HUNTER_LEGACY_CHUNK_SIZE + ")");
+      } catch (_) { return { status: "retry", reason: "chunk_unavailable" }; }
+      if (!chunk || chunk.key !== item.key || chunk.offset !== offset || chunk.length !== item.length ||
+        typeof chunk.data !== "string" || chunk.data.length !== Math.min(HUNTER_LEGACY_CHUNK_SIZE, item.length - offset)) {
+        return { status: "retry", reason: "chunk_mismatch" };
+      }
+      pieces.push(chunk.data);
+    }
+    const value = pieces.join("");
+    if (value.length !== item.length) return { status: "retry", reason: "chunk_mismatch" };
+    const bytes = hunterLegacyUtf8ByteLength(value);
+    capturedBytes += bytes;
+    if (bytes > HUNTER_LEGACY_MAX_VALUE_BYTES || capturedBytes > HUNTER_LEGACY_MAX_TOTAL_BYTES) {
+      return { status: "retry", reason: "payload_limit" };
+    }
+    captured.push({ key: item.key, value });
+  }
+
+  const fm = FileManager.local();
+  const base = fm.joinPath(fm.documentsDirectory(), LEGACY_PRIVATE_ARCHIVE_FILE_NAME);
+  const pending = base + ".pending";
+  const backup = base + ".backup";
+  let oldRaw = "";
+  let oldEntries = [];
+  try {
+    if (fm.fileExists(base)) {
+      oldRaw = fm.readString(base);
+      if (typeof oldRaw !== "string" || oldRaw.length > 16 * 1024 * 1024) {
+        return { status: "retry", reason: "archive_limit" };
+      }
+      const parsed = JSON.parse(oldRaw);
+      if (parsed?.version !== 1 || !Array.isArray(parsed.entries)) return { status: "retry", reason: "archive_invalid" };
+      oldEntries = parsed.entries;
+    }
+  } catch (_) { return { status: "retry", reason: "archive_unreadable" }; }
+  let totalBytes = 0;
+  const merged = [];
+  for (const entry of oldEntries.concat(captured)) {
+    if (!entry || !hunterLegacyPrivateKeyAllowed(entry.key) || typeof entry.value !== "string" ||
+      entry.value.length > HUNTER_LEGACY_MAX_VALUE_BYTES) return { status: "retry", reason: "archive_invalid" };
+    const bytes = hunterLegacyUtf8ByteLength(entry.value);
+    if (bytes > HUNTER_LEGACY_MAX_VALUE_BYTES) return { status: "retry", reason: "archive_invalid" };
+    if (merged.some(previous => previous.key === entry.key && previous.value === entry.value)) continue;
+    totalBytes += bytes;
+    if (totalBytes > HUNTER_LEGACY_MAX_TOTAL_BYTES || merged.length >= HUNTER_LEGACY_MAX_KEYS) {
+      return { status: "retry", reason: "archive_limit" };
+    }
+    merged.push({ key: entry.key, value: entry.value });
+  }
+  const serialized = JSON.stringify({ version: 1, savedAt: new Date().toISOString(), entries: merged });
+  if (serialized.length > 16 * 1024 * 1024) return { status: "retry", reason: "archive_limit" };
+  try {
+    fm.writeString(pending, serialized);
+    if (fm.readString(pending) !== serialized) return { status: "retry", reason: "archive_write_failed" };
+    if (oldRaw) {
+      fm.writeString(backup, oldRaw);
+      if (fm.readString(backup) !== oldRaw) return { status: "retry", reason: "archive_write_failed" };
+    }
+    fm.writeString(base, serialized);
+    const stored = fm.readString(base);
+    if (stored !== serialized) return { status: "retry", reason: "archive_write_failed" };
+    const verified = JSON.parse(stored);
+    if (!Array.isArray(verified.entries) || captured.some(entry =>
+      !verified.entries.some(saved => saved.key === entry.key && saved.value === entry.value))) {
+      return { status: "retry", reason: "archive_write_failed" };
+    }
+  } catch (_) { return { status: "retry", reason: "archive_write_failed" }; }
+  if (view.hunterDismissed) return { status: "archived", count: captured.length, acknowledged: false };
+  try {
+    const exactKeys = captured.map(entry => entry.key);
+    const safeKeys = JSON.stringify(exactKeys).replace(/</g, "\\u003c")
+      .replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+    await view.evaluateJavaScript("window.hunterLegacyPrivateCacheCommitted(" + safeKeys + ");");
+    return { status: "archived", count: exactKeys.length, acknowledged: true };
+  } catch (_) { return { status: "archived", count: captured.length, acknowledged: false }; }
+}
+
+function readHunterLinkCheckCache() {
+  try {
+    const fm = FileManager.local();
+    const path = fm.joinPath(fm.documentsDirectory(), LINK_CHECK_FILE_NAME);
+    if (!fm.fileExists(path)) return { version: 1, records: {} };
+    const parsed = JSON.parse(fm.readString(path));
+    if (parsed?.version === 1 && parsed.records && typeof parsed.records === "object" && !Array.isArray(parsed.records)) return parsed;
+  } catch (_) {}
+  return { version: 1, records: {} };
+}
+
+function writeHunterLinkCheckCache(cache) {
+  try {
+    const records = Object.entries(cache.records || {});
+    if (records.length > 1000) {
+      records.sort((a, b) => (Date.parse(b[1]?.checkedAt || "") || 0) - (Date.parse(a[1]?.checkedAt || "") || 0));
+      cache.records = Object.fromEntries(records.slice(0, 1000));
+    }
+    const fm = FileManager.local();
+    fm.writeString(fm.joinPath(fm.documentsDirectory(), LINK_CHECK_FILE_NAME), JSON.stringify(cache));
+  } catch (_) {}
+}
+
+function hunterLinkCheckKey(candidate) {
+  return candidate.link + "|" + candidate.generation;
+}
+
+async function hunterLinkCandidates(view) {
+  const result = [];
+  const seen = new Set();
+  for (let offset = 0; ; offset += 100) {
+    let page;
+    try {
+      const script = "completion(JSON.stringify(window.hunterActiveLinkCandidates(" + offset + ",100)))";
+      const returned = await view.evaluateJavaScript(script, true);
+      page = typeof returned === "string" ? JSON.parse(returned) : returned;
+    } catch (_) { break; }
+    if (!Array.isArray(page)) break;
+    let added = 0;
+    for (const item of page) {
+      const link = HunterLinkChecks.canonicalTicketUrl(item?.link);
+      if (!link) continue;
+      const id = String(item.id || link.split("/").pop()).slice(0, 160);
+      const generation = String(item.generation || "legacy").slice(0, 160);
+      const key = link + "|" + generation;
+      if (seen.has(key)) continue;
+      seen.add(key); result.push({ id, link, generation }); added++;
+    }
+    if (page.length < 100 || added === 0) break;
+  }
+  return result;
+}
+
+async function hunterLinkCheckNotify(view, results, progress) {
+  if (view.hunterDismissed || typeof view.evaluateJavaScript !== "function") return;
+  try {
+    const safeResults = JSON.stringify(results).replace(/</g, "\\u003c");
+    const safeProgress = JSON.stringify(progress).replace(/</g, "\\u003c");
+    await view.evaluateJavaScript("window.hunterApplyLinkCheckResults(" + safeResults + "," + safeProgress + ");");
+  } catch (_) {}
+}
+
+async function runNativeLinkChecks(view) {
+  const checkedThisSession = new Set();
+  const cache = readHunterLinkCheckCache();
+  do {
+    view.hunterLinkRefreshRequested = false;
+    if (view.hunterDismissed) break;
+    const all = await hunterLinkCandidates(view);
+    const pending = all.filter(item => !checkedThisSession.has(hunterLinkCheckKey(item)));
+    if (!pending.length) break;
+    const previous = all.map(item => ({ ...item, ...(cache.records[hunterLinkCheckKey(item)] || {}) }));
+    await hunterLinkCheckNotify(view, previous, { verified: checkedThisSession.size, total: all.length, pending: pending.length });
+    const controls = all.map(entry => entry.link);
+    const account = loadCurrentAccountPreference(view.hunterCurrentUser);
+    const cookies = loadSessionCookies(account);
+    const cookieHeader = Array.isArray(cookies) ? cookies.filter(c => c && typeof c.name === "string" && typeof c.value === "string")
+      .map(c => c.name + "=" + c.value).join("; ") : "";
+    const checker = HunterLinkChecks.create({
+      request: url => new Request(url),
+      parseOffer: (html, url) => parseHunterReceiptHtml(html, "offer", url),
+      now: Date.now,
+      pause: milliseconds => new Promise(resolve => Timer.schedule(milliseconds, false, resolve)),
+      cookieHeader
+    });
+    pending.sort((a, b) => (Date.parse(cache.records[hunterLinkCheckKey(a)]?.checkedAt || "") || 0) - (Date.parse(cache.records[hunterLinkCheckKey(b)]?.checkedAt || "") || 0));
+    let next = 0;
+    const worker = async () => {
+      while (!view.hunterDismissed && next < pending.length) {
+        const item = pending[next++];
+        const key = hunterLinkCheckKey(item);
+        const old = cache.records[key] || null;
+        let outcome;
+        try { outcome = await checker.check(item.link, controls, old); }
+        catch (_) { outcome = { status: "unknown", checkedAt: new Date().toISOString() }; }
+        if (old?.status === "unavailable" && outcome.status === "unknown") {
+          outcome = { ...outcome, status: "unavailable", unavailableAt: old.unavailableAt || old.checkedAt };
+        }
+        cache.records[key] = { status: outcome.status, checkedAt: outcome.checkedAt,
+          lastLinkCheckedAt: outcome.checkedAt,
+          unavailableAt: outcome.unavailableAt || "", goneCount: outcome.goneCount || 0, firstGoneAt: outcome.firstGoneAt || "" };
+        writeHunterLinkCheckCache(cache);
+        checkedThisSession.add(key);
+        await hunterLinkCheckNotify(view, [{ ...item, ...cache.records[key] }],
+          { verified: checkedThisSession.size, total: all.length, pending: Math.max(0, all.length - checkedThisSession.size) });
+      }
+    };
+    await Promise.all([worker(), worker()]);
+  } while (view.hunterLinkRefreshRequested && !view.hunterDismissed);
+}
+
 function installHunterBrowser(view) {
   const internalRoute = "hunter-browser://open?url=";
   const externalRoute = "hunter-browser://external?url=";
@@ -384,6 +824,23 @@ function installHunterBrowser(view) {
   view.shouldAllowRequest = request => {
     const raw = request && request.url;
     if (typeof raw !== "string") return true;
+    if (raw === "hunter-legacy://migrate") {
+      if (!view.hunterLegacyMigrationTask) {
+        view.hunterLegacyMigrationTask = Promise.resolve().then(() => runNativeLegacyPrivateMigration(view))
+          .then(result => hunterLegacyPrivateCacheStatus(view, result))
+          .catch(() => hunterLegacyPrivateCacheStatus(view, { status: "retry", reason: "migration_failed" }))
+          .finally(() => { view.hunterLegacyMigrationTask = null; });
+      }
+      return false;
+    }
+    if (/^hunter-legacy:/i.test(raw)) return false;
+    if (raw === "hunter-links://start") {
+      if (view.hunterLinkCheckTask) view.hunterLinkRefreshRequested = true;
+      else view.hunterLinkCheckTask = Promise.resolve().then(() => runNativeLinkChecks(view))
+        .catch(() => {}).finally(() => { view.hunterLinkCheckTask = null; });
+      return false;
+    }
+    if (/^hunter-links:/i.test(raw)) return false;
     const navigationTheme = /^hunter-theme:\/\/set\?value=(default|purple|orange|white)$/.exec(raw);
     if (navigationTheme && navigationTheme[0] === raw) {
       const theme = navigationTheme[1];
@@ -392,6 +849,33 @@ function installHunterBrowser(view) {
       return false;
     }
     if (/^hunter-theme:/i.test(raw)) return false;
+    const secretAction = /^hunter-secret:\/\/(show|copy|show-login|copy-login)\?account=(leosaquetto|gaoriel)$/.exec(raw);
+    if (secretAction) {
+      if (!opening) {
+        opening = true;
+        view.hunterActionTask = Promise.resolve().then(() => performNativeSecretAction(view, secretAction[1], secretAction[2]))
+          .catch(() => {})
+          .finally(() => { opening = false; });
+      }
+      return false;
+    }
+    if (/^hunter-secret:/i.test(raw)) return false;
+    const accountPreference = /^hunter-preference:\/\/account\?value=(leosaquetto|gaoriel)$/.exec(raw);
+    if (accountPreference) {
+      const saved = saveCurrentAccountPreference(accountPreference[1]);
+      if (saved) view.hunterCurrentUser = accountPreference[1];
+      Promise.resolve().then(() => view.evaluateJavaScript("handleNativePreferenceResult(" + JSON.stringify(accountPreference[1]) + "," + saved + ");")).catch(() => {});
+      return false;
+    }
+    if (/^hunter-preference:/i.test(raw)) return false;
+    const voucherAction = /^hunter-voucher:\/\/get\?index=(\d{1,5})&account=(leosaquetto|gaoriel)&id=([A-Za-z0-9_-]{1,200})&request=(\d{1,10})$/.exec(raw);
+    if (voucherAction) {
+      const index = Number(voucherAction[1]);
+      const requestId = Number(voucherAction[4]);
+      if (Number.isSafeInteger(index) && Number.isSafeInteger(requestId)) Promise.resolve().then(() => deliverNativeVoucher(view, voucherAction[2], index, voucherAction[3], requestId)).catch(() => {});
+      return false;
+    }
+    if (/^hunter-voucher:/i.test(raw)) return false;
     if (raw === "hunter-update://check" || raw === "hunter-update://check/") {
       if (!opening) {
         opening = true;
@@ -458,9 +942,13 @@ function nativeRedemptionKey(item) {
   if (!item || typeof item !== "object") return "";
   const account = typeof item.user === "string" && item.user.trim() ? item.user.trim().toLowerCase() : "";
   if (!account) return "";
-  const identity = typeof item.url === "string" && item.url.trim() ? "url:" + item.url.trim()
-    : typeof item.id === "string" && item.id.trim() && !/^redemption-.+-\d+$/.test(item.id.trim()) ? "id:" + item.id.trim()
-      : Number.isSafeInteger(item.id) ? "id:" + item.id : "";
+  const id = typeof item.id === "string" && /^[A-Za-z0-9_-]{1,200}$/.test(item.id.trim()) &&
+    !/^redemption-.+-\d+$/.test(item.id.trim()) ? item.id.trim()
+    : Number.isSafeInteger(item.id) && item.id >= 0 ? String(item.id) : "";
+  const url = typeof item.url === "string" ? item.url.trim() : "";
+  const receipt = /^https:\/\/clube\.uol\.com\.br\/perfil\/beneficios\/([A-Za-z0-9_-]{1,200})\/?$/.exec(url);
+  if (id && receipt && receipt[1] !== id) return "";
+  const identity = id || receipt ? "id:" + (id || receipt[1]) : url ? "url:" + url : "";
   return identity ? account + "|" + identity : "";
 }
 
@@ -623,11 +1111,35 @@ function loadSettings() {
       if (!s.userSessions.leosaquetto || s.userSessions.leosaquetto.length === 0) {
         s.userSessions.leosaquetto = loadSessionCookies("leosaquetto");
       }
+      s.currentUser = loadCurrentAccountPreference(s.currentUser);
       return s;
     }
   } catch (e) {}
 
+  defaults.currentUser = loadCurrentAccountPreference(defaults.currentUser);
   return defaults;
+}
+
+function loadCurrentAccountPreference(fallback = "leosaquetto") {
+  try {
+    const fm = FileManager.local();
+    const path = fm.joinPath(fm.documentsDirectory(), "uol_current_account_v1.json");
+    if (fm.fileExists(path)) {
+      const account = JSON.parse(fm.readString(path)).account;
+      if (account === "leosaquetto" || account === "gaoriel") return account;
+    }
+  } catch (_) {}
+  return fallback === "gaoriel" ? "gaoriel" : "leosaquetto";
+}
+
+function saveCurrentAccountPreference(account) {
+  if (account !== "leosaquetto" && account !== "gaoriel") return false;
+  try {
+    const fm = FileManager.local();
+    const path = fm.joinPath(fm.documentsDirectory(), "uol_current_account_v1.json");
+    fm.writeString(path, JSON.stringify({ version: 1, account }));
+    return true;
+  } catch (_) { return false; }
 }
 
 function loadSessionCookies(user = "leosaquetto") {
@@ -822,25 +1334,67 @@ function parseCredentialsText(text, target) {
   target.senha = (target.accounts.leosaquetto && target.accounts.leosaquetto.senha) || target.senha || "";
 }
 
+function publicHunterCredentials(credentials) {
+  const accounts = {};
+  for (const user of ["leosaquetto", "gaoriel"]) {
+    const entry = credentials && credentials.accounts && credentials.accounts[user] || {};
+    accounts[user] = {
+      user,
+      displayName: user === "gaoriel" ? "Gabriel" : "Leonardo Saquetto",
+      hasLogin: Boolean(entry.login),
+      maskedLogin: entry.login ? String(entry.login).slice(0, 3) + "••••" + String(entry.login).slice(-2) : "",
+      hasPassword: Boolean(entry.senha),
+      source: String(entry.source || credentials && credentials.source || "none").slice(0, 160)
+    };
+  }
+  return { accounts, source: String(credentials && credentials.source || "none").slice(0, 160) };
+}
+
+function publicHunterRedemptions(items) {
+  if (!Array.isArray(items)) return [];
+  const fields = ["id", "title", "partner", "thumb", "url", "user", "redeemedAt", "description", "rules", "downloadUrl", "cupomCode", "code", "category", "imageUrl", "offerUrl", "redemptionDate"];
+  return items.map((item, nativeVoucherIndex) => {
+    if (!item || typeof item !== "object") return null;
+    const projected = {};
+    for (const field of fields) {
+      const value = item[field];
+      if (typeof value === "string") projected[field] = value.slice(0, field === "description" || field === "rules" ? 20000 : 4096);
+      else if (field === "id" && Number.isSafeInteger(value)) projected[field] = value;
+    }
+    projected.nativeVoucherIndex = nativeVoucherIndex;
+    projected.hasNativeVoucher = Boolean(item.voucherImageDataUrl || item.localVoucherFile || /^data:/i.test(String(item.downloadUrl || "")));
+    projected.receiptVerified = typeof item.receiptVerifiedAt === "string" &&
+      Number.isFinite(Date.parse(item.receiptVerifiedAt));
+    if (/^data:/i.test(String(projected.downloadUrl || ""))) projected.downloadUrl = "";
+    return projected;
+  }).filter(Boolean);
+}
+
 function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false, collectionResult = null) {
   const activeUser = settings.currentUser || "leosaquetto";
-  const cookiesForActiveUser = (activeUser === "gaoriel") ? BUNDLED_COOKIES_GAORIEL : BUNDLED_COOKIES_LEO;
+  const privateRedemptions = (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS;
+  const displaySettings = {
+    currentUser: activeUser === "gaoriel" ? "gaoriel" : "leosaquetto",
+    priorizarWords: Array.isArray(settings.priorizarWords) ? settings.priorizarWords : [],
+    despriorizarWords: Array.isArray(settings.despriorizarWords) ? settings.despriorizarWords : [],
+    groupedView: settings.groupedView !== false,
+    currentTab: settings.currentTab || "home",
+    myRedemptions: publicHunterRedemptions(settings.myRedemptions || [])
+  };
   const initialData = {
     collectionPausedForUpdate,
     hunterCollection: collectionResult || { status: collectionPausedForUpdate ? "updated" : "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} },
     historyData: historyData,
-    settings: settings,
+    settings: displaySettings,
     navigationBarTheme: loadNavigationTheme(),
-    credentials: credentials,
-    sessionCookies: (sessionCookies && sessionCookies.length > 0) ? sessionCookies : cookiesForActiveUser,
-    sessionCookiesLeo: settings.userSessions.leosaquetto,
-    sessionCookiesGaoriel: settings.userSessions.gaoriel,
-    realRedemptions: (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS,
+    credentials: publicHunterCredentials(credentials),
+    realRedemptions: publicHunterRedemptions(privateRedemptions),
     icons: ICONS,
     topic: NTFY_TOPIC,
     hunterAccess: collectionResult?.access || { status: "not_configured", reason: "activation_required" },
     nativeBrowser: true,
     nativeAccounts: true,
+    nativeLinkChecks: true,
     scriptVersion: SCRIPT_VERSION,
     scriptName: typeof hunterInstalledScriptName === "function" ? hunterInstalledScriptName() : ((typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL Premium")
   };

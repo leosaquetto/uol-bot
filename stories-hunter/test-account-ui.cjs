@@ -13,6 +13,9 @@ function harness() {
     ICONS: { tickets: '<svg/>' }, window: { location: { href: '' } }, showToast() {},
     document: { getElementById(id) { if (!nodes.has(id)) nodes.set(id, { style: {} }); return nodes.get(id); } },
     redemptionIdentity: value => value.user && value.url ? value.user + '|' + value.url : '',
+    isOfferUnavailableForRedeem: () => false,
+    enterOwnedModal() {}, leaveOwnedModal() {},
+    parseRedemptionMoment: value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? { timestamp: Date.parse(value) } : null,
     saveSettingsToStorage() { writes.push('save'); }, localStorage: { setItem() {} },
     updateTimelineBadgeDot() {}, renderRedemptionsScreen() {}, updateSessionStatusUI() {},
     fetch: () => assert.fail('account transport must not use ambient WebView cookies'),
@@ -48,4 +51,31 @@ test('verified receipts keep account ownership and original dates across profile
   assert.equal(gab.thumb, 'https://example.test/poster.jpg');
   c.handleNativeAccountResult('history', 'leosaquetto', { account: 'gaoriel', status: 'authenticated', records: [] });
   assert.equal(c.settings.realRedemptions.length, 2);
+});
+test('a new native receipt overrides stale local metadata without borrowing its date or voucher bytes', () => {
+  const { context: c } = harness();
+  const url = 'https://clube.uol.com.br/perfil/beneficios/one';
+  c.settings.realRedemptions = [{ user: 'leosaquetto', id: 'one', url, title: 'Old title',
+    redeemedAt: '2026-10-01', voucherImageDataUrl: 'data:image/png;base64,aGVsbG8=',
+    localVoucherFile: '/private/path', cupomCode: 'old-code' }];
+  c.handleNativeAccountResult('history', 'leosaquetto', { account: 'leosaquetto', status: 'authenticated',
+    records: [{ id: 'one', user: 'leosaquetto', title: 'Verified title', url, hasNativeVoucher: true,
+      nativeVoucherIndex: 7 }] });
+  const row = c.settings.realRedemptions[0];
+  assert.equal(row.title, 'Verified title');
+  assert.equal(row.redeemedAt, '');
+  assert.equal(row.cupomCode, 'old-code');
+  assert.equal(row.voucherImageDataUrl, undefined);
+  assert.equal(row.localVoucherFile, undefined);
+  const verified = c.window.hunterVerifiedRedemptions.get('leosaquetto|' + url);
+  assert.equal(verified.title, 'Verified title');
+  assert.equal(verified.nativeVoucherIndex, 7);
+  assert.equal(verified.cupomCode, undefined);
+
+  c.handleNativeAccountResult('history', 'leosaquetto', { account: 'leosaquetto', status: 'authenticated',
+    records: [{ id: 'one', user: 'leosaquetto', title: 'Verified title', url, redemptionDate: '2026-10-18' }] });
+  assert.equal(c.settings.realRedemptions[0].redeemedAt, '2026-10-18');
+  c.handleNativeAccountResult('history', 'leosaquetto', { account: 'leosaquetto', status: 'authenticated',
+    records: [{ id: 'one', user: 'leosaquetto', title: 'Verified title', url }] });
+  assert.equal(c.settings.realRedemptions[0].redeemedAt, '2026-10-18');
 });

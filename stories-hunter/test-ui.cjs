@@ -9,7 +9,12 @@ const template = require('./assemble-ui.cjs').assembleUI();
 const now = Date.parse('2026-10-17T22:00:00-03:00');
 const clone = value => JSON.parse(JSON.stringify(value));
 const campaign = slug => 'https://clube.uol.com.br/campanhasdeingresso/' + slug;
-const offer = (id, overrides = {}) => ({ id, link: campaign(id), title: id, category: 'TEATRO', firstSeen: now - 100000, ...overrides });
+const offer = (id, overrides = {}) => {
+  const item = { id, link: campaign(id), title: id, category: 'TEATRO', firstSeen: now - 100000, ...overrides };
+  if (item.captureSource === undefined) item.captureSource = 'native';
+  if (item.capturedAt === undefined && item.captureSource === 'native') item.capturedAt = item.firstSeen;
+  return item;
+};
 function block(name) {
   const start = template.indexOf('// ' + name + '_START');
   const end = template.indexOf('// ' + name + '_END');
@@ -58,8 +63,8 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
   vm.runInContext([
     block('CATALOG_ADAPTER'), block('UI_DATE_HELPERS'), block('REDEMPTION_IDENTITY'), block('REDEMPTION_DATE'),
     ...['extractSessionDate', 'isStoriesOnlyOffer', 'getGroupKey', 'buildOfferGroups', 'formatRelativeTime', 'formatExpiredAgo',
-      'formatRedemptionTitle', 'getTimelineEvents', 'getRedeemedUsersForOffer', 'updateTimelineBadgeDot', 'renderTimelineList', 'renderOffers', 'renderIndividualOffers', 'updateCategoryCounts',
-      'getOfferYearAndMonth', 'historyMatchesSearch', 'renderHistoryMonths', 'appendHistoryBatch'].map(fn),
+      'formatRedemptionTitle', 'escapeReceiptHtml', 'isVerifiedReceipt', 'getTimelineEvents', 'getRedeemedUsersForOffer', 'updateTimelineBadgeDot', 'renderTimelineList', 'renderOffers', 'renderIndividualOffers', 'updateCategoryCounts',
+      'getOfferYearAndMonth', 'buildHistoryGroups', 'historyMatchesSearch', 'renderHistoryMonths', 'appendHistoryBatch'].map(fn),
   ].join('\n'), context);
   return { context, elements, requests, storage, advance: ms => { time += ms; } };
 }
@@ -100,6 +105,51 @@ test('opening an offer uses the native sheet route while keeping Hunter state an
     'authentication keeps its existing browser context');
 });
 
+test('native history defeats stale local active and local-only cache stays unverified', () => {
+  const h = harness();
+  vm.runInContext(fn('historyIdentity') + '\n' + fn('reconcileHistorySnapshots'), h.context);
+  const sold = offer('same', { availability: 'sold_out', soldOutAt: now - 1000, lastSeen: now - 1000 });
+  const stale = offer('same', { availability: 'observed', lastSeen: now - 2000 });
+  const nativeOnly = offer('native-live', { lastSeen: now - 1000 });
+  const localOnly = offer('local-old', { captureSource: 'legacy', capturedAt: 0, firstSeen: 0 });
+  const result = clone(h.context.reconcileHistorySnapshots(
+    { active: [nativeOnly], history: [sold] }, { active: [stale, localOnly], history: [] }));
+  assert.deepEqual(result.active.map(item => item.id), ['native-live']);
+  assert.deepEqual(result.history.map(item => item.id).sort(), ['local-old', 'same']);
+  assert.equal(result.history.find(item => item.id === 'same').availability, 'sold_out');
+  assert.equal(result.history.find(item => item.id === 'local-old').cacheUnverified, true);
+  assert.equal(result.history.find(item => item.id === 'local-old').capturedAt, 0);
+});
+
+test('legacy private WebView cache is scrubbed only after native archival acknowledgement', () => {
+  const values = new Map([
+    ['uol_hub_settings', JSON.stringify({ currentUser: 'gaoriel', userSessions: { gaoriel: { cookie: 'private-cookie' } },
+      realRedemptions: [{ id: 'receipt-a', user: 'gaoriel', title: 'Guardado', voucherImageDataUrl: 'data:image/png;base64,AAAA' }] })],
+    ['uol_real_redemptions', JSON.stringify([{ id: 'receipt-b', user: 'gaoriel', title: 'Outro', pdfBase64: 'private-pdf' }])],
+    ['uol_vc_OLD', JSON.stringify({ imgDataUrl: 'data:image/png;base64,AAAA' })],
+  ]);
+  const storage = { get length() { return values.size; }, key: index => Array.from(values.keys())[index] || null,
+    getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value),
+    removeItem: key => values.delete(key) };
+  const context = vm.createContext({ INITIAL: { nativeAccounts: true }, localStorage: storage,
+    settings: { currentUser: 'leosaquetto', groupedView: true, currentTab: 'home' }, currentTab: 'home' });
+  vm.runInContext('const legacyPrivateStorageSnapshot = new Map();\n' +
+    ['saveSettingsToStorage', 'isPublicSettingsPayload', 'hunterLegacyPrivateCacheManifest',
+      'hunterLegacyPrivateCacheChunk', 'saveSafeLegacyRedemptions', 'hunterLegacyPrivateCacheCommitted'].map(fn).join('\n'), context);
+  const manifest = clone(context.hunterLegacyPrivateCacheManifest());
+  assert.equal(manifest.length, 3);
+  assert.equal(context.hunterLegacyPrivateCacheChunk('uol_vc_OLD', 0, 32768).data, values.get('uol_vc_OLD'));
+  assert.match(values.get('uol_hub_settings'), /private-cookie/, 'no delete before native readback and ack');
+  assert.equal(context.saveSettingsToStorage(), false, 'public save waits for durable native archive');
+  assert.match(values.get('uol_hub_settings'), /private-cookie/);
+  context.hunterLegacyPrivateCacheCommitted(manifest.map(item => item.key));
+  assert.doesNotMatch(JSON.stringify(Array.from(values.values())), /private-cookie|private-pdf|data:image\/png/);
+  assert.equal(values.has('uol_vc_OLD'), false);
+  assert.equal(values.has('uol_real_redemptions'), false);
+  assert.equal(JSON.parse(values.get('uol_hub_settings')).schemaVersion, 2);
+  assert.deepEqual(JSON.parse(values.get('uol_real_redemptions_v2')).map(item => item.id), ['receipt-a', 'receipt-b']);
+});
+
 test('Home keeps active cache and only explicit exhaustion in the last 24h without deleting history', () => {
   const active = [offer('active'), offer('already-out', { isExpired: true, expiredAt: now - 10 })];
   const history = [offer('boundary', { expiredAt: now - 86400000 }), offer('old', { expiredAt: now - 86400001 }),
@@ -109,7 +159,7 @@ test('Home keeps active cache and only explicit exhaustion in the last 24h witho
   const before = clone(h.context.historyData);
   const result = h.context.homeOfferSets(h.context.historyData.active, h.context.historyData.history);
   assert.deepEqual(clone(result.activeItems).map(o => o.id), ['active']);
-  assert.deepEqual(clone(result.soldOutItems).map(o => o.id), ['boundary']);
+  assert.deepEqual(clone(result.soldOutItems).map(o => o.id), [], 'sold out for 24 hours is no longer shown');
   assert.deepEqual(clone(h.context.historyData), before);
 });
 
@@ -205,9 +255,10 @@ test('session tags keep explicit years and São Paulo rollover, reject invalid d
   assert.deepEqual(dates.map(d => d.key), ['2026-12-31', '2027-01-01', '2027-12-31']);
   assert.deepEqual(dates.map(d => d.label), ['HOJE', 'AMANHÃ', '31 DEZ 2027']);
   assert.equal(h.context.sessionDateInfo(offer('until', { title: 'Temporada até 13/12/2027' })).label, 'ATÉ 13 DEZ 2027');
+  assert.equal(h.context.sessionDateInfo(offer('short-year', { title: '18/10/27 Teatro', firstSeen: Date.parse('2026-10-19T12:00:00-03:00') })).key, '2027-10-18');
 });
 
-test('date strips divide up to three dates equally and preserve scrolling order beyond three', () => {
+test('date strips reveal part of the next session and preserve chronological order', () => {
   const h = harness();
   const items = [1, 2, 3, 4].map(day => offer('day-' + day, { title: (17 + day) + '/10/2026 Teatro' }));
   for (const count of [1, 2, 3]) {
@@ -219,24 +270,140 @@ test('date strips divide up to three dates equally and preserve scrolling order 
   assert.match(html, /dates-scroll/);
   assert.ok(html.indexOf('AMANHÃ') < html.indexOf('19 OUT'));
   assert.match(template, /\.micro-dates-inline \.micro-date-pill \{[^}]*flex: 1 1 0/);
-  assert.match(template, /\.micro-dates-inline\.dates-scroll \.micro-date-pill \{[^}]*flex: 0 0 calc\(\(100% - 10px\) \/ 3\)/);
+  assert.match(template, /\.micro-dates-inline\.dates-scroll \.micro-date-pill \{[^}]*flex: 0 0 29%/);
   const hero = h.context.dateStrip(h.context.renderSessionDatePills(items, []), true);
   assert.match(hero, /dates-compact/);
-  assert.doesNotMatch(hero, /dates-scroll/);
+  assert.match(hero, /dates-scroll/);
   assert.match(template, /\.micro-dates-inline\.dates-compact \.micro-date-pill \{[^}]*flex: 0 0 auto/);
   assert.match(fn('createPosterCard'), /if \(isHeroFullWidth\)[\s\S]*dateStrip\(microDatePillsHtml, true\)/);
 });
 
+test('Markdown offer prose yields the event name while legal copy and regex punctuation stay harmless', () => {
+  const h = harness();
+  h.context.formatVenueString = value => value;
+  vm.runInContext(['formatProperTitle', 'extractSmartTitleFromBody', 'normalizeEventInfo'].map(fn).join('\n'), h.context);
+  const result = h.context.normalizeEventInfo([{ title: '2 INGRESSOS: 23/10 Tokio Marine Hall SP',
+    description: '**Assinante UOL,** Resgate **1 par de ingressos** para curtir o show **Inimigos do Fim,** no Tokio Marine Hall.\nREGRAS DE RESGATE\n1 par de ingressos para qualquer evento no mês vigente.' }]);
+  assert.equal(result.eventTitle, 'Inimigos do Fim');
+  assert.equal(result.venue, 'Tokio Marine Hall SP');
+  assert.doesNotThrow(() => h.context.normalizeEventInfo([{ title: '2 INGRESSOS: Show ( Teatro Claro SP',
+    description: 'Resgate 1 par de ingressos para o show Show (.' }]));
+});
+
+test('catalog keeps capture, source publication, event date and observation separate', () => {
+  const h = harness();
+  const capturedAt = '2026-10-17T12:00:00Z';
+  h.context.mergeCatalogSnapshot({ offers: [{ id: 'worker-one', title: '2 INGRESSOS: 23/10 Teatro Claro SP',
+    link: campaign('one'), firstSeenAt: capturedAt, lastSeenAt: '2026-10-17T14:00:00Z', availability: 'observed', isPortal: true }],
+  stories: [{ storyId: 'story-one', link: campaign('one'), publishedAt: '2026-10-16T10:00:00Z',
+    firstSeenAt: '2026-10-17T13:00:00Z', expiresAt: '2026-10-18T10:00:00Z' },
+    { storyId: 'story-two', link: campaign('unknown'), publishedAt: '2026-10-16T10:00:00Z',
+      expiresAt: '2026-10-18T10:00:00Z' }] });
+  const one = h.context.historyData.active.find(item => item.link === campaign('one'));
+  const unknown = h.context.historyData.active.find(item => item.link === campaign('unknown'));
+  assert.equal(one.capturedAt, Date.parse(capturedAt));
+  assert.equal(one.captureSource, 'worker');
+  assert.equal(one.sourcePublishedAt, Date.parse('2026-10-16T10:00:00Z'));
+  assert.equal(one.lastSourceSeenAt, Date.parse('2026-10-17T14:00:00Z'));
+  assert.equal(one.eventDate, '2026-10-23');
+  assert.equal(unknown.capturedAt, 0);
+  assert.equal(unknown.captureSource, 'unknown');
+  assert.equal(h.context.getOfferYearAndMonth(unknown).year, 'unknown');
+});
+
+test('catalog merge bounds external fields even when called by a local fallback', () => {
+  const h = harness();
+  h.context.mergeCatalogSnapshot({ offers: [{ id: 'worker-long', link: campaign('long'), title: 'A'.repeat(1500),
+    description: 'B'.repeat(25000), partner: 'C'.repeat(800), validity: 'D'.repeat(800),
+    availability: 'observed', isPortal: true }], stories: [] });
+  const [item] = h.context.historyData.active;
+  assert.equal(item.rawTitle.length, 1000);
+  assert.equal(item.description.length, 20000);
+  assert.equal(item.partner.length, 500);
+  assert.equal(item.validity.length, 500);
+  assert.equal(h.context.catalogCampaign(campaign('a') + '?x=' + 'x'.repeat(2048)), null);
+  assert.equal(h.context.validOfferImage('https://example.test/' + 'x'.repeat(2048)), '');
+});
+
+test('legacy firstSeen is raw evidence, never capture chronology or link generation', () => {
+  const legacy = offer('legacy', { firstSeen: now - 1000, capturedAt: 0, captureSource: 'legacy' });
+  const native = offer('native', { capturedAt: now - 2000, firstSeen: now - 2000, captureSource: 'native' });
+  const h = harness({ active: [legacy, native] });
+  assert.equal(h.context.captureTime(h.context.historyData.active[0]), 0);
+  assert.deepEqual(clone(h.context.getOfferYearAndMonth(legacy)), { year: 'unknown', month: -1 });
+  assert.equal(h.context.linkCheckGeneration(legacy), '0');
+  assert.equal(h.context.captureTime(native), now - 2000);
+  h.context.mergeCatalogSnapshot({ offers: [{ id: 'worker-legacy', link: campaign('legacy'), title: 'Legacy',
+    firstSeenAt: new Date(now - 3000).toISOString(), availability: 'observed', isPortal: true }], stories: [] });
+  const migrated = h.context.historyData.active.find(item => item.id === 'legacy');
+  assert.equal(migrated.captureSource, 'worker');
+  assert.equal(migrated.capturedAt, now - 3000);
+  assert.equal(migrated.legacyFirstSeen, now - 1000);
+  assert.equal(h.context.linkCheckGeneration(migrated), String(now - 3000));
+});
+
+test('Home link overlay is per session and unknown checks do not erase confirmed evidence', () => {
+  const active = [offer('one', { title: '23/10 Teatro Claro SP' }), offer('two', { title: '24/10 Teatro Claro SP' })];
+  const h = harness({ active, history: [offer('older-one', { link: campaign('one'), title: '23/10 Teatro Claro SP', soldOutAt: now - 1000 })] });
+  h.context.renderCatalogStatus = () => {};
+  const source = clone(h.context.historyData);
+  const candidates = clone(h.context.hunterActiveLinkCandidates());
+  assert.equal(candidates.length, 2);
+  const result = { ...candidates[0], status: 'unavailable', checkedAt: now, unavailableAt: now };
+  h.context.hunterApplyLinkCheckResults([result]);
+  let sets = h.context.homeOfferSets(h.context.historyData.active, h.context.historyData.history);
+  assert.deepEqual(clone(sets.activeItems).map(item => item.id), ['two']);
+  assert.deepEqual(clone(sets.unavailableItems).map(item => item.id), ['one']);
+  assert.equal(sets.soldOutItems.length, 0, 'an older sold-out copy cannot duplicate an unavailable active campaign');
+  assert.equal(h.context.hunterActiveLinkCandidates().length, 2, 'unavailable links remain candidates for recovery');
+  h.context.hunterApplyLinkCheckResults([{ ...result, status: 'unknown' }]);
+  assert.equal(h.context.homeOfferSets(h.context.historyData.active, []).unavailableItems.length, 1);
+  h.context.hunterApplyLinkCheckResults([{ ...result, status: 'available' }]);
+  sets = h.context.homeOfferSets(h.context.historyData.active, []);
+  assert.equal(sets.activeItems.length, 2);
+  assert.deepEqual(clone(h.context.historyData), source, 'overlay never persists into offer history');
+});
+
+test('Worker availability events attach to the local offer identity used by History', async () => {
+  const h = harness({ active: [offer('local-one', { catalogOfferId: 'worker-one' })] });
+  h.context.INITIAL.nativeBrowser = true;
+  h.context.window = {};
+  h.context.fetch = async () => ({ ok: true, text: async () => JSON.stringify({ ok: true, schemaVersion: 1,
+    events: [{ offerId: 'worker-one', kind: 'restocked', occurredAt: now - 1000 }], nextCursor: null }) });
+  await h.context.refreshAvailabilityEvents();
+  assert.deepEqual(clone(h.context.window.hunterAvailabilityEvents), [{ offerId: 'local-one',
+    eventType: 'restocked', occurredAt: now - 1000, title: 'local-one', imageUrl: '' }]);
+});
+
+test('Ingressos pins highlights, sorts by capture and keeps raw external titles as text', () => {
+  const h = harness();
+  h.context.checkHighlight = (_title, id) => id === 'highlight';
+  const cards = [
+    offer('old', { rawTitle: 'Título antigo', firstSeen: now - 100000 }),
+    offer('unknown', { rawTitle: '<img src=x onerror=alert(1)>', firstSeen: 0 }),
+    offer('new', { rawTitle: 'Título novo', firstSeen: now - 1000 }),
+    offer('highlight', { rawTitle: 'Destaque', firstSeen: now - 200000 }),
+  ];
+  const container = element();
+  h.context.renderIndividualOffers(cards, container);
+  const titles = container.children.map(card => (card.innerHTML.match(/<div class="card-title">([^<]*)<\/div>/) || [])[1]);
+  assert.deepEqual(titles, ['Destaque', 'Título novo', 'Título antigo', '&lt;img src=x onerror=alert(1)&gt;']);
+  assert.doesNotMatch(container.children.map(card => card.innerHTML).join(''), /onclick=/);
+  assert.match(container.children.at(-1).innerHTML, /Data não confirmada/);
+  assert.doesNotMatch(container.children.at(-1).innerHTML, /tag-new/);
+});
+
 test('history creates twelve groups per batch after year and month filters without deleting source records', () => {
   const records = Array.from({ length: 29 }, (_, i) => offer('archive-' + i, { title: '20/10/2026 Evento ' + i }));
-  records.push(offer('other-month', { title: '20/09/2026 Setembro' }), offer('other-year', { title: '20/10/2025 Antigo' }));
+  records.push(offer('other-month', { title: '20/09/2026 Setembro', firstSeen: Date.parse('2026-09-17T12:00:00Z') }),
+    offer('other-year', { title: '20/10/2025 Antigo', firstSeen: Date.parse('2025-10-17T12:00:00Z') }));
   const h = harness({ history: records });
   h.context.currentTab = 'history';
   h.context.selectedHistoryMonth = 9;
-  h.context.buildOfferGroups = (active, history) => [...active, ...history].map(item => ({ key: item.id, parent: item }));
   const container = element();
   const original = clone(h.context.historyData);
-  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  const groups = h.context.buildHistoryGroups(h.context.historyData.history);
+  h.context.renderHistoryMonths(groups, 2026, container);
   const state = h.context.historyRenderState;
   assert.equal(state.rows.length, 29);
   assert.equal(state.cursor, 12);
@@ -249,47 +416,61 @@ test('history creates twelve groups per batch after year and month filters witho
   assert.equal(state.button.parentNode, null);
   assert.deepEqual(clone(h.context.historyData), original);
   h.context.selectedHistoryMonth = 8;
-  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  h.context.renderHistoryMonths(groups, 2026, container);
   assert.equal(h.context.historyRenderState.rows.length, 1);
   assert.equal(container.children.length, 1, 'filter reset replaces the visible page');
   h.context.selectedHistoryMonth = 'all';
   h.context.historySearchQuery = 'SÉTEMBRO';
-  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  h.context.renderHistoryMonths(groups, 2026, container);
   assert.equal(h.context.historyRenderState.rows.length, 1, 'accent-insensitive search runs before the page');
   assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'other-month');
   h.context.historySearchQuery = 'not found';
-  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  h.context.renderHistoryMonths(groups, 2026, container);
   assert.equal(h.context.historyRenderState, null);
   assert.match(container.innerHTML, /Nenhuma oferta encontrada/);
 });
 
+test('History assigns a multi-session group to its latest system capture month, not event month', () => {
+  const poster = 'https://example.test/tokio-poster-1234567890.png';
+  const h = harness({ history: [
+    offer('tokio-sep', { title: '2 INGRESSOS: 23/10 Tokio Marine Hall SP', imageUrl: poster,
+      firstSeen: Date.parse('2026-09-30T12:00:00Z') }),
+    offer('tokio-oct', { title: '2 INGRESSOS: 24/10 Tokio Marine Hall SP', imageUrl: poster,
+      firstSeen: Date.parse('2026-10-02T12:00:00Z') }),
+  ] });
+  const groups = clone(h.context.buildHistoryGroups(h.context.historyData.history));
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].allItems.length, 2);
+  assert.deepEqual(clone(h.context.getOfferYearAndMonth(groups[0])), { year: 2026, month: 9 });
+  h.context.selectedHistoryMonth = 9;
+  h.context.renderHistoryMonths(groups, 2026, element());
+  assert.equal(h.context.historyRenderState.rows.length, 1);
+  h.context.selectedHistoryMonth = 8;
+  h.context.renderHistoryMonths(groups, 2026, element());
+  assert.equal(h.context.historyRenderState, null);
+});
+
 test('history starts at the current São Paulo month and keeps the monthly archive separate from global curation', () => {
   const records = Array.from({ length: 15 }, (_, i) => offer('oct-' + i, { title: '20/10/2026 Evento ' + i }));
-  records.push(offer('curated-current', { title: 'Coldplay 21/10/2026' }), offer('curated-september', { title: 'Coldplay 21/09/2026' }),
-    offer('last-year', { title: '20/03/2025 Teatro' }));
+  records.push(offer('curated-current', { title: 'Coldplay 21/10/2026' }),
+    offer('curated-september', { title: 'Coldplay 21/09/2026', firstSeen: Date.parse('2026-09-17T12:00:00Z') }),
+    offer('last-year', { title: '20/03/2025 Teatro', firstSeen: Date.parse('2025-03-17T12:00:00Z') }));
   const h = harness({ history: records });
   Object.assign(h.context, { selectedHistoryYear: null, selectedHistoryMonth: null, currentTab: 'history',
     CURATED_EDITORS_CHOICE_SEEDS: [], EDITORS_CHOICE_KEYWORDS: ['coldplay'], MONTH_SHORT_LABELS: Array.from({ length: 12 }, (_, i) => 'M' + i) });
   h.context.document.querySelectorAll = () => [];
   vm.runInContext(['historyCurationText', 'getAllCatalogOffers', 'getEditorsChoiceOffers', 'renderHistoryScreen', 'renderHistoryCurated', 'renderHistoryMonthSelector',
     'selectHistoryYear', 'selectHistoryMonth'].map(fn).join('\n'), h.context);
-  const groupedPeriods = [];
-  h.context.buildOfferGroups = (active, history) => {
-    const items = [...active, ...history];
-    groupedPeriods.push(items.map(o => h.context.getOfferYearAndMonth(o).month));
-    return items.map(item => ({ key: item.id, parent: item }));
-  };
   const source = clone(h.context.historyData);
   h.context.renderHistoryScreen();
   assert.equal(h.context.selectedHistoryYear, 2026);
   assert.equal(h.context.selectedHistoryMonth, 9);
   assert.equal(h.context.historyRenderState.cursor, 12);
   assert.equal(h.context.historyRenderState.rows.length, 16);
-  assert.deepEqual(groupedPeriods.map(periods => [...new Set(periods)]), [[9]], 'month counters cannot group the entire archive');
+  assert.deepEqual([...new Set(h.context.historyRenderState.rows.map(row => row.month))], [9]);
   assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current', 'curated-september']);
   h.context.selectHistoryMonth(8);
-  assert.equal(h.context.historyRenderState.rows.length, 1);
-  assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'curated-september');
+  assert.equal(h.context.historyRenderState, null, 'a group spanning capture months belongs to its latest capture');
   h.context.renderHistoryScreen();
   assert.equal(h.context.selectedHistoryMonth, 8, 'catalog refresh keeps the requested month');
   assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current', 'curated-september']);
@@ -300,7 +481,8 @@ test('history starts at the current São Paulo month and keeps the monthly archi
 });
 
 test('empty current month stays empty while global curation and colored history cards remain available', () => {
-  const h = harness({ history: [offer('old', { title: '20/09/2026 Coldplay', isExpired: true })] });
+  const h = harness({ history: [offer('old', { title: '20/09/2026 Coldplay', isExpired: true,
+    firstSeen: Date.parse('2026-09-17T12:00:00Z') })] });
   Object.assign(h.context, { selectedHistoryYear: null, selectedHistoryMonth: null, currentTab: 'history',
     CURATED_EDITORS_CHOICE_SEEDS: [], EDITORS_CHOICE_KEYWORDS: ['coldplay'], MONTH_SHORT_LABELS: Array.from({ length: 12 }, (_, i) => 'M' + i) });
   vm.runInContext(['historyCurationText', 'getAllCatalogOffers', 'getEditorsChoiceOffers', 'renderHistoryScreen', 'renderHistoryCurated', 'renderHistoryMonthSelector'].map(fn).join('\n'), h.context);
@@ -314,7 +496,7 @@ test('empty current month stays empty while global curation and colored history 
   assert.match(historyStyle, /filter: none/);
   assert.match(historyStyle, /opacity: 1/);
   assert.match(template, /\.poster-card\.card-sold-out-grouped \{[^}]*filter: grayscale\(100%\)/);
-  assert.match(fn('createHistoryPosterCard'), /if \(isAllSoldOut\) cardClass \+= ' card-sold-out-grouped'/);
+  assert.match(fn('createHistoryPosterCard'), /if \(isAllSoldOut && !hasUnverifiedSessions\) cardClass \+= ' card-sold-out-grouped'/);
 });
 
 test('history curation preserves compact aliases and ID/link/image evidence without adding duplicate seeds', () => {
@@ -342,15 +524,15 @@ test('history curation preserves compact aliases and ID/link/image evidence with
 test('history global curation includes every highlight across years without a six-card cap, preserving monthly pagination and search', () => {
   const records = Array.from({ length: 8 }, (_, i) => offer('highlight-' + i, {
     title: (i % 2 ? 'Coldplay ' : 'Favorito ') + (i + 1) + '/09/' + (2024 + i % 3),
+    firstSeen: Date.parse((2024 + i % 3) + '-09-17T12:00:00Z'),
   }));
   records.push(offer('current-month', { title: '20/10/2026 Comum' }));
   const h = harness({ history: records });
   Object.assign(h.context, { selectedHistoryYear: 2026, selectedHistoryMonth: 9, currentTab: 'history',
     EDITORS_CHOICE_KEYWORDS: ['coldplay'], checkHighlight: title => title.startsWith('Favorito') });
   vm.runInContext(['historyCurationText', 'getEditorsChoiceOffers', 'renderHistoryCurated'].map(fn).join('\n'), h.context);
-  h.context.buildOfferGroups = (active, history) => [...active, ...history].map(item => ({ key: item.id, parent: item }));
   const source = clone(h.context.historyData);
-  h.context.renderHistoryMonths(h.context.historyData.history, 2026, element());
+  h.context.renderHistoryMonths(h.context.buildHistoryGroups(h.context.historyData.history), 2026, element());
   const monthly = h.context.historyRenderState;
   assert.deepEqual(clone(monthly.rows).map(row => row.group.parent.id), ['current-month']);
   h.context.renderHistoryCurated(h.context.historyData.history);
@@ -400,6 +582,122 @@ test('same campaign across accounts and title-only records never borrow another 
   assert.notEqual(h.context.redemptionIdentity({ user: 'leosaquetto', url: campaign('shared'), id: 'voucher-1' }),
     h.context.redemptionIdentity({ user: 'leosaquetto', url: campaign('shared'), id: 'voucher-2' }));
   assert.equal(h.context.redemptionIdentity({ user: 'leosaquetto', title: 'Same', url: campaign('shared') }), null);
+  assert.equal(h.context.redemptionIdentity({ user: 'leosaquetto', id: 'voucher-1',
+    url: 'https://clube.uol.com.br/perfil/beneficios/voucher-1' }),
+  h.context.redemptionIdentity({ user: 'leosaquetto', id: 'voucher-1' }));
+  assert.equal(h.context.redemptionIdentity({ user: 'leosaquetto', id: 'voucher-1',
+    url: 'https://clube.uol.com.br/perfil/beneficios/another' }), null);
+});
+
+test('verified receipt fields beat a stale exact-identity cache without restoring voucher bytes', () => {
+  const verified = { id: 'voucher-1', user: 'leosaquetto', title: 'Título oficial', receiptVerified: true, url: 'https://clube.uol.com.br/voucher/one',
+    thumb: 'https://example.test/official.jpg', redeemedAt: '2026-10-17T12:00:00Z' };
+  const stale = { ...verified, title: 'Título antigo', thumb: 'https://example.test/stale.jpg',
+    redeemedAt: '2025-10-17T12:00:00Z', voucherImageDataUrl: 'data:image/png;base64,AAAA', cupomCode: 'CUPOM' };
+  const h = harness({ bundled: [verified], saved: [stale] });
+  const merged = clone(h.context.getAllRedemptionsList());
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].title, verified.title);
+  assert.equal(merged[0].thumb, verified.thumb);
+  assert.equal(merged[0].redeemedAt, verified.redeemedAt);
+  assert.equal(merged[0].cupomCode, 'CUPOM');
+  assert.equal(merged[0].voucherImageDataUrl, undefined);
+});
+
+test('a newer native receipt remains authoritative after cached records are reread', () => {
+  const initial = { id: 'voucher-1', user: 'leosaquetto', title: 'Título inicial', url: 'https://clube.uol.com.br/voucher/one' };
+  const live = { ...initial, title: 'Título verificado', redeemedAt: '2026-10-17T12:00:00Z' };
+  const h = harness({ bundled: [initial], saved: [{ ...initial, title: 'Título antigo' }] });
+  h.context.window = vm.runInContext('({ hunterVerifiedRedemptions: new Map() })', h.context);
+  h.context.window.hunterVerifiedRedemptions.set(h.context.redemptionIdentity(live), live);
+  const [record] = clone(h.context.getAllRedemptionsList());
+  assert.equal(record.title, live.title);
+  assert.equal(record.redeemedAt, live.redeemedAt);
+});
+
+test('local myRedemptions remain visible beside official receipts without forging verification or native vouchers', () => {
+  const receiptUrl = id => 'https://clube.uol.com.br/perfil/beneficios/' + id;
+  const official = { id: 'official-1', user: 'leosaquetto', url: receiptUrl('official-1'), title: 'Título oficial',
+    receiptVerified: true, receiptVerifiedAt: now, nativeVoucherIndex: 3, hasNativeVoucher: true };
+  const oldInitial = { id: 'old-1', user: 'leosaquetto', url: receiptUrl('old-1'), title: 'Recibo antigo' };
+  const forged = { ...official, title: 'Título local adulterado', receiptVerifiedAt: now + 1000,
+    nativeVoucherIndex: 99, hasNativeVoucher: false };
+  const localOnly = { id: 'local-1', user: 'gaoriel', url: receiptUrl('local-1'), title: 'Resgate local',
+    partner: 'Campanhas de Ingressos', receiptVerified: true, receiptVerifiedAt: now,
+    nativeVoucherIndex: 77, hasNativeVoucher: true };
+  const h = harness({ bundled: [official, oldInitial], settings: { realRedemptions: [forged], myRedemptions: [forged, localOnly] },
+    saved: [{ ...oldInitial, receiptVerified: true, nativeVoucherIndex: 12, hasNativeVoucher: true }] });
+  const records = clone(h.context.getAllRedemptionsList());
+  assert.equal(records.length, 3);
+  const verified = records.find(record => record.id === 'official-1');
+  assert.equal(verified.title, 'Título oficial');
+  assert.equal(verified.nativeVoucherIndex, 3);
+  assert.equal(verified.hasNativeVoucher, true);
+  assert.equal(verified.receiptVerifiedAt, now);
+  assert.equal(verified.cacheUnverified, undefined);
+  assert.equal(h.context.isVerifiedReceipt(verified), true);
+  const local = records.find(record => record.id === 'local-1');
+  assert.equal(local.cacheUnverified, true);
+  assert.equal(local.receiptVerified, undefined);
+  assert.equal(local.receiptVerifiedAt, undefined);
+  assert.equal(local.nativeVoucherIndex, undefined);
+  assert.equal(local.hasNativeVoucher, undefined);
+  assert.equal(h.context.isVerifiedReceipt(local), false);
+  assert.equal(h.context.isVerifiedReceipt({ ...local, receiptVerified: true }), false);
+  const legacy = records.find(record => record.id === 'old-1');
+  assert.equal(legacy.cacheUnverified, true);
+  assert.equal(legacy.receiptVerified, undefined);
+  assert.equal(legacy.nativeVoucherIndex, undefined);
+  assert.equal(h.context.isVerifiedReceipt(legacy), false);
+});
+
+test('History date strip starts at the end and restores the position chosen for each group', () => {
+  const h = harness();
+  const makeCard = (section, key, width) => {
+    const handlers = new Map();
+    const strip = { dataset: {}, scrollWidth: width, clientWidth: 100, scrollLeft: 0,
+      addEventListener(name, callback) { if (!handlers.has(name)) handlers.set(name, []); handlers.get(name).push(callback); },
+      querySelectorAll: () => [],
+      fire(name) { for (const callback of handlers.get(name) || []) callback({ stopPropagation() {} }); } };
+    const card = { hunterHistoryDateKey: section + ':' + key,
+      querySelectorAll(selector) { return selector.includes('data-history-end') ? strip.dataset.historyEnd ? [strip] : [] : [strip]; } };
+    h.context.wireDateStrips(card, true);
+    h.context.alignHistoryDateStrips(card);
+    return strip;
+  };
+  const first = makeCard('timeline', 'show', 400);
+  assert.equal(first.scrollLeft, 300);
+  first.fire('scroll');
+  assert.equal(makeCard('timeline', 'show', 500).scrollLeft, 400, 'automatic first alignment is not treated as a gesture');
+  const moved = makeCard('timeline', 'show', 500);
+  moved.fire('touchstart'); moved.scrollLeft = 95; moved.fire('scroll');
+  assert.equal(makeCard('timeline', 'show', 550).scrollLeft, 95, 'catalog refresh keeps the chosen earlier date visible');
+  assert.equal(makeCard('curated', 'show', 550).scrollLeft, 450, 'a second section retains its own position');
+  const returnedToEnd = makeCard('timeline', 'show', 550);
+  returnedToEnd.fire('pointerdown'); returnedToEnd.scrollLeft = 450; returnedToEnd.fire('scroll');
+  assert.equal(makeCard('timeline', 'show', 650).scrollLeft, 550, 'a user-selected end follows newly appended dates');
+});
+
+test('unverified legacy History sessions show neutral dates and never look sold out', () => {
+  const h = harness();
+  const legacy = offer('legacy', { title: '18/10/2026 Show', cacheUnverified: true });
+  const pills = h.context.renderSessionDatePills([], [legacy]);
+  assert.match(pills, /Não verificado/);
+  assert.match(pills, /pill-unverified/);
+  assert.doesNotMatch(pills, /pill-soldout|pill-today|, esgotada|, disponível/);
+  Object.assign(h.context, {
+    isEditorsChoice: () => false, extractStateCode: () => 'SP', posterImageMarkup: () => '',
+    getRedeemedUsersForGroup: () => [], renderRedeemedFriendsPill: () => '', wirePosterImages() {},
+    openGroupSessionsModal() {}, openDetails() {},
+  });
+  vm.runInContext(fn('createHistoryPosterCard'), h.context);
+  const group = { key: 'legacy-show', category: 'TEATRO', activeItems: [], soldOutItems: [legacy], allItems: [legacy],
+    parent: legacy, norm: { eventTitle: 'Show', venue: 'Teatro' }, isAllSoldOut: true,
+    hasStory: false, hasPortal: true, latestCapturedAt: 0 };
+  const card = h.context.createHistoryPosterCard(group, 0, false);
+  assert.match(card.innerHTML, /Não verificado/);
+  assert.doesNotMatch(card.className, /card-sold-out-grouped/);
+  assert.doesNotMatch(card.innerHTML, /<span>Esgotado<\/span>/);
 });
 
 test('timeline draws thumbnails for offers and redemptions, with unknown date last', () => {
@@ -413,7 +711,7 @@ test('timeline draws thumbnails for offers and redemptions, with unknown date la
   assert.equal((html.match(/class="timeline-thumbnail"/g) || []).length, 2);
   assert.match(html, /poster\.jpg/);
   assert.match(html, /voucher\.jpg/);
-  assert.match(html, /onerror="this.remove\(\)"/);
+  assert.doesNotMatch(html, /onerror=/, 'untrusted image URLs do not need inline handlers');
 });
 
 test('common cards enlarge and separate date pills while compact highlights retain original sizing', () => {
@@ -489,9 +787,10 @@ test('poster CSS preserves full vertical source and date strip is outside trunca
   const strip = template.match(/\.micro-dates-inline \{[^}]+}/)[0];
   assert.match(strip, /overflow-x: auto/);
   assert.match(strip, /overscroll-behavior-x: contain/);
-  assert.match(template, /<div class="poster-title">\$\{norm\.eventTitle\}<\/div>\s*\$\{dateStrip/);
+  assert.match(template, /<div class="poster-title">\$\{htmlAttribute\(norm\.eventTitle\)\}<\/div>\s*\$\{dateStrip/);
   const h = harness();
-  assert.match(h.context.dateStrip('dates'), /onclick="event\.stopPropagation\(\)"/);
+  assert.doesNotMatch(h.context.dateStrip('dates'), /onclick=/);
+  assert.match(fn('wireDateStrips'), /event\.stopPropagation\(\)/);
 });
 
 

@@ -4,6 +4,7 @@ export const CATALOG_TTL_SECONDS = 120;
 export const CATALOG_OFFER_LIMIT = 300;
 export const CATALOG_STORY_LIMIT = 30;
 export const CATALOG_READ_RESERVE = 700;
+export const AVAILABILITY_EVENT_PAGE_LIMIT = 100;
 
 export const CATALOG_OFFERS_SQL = `SELECT id, link, preview_title, title, category,
   image_url, card_image_url, partner_image_url, partner_name, description, validity,
@@ -146,6 +147,50 @@ function corsHeaders() {
 
 function etagMatches(value, etag) {
   return String(value || "").split(",").some(part => part.trim() === "*" || part.trim().replace(/^W\//, "") === etag);
+}
+
+export function decodeAvailabilityEventCursor(value) {
+  if (typeof value !== "string" || !value || value.length > 256 ||
+      !/^[A-Za-z0-9_-]+$/.test(value)) return null;
+  try {
+    const encoded = value.replace(/-/g, "+").replace(/_/g, "/");
+    const [occurredAt, id] = JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, "=")));
+    if (typeof occurredAt !== "string" || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(occurredAt) ||
+        new Date(occurredAt).toISOString() !== occurredAt ||
+        !Number.isSafeInteger(id) || id < 1) return null;
+    return { occurredAt, id };
+  } catch { return null; }
+}
+
+function encodeAvailabilityEventCursor(row) {
+  return btoa(JSON.stringify([row.occurred_at, row.id]))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+export function buildAvailabilityEventsPage(rows) {
+  const page = rows.slice(0, AVAILABILITY_EVENT_PAGE_LIMIT);
+  return { ok: true, schemaVersion: 1,
+    events: page.map(row => ({ offerId: row.offer_id, kind: row.kind, occurredAt: row.occurred_at })),
+    nextCursor: rows.length > AVAILABILITY_EVENT_PAGE_LIMIT && page.length
+      ? encodeAvailabilityEventCursor(page[page.length - 1]) : null };
+}
+
+export async function serveAvailabilityEvents(request, { getEvents }) {
+  const headers = { ...corsHeaders(), "Cache-Control": "no-store" };
+  if (request.method === "OPTIONS") return new Response(null, { status: 204,
+    headers: { ...headers, "Access-Control-Max-Age": "86400" } });
+  if (request.method !== "GET") return Response.json({ ok: false, error: "method_not_allowed" },
+    { status: 405, headers: { ...headers, Allow: "GET, OPTIONS" } });
+  const value = new URL(request.url).searchParams.get("cursor");
+  const cursor = value === null ? null : decodeAvailabilityEventCursor(value);
+  if (value !== null && !cursor) return Response.json({ ok: false, error: "invalid_cursor" },
+    { status: 400, headers });
+  try {
+    return Response.json(await getEvents(cursor), { headers });
+  } catch {
+    return Response.json({ ok: false, error: "availability_events_unavailable" },
+      { status: 503, headers: { ...headers, "Retry-After": "120" } });
+  }
 }
 
 export function catalogCacheKey(request, versionId) {

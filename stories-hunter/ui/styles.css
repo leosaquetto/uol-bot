@@ -1054,6 +1054,8 @@
       margin: 0;
     }
     .micro-date-pill {
+      appearance: none;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -1099,6 +1101,12 @@
     .micro-date-pill.pill-soldout svg {
       color: #94a3b8;
     }
+    .micro-date-pill.pill-unverified {
+      border-color: rgba(148, 163, 184, 0.45);
+      color: #cbd5e1;
+      background: rgba(30, 41, 59, 0.78);
+    }
+    .micro-date-pill.pill-unverified svg { color: #cbd5e1; }
     .micro-dates-inline {
       display: flex;
       align-items: center;
@@ -1116,12 +1124,17 @@
     }
     .micro-dates-inline::-webkit-scrollbar { display: none; }
     .micro-dates-inline .micro-date-pill { flex: 1 1 0; justify-content: center; min-width: 0; margin: 0; }
-    .micro-dates-inline.dates-scroll .micro-date-pill { flex: 0 0 calc((100% - 10px) / 3); }
     .micro-dates-inline.dates-compact .micro-date-pill { flex: 0 0 auto; min-width: auto; }
+    .micro-dates-inline.dates-scroll .micro-date-pill { flex: 0 0 29%; min-width: 0; }
+    .micro-dates-inline .micro-date-pill:focus-visible { outline: 2px solid #38bdf8; outline-offset: -2px; }
     .micro-dates-inline:not(.dates-compact) { margin-top: 10px; }
     .micro-dates-inline:not(.dates-compact) .micro-date-pill { font-size: 10px; padding: 5px 4px; gap: 3px; letter-spacing: 0.3px; }
     .micro-dates-inline:not(.dates-compact) .micro-date-pill svg { width: 10px; height: 10px; }
     .micro-dates-inline:not(.dates-compact) .micro-date-pill span { white-space: normal; text-align: center; }
+    @media (prefers-reduced-motion: reduce) {
+      .micro-date-pill.pill-today, .poster-card, .card { animation: none !important; transition-duration: 0.01ms !important; }
+      .micro-dates-inline { scroll-behavior: auto !important; }
+    }
     .timeline-icon-box { position: relative; overflow: hidden; }
     .timeline-thumbnail { position: absolute; height: 100%; width: auto; max-width: none; left: 50%; transform: translateX(-50%); }
     .nowrap-title-tag {

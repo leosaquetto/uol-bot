@@ -4,8 +4,10 @@ import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagr
 import { HunterIntakeQueue, HUNTER_METADATA_KEY,
   readHunterIntakeJson, publicHunterError } from "./hunter-intake.js";
 import { HunterAccessRegistry, HUNTER_ACCESS_KEY, hunterAccessProof, hunterAccessFailure } from "./hunter-access.js";
-import { buildCatalog, catalogBudgetAllowed, serveCatalog, CATALOG_TTL_SECONDS,
-  CATALOG_OFFER_LIMIT, CATALOG_STORY_LIMIT, CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "./catalog.js";
+import { buildCatalog, buildAvailabilityEventsPage, catalogBudgetAllowed,
+  serveCatalog, serveAvailabilityEvents, AVAILABILITY_EVENT_PAGE_LIMIT,
+  CATALOG_TTL_SECONDS, CATALOG_OFFER_LIMIT, CATALOG_STORY_LIMIT,
+  CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "./catalog.js";
 
 import {
   buildDedupeKeys,
@@ -1917,6 +1919,38 @@ export class UolTelegramShadow extends DurableObject {
         CREATE INDEX IF NOT EXISTS offers_link_first_seen_v26
           ON offers(link, first_seen_at, id);
         INSERT INTO _sql_schema_migrations (id) VALUES (26);
+      `);
+    }
+    if (currentVersion < 27) {
+      this.sqlExec(`
+        CREATE TABLE IF NOT EXISTS offer_availability_events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          offer_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('sold_out', 'restocked')),
+          occurred_at TEXT NOT NULL,
+          UNIQUE (offer_id, kind, occurred_at)
+        );
+        CREATE INDEX IF NOT EXISTS offer_availability_events_recent_v27
+          ON offer_availability_events(occurred_at DESC, id DESC);
+        CREATE TRIGGER IF NOT EXISTS offer_availability_sold_out_v27
+          AFTER UPDATE OF sold_out_at, status ON offers
+          WHEN NEW.sold_out_at <> ''
+            AND NEW.sold_out_at <> OLD.sold_out_at
+            AND NEW.status IN ('sold_out', 'shadow_sold_out')
+          BEGIN
+            INSERT OR IGNORE INTO offer_availability_events(offer_id, kind, occurred_at)
+              VALUES (NEW.id, 'sold_out', NEW.sold_out_at);
+          END;
+        CREATE TRIGGER IF NOT EXISTS offer_availability_restocked_v27
+          AFTER UPDATE OF restocked_at, status ON offers
+          WHEN NEW.restocked_at <> ''
+            AND NEW.restocked_at <> OLD.restocked_at
+            AND OLD.status IN ('sold_out', 'shadow_sold_out')
+          BEGIN
+            INSERT OR IGNORE INTO offer_availability_events(offer_id, kind, occurred_at)
+              VALUES (NEW.id, 'restocked', NEW.restocked_at);
+          END;
+        INSERT INTO _sql_schema_migrations (id) VALUES (27);
       `);
     }
   }
@@ -9047,6 +9081,22 @@ export class UolTelegramShadow extends DurableObject {
     });
   }
 
+  getAvailabilityEvents(cursor = null) {
+    const rows = cursor
+      ? this.sqlExec(
+        `SELECT id, offer_id, kind, occurred_at FROM offer_availability_events
+         WHERE (occurred_at, id) < (?, ?)
+         ORDER BY occurred_at DESC, id DESC LIMIT ?`,
+        cursor.occurredAt, cursor.id, AVAILABILITY_EVENT_PAGE_LIMIT + 1,
+      ).toArray()
+      : this.sqlExec(
+        `SELECT id, offer_id, kind, occurred_at FROM offer_availability_events
+         ORDER BY occurred_at DESC, id DESC LIMIT ?`,
+        AVAILABILITY_EVENT_PAGE_LIMIT + 1,
+      ).toArray();
+    return buildAvailabilityEventsPage(rows);
+  }
+
   getPublicOffers(limit = 4) {
     const requestedLimit = Number(limit || 4);
     const boundedLimit = Number.isFinite(requestedLimit)
@@ -9394,6 +9444,10 @@ export default {
         return serveCatalog(request, { versionId: env.WORKER_VERSION?.id,
           getCatalog: () => env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME).getPublicCatalog(),
           cache: caches.default, waitUntil: task => ctx.waitUntil(task) });
+      }
+      if (url.pathname === "/catalog/availability-events") {
+        return serveAvailabilityEvents(request, { getEvents: cursor =>
+          env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME).getAvailabilityEvents(cursor) });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
       if (url.pathname.startsWith("/hunter-access/")) {
