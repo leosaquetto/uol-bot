@@ -3,255 +3,185 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const B = require('./native/instagram-browser.js');
 const C = require('./collector.js');
-
-const ORIGIN = 'https://www.instagram.com';
-const PROFILE = '/api/v1/users/web_profile_info/?username=clubeuol';
-const OWNER = '12345678901234567890';
-const STORY = '45678901234567890123';
-const REELS = '/api/v1/feed/reels_media/?reel_ids=' + OWNER;
-const NOW = Date.parse('2026-10-19T15:00:00Z');
-const SECRET = 'private-synthetic-value';
+const ORIGIN = 'https://www.instagram.com', PATH = '/stories/clubeuol/';
+const OWNER = '12345678901234567890', STORY = '45678901234567890123';
+const NOW = Date.parse('2026-10-19T15:00:00Z'), SECRET = 'private-synthetic-value';
 const LINK = 'https://clube.uol.com.br/campanhasdeingresso/pRp-expo';
-const IMAGE = 'https://scontent.cdninstagram.com/expo.jpg?oe=123';
-const profile = () => ({ data: { user: { id: OWNER, username: 'clubeuol', email: SECRET } }, viewer: { sessionid: SECRET } });
-function reels() {
-  const taken = NOW / 1000 - 60;
-  return { status: 'ok', csrf_token: SECRET, viewer: { password: SECRET }, reels: { [OWNER]: {
-    id: OWNER, user: { id: OWNER, username: 'clubeuol', phone_number: SECRET },
-    items: [{ id: STORY + '_' + OWNER, pk: STORY, taken_at: taken, expiring_at: taken + 86400,
-      original_width: 1080, original_height: 1920, viewer: { cookies: SECRET },
-      image_versions2: { candidates: [{ width: 1080, height: 1920, url: IMAGE, private: SECRET }] },
-      story_link_stickers: [{ story_link: { url: LINK, private: SECRET }, viewer: SECRET }] }],
-  }, '111': { private: SECRET } } };
+function payload() {
+  return { require: [['module', [], null, [{ __bbox: { result: { data: {
+    xdt_viewer: { password: SECRET }, xdt_api__v1__feed__reels_media: { reels_media: [{
+      id: OWNER, user: { id: OWNER, pk: OWNER, username: 'clubeuol', email: SECRET },
+      viewers: [SECRET], items: [{ id: STORY + '_' + OWNER, pk: STORY, taken_at: NOW / 1000 - 60, expiring_at: NOW / 1000 + 86340,
+        original_width: 1080, original_height: 1920, user: { id: OWNER, pk: OWNER }, viewer: { cookies: SECRET },
+        image_versions2: { candidates: [{ width: 1080, height: 1920, url: 'https://scontent.cdninstagram.com/expo.jpg', private: SECRET }] },
+        story_link_stickers: [{ story_link: { url: LINK, private: SECRET } }] }]
+    }] }
+  } } } }]]] };
 }
-function apiResponse(path, options = {}) {
-  const bytes = new TextEncoder().encode(options.raw ?? JSON.stringify(Object.hasOwn(options, 'value') ? options.value : profile()));
-  let read = false;
-  return { status: options.status ?? 200, type: options.responseType ?? 'basic', url: options.url ?? ORIGIN + path,
-    headers: { get: key => ({ 'content-type': options.type ?? 'application/json; charset=utf-8', 'retry-after': options.retryAfter ?? '' })[key] ?? null },
-    body: { getReader: () => ({ async read() { if (read) return { done: true }; read = true; return { done: false, value: bytes }; },
-      async cancel() { options.onCancel?.(); } }) } };
-}
-function executePage(code, { location = { origin: ORIGIN, pathname: '/clubeuol/' }, response = {}, fetchImpl, strictBridge = false } = {}) {
-  const calls = [];
-  const promise = new Promise((resolve, reject) => {
-    const context = { location, AbortController, TextDecoder, setTimeout: () => 1, clearTimeout() {},
-      completion: value => resolve(JSON.parse(value)),
-      fetch: async (path, options) => { calls.push({ path, options }); return fetchImpl ? fetchImpl(path, options) : apiResponse(path, response); } };
+const target = value => value.require[0][3][0].__bbox.result.data.xdt_api__v1__feed__reels_media;
+function execute(code, options = {}) {
+  let ticks = 0;
+  return new Promise((resolve, reject) => {
+    const context = { location: options.location || { origin: ORIGIN, pathname: PATH },
+      document: { querySelector: () => options.login || null,
+        querySelectorAll: selector => selector === 'button,[role="button"]' ? (options.buttons || []) : (options.scripts ? options.scripts(ticks) : [options.raw ?? JSON.stringify(payload())]).map(textContent => ({ textContent })) },
+      performance: { getEntriesByType: () => [{ responseStatus: options.status }] },
+      Date: { now: () => ticks * 250 }, setTimeout: fn => { ticks++; fn(); },
+      completion: value => queueMicrotask(() => resolve(JSON.parse(value))),
+      fetch: () => { throw Error('No collector fetch permitted'); },
+    };
     try {
       const immediate = vm.runInNewContext(code, context);
-      if (strictBridge && immediate && typeof immediate.then === 'function') {
-        immediate.catch(() => {});
-        reject(new Error('JavaScript execution returned a result of an unsupported type'));
-      } else Promise.resolve(immediate).catch(reject);
+      if (immediate && typeof immediate.then === 'function') reject(Error('Unsupported immediate Promise'));
     } catch (error) { reject(error); }
   });
-  return { promise, calls };
 }
-function page(path = PROFILE, options = {}, maxBytes = 4194304) {
-  const code = '(' + B.pageRequest.toString() + ')(' + JSON.stringify(path) + ',' + maxBytes +
-    ',(() => { const error = () => new Error(); return ' + C.losslessJSON.toString() + '; })());';
-  return executePage(code, options);
+function page(options = {}) {
+  return execute('(' + B.pageCapture.toString() + ')((() => { const error = () => new Error(); return ' + C.losslessJSON.toString() + '; })()); "";', options);
 }
 function browser(options = {}) {
   const views = [], calls = [], timers = [];
   const adapter = B.create({ losslessJSON: C.losslessJSON,
-    timer(milliseconds, callback) { const timer = { milliseconds, callback, invalidated: false, invalidate() { this.invalidated = true; } }; timers.push(timer); return timer; },
+    timer(milliseconds, callback) { const t = { milliseconds, callback, invalidate() {} }; timers.push(t); return t; },
     webView() {
       const location = { origin: ORIGIN, pathname: '/' };
       const view = {
-        async loadURL(url) {
-          calls.push({ action: 'load', url }); location.origin = new URL(url).origin; location.pathname = new URL(url).pathname;
-          if (options.load) await options.load(url, location);
-        },
-        async present(fullscreen) { calls.push({ action: 'present', fullscreen }); if (options.present) await options.present(location); },
+        async loadURL(url) { calls.push(['load', url]); location.pathname = new URL(url).pathname; if (options.load) await options.load(location); },
+        async present() { calls.push(['present']); if (options.present) await options.present(location); },
         async evaluateJavaScript(code, callback) {
-          calls.push({ action: 'evaluate', callback, origin: location.origin });
-          if (!callback) return JSON.stringify({ origin: location.origin, path: location.pathname });
           if (options.evaluate) return options.evaluate(code, callback);
-          const result = executePage(code, { location, response: options.response, fetchImpl: options.fetchImpl, strictBridge: options.strictBridge });
-          const output = await result.promise; calls.push(...result.calls.map(call => ({ action: 'fetch', ...call })));
-          return JSON.stringify(output);
-        },
-      };
-      views.push(view); return view;
-    },
+          if (!callback) return JSON.stringify({ origin: location.origin, path: location.pathname });
+          return JSON.stringify(await execute(code, { location, ...options }));
+        }
+      }; views.push(view); return view;
+    }
   });
-  return { adapter, calls, views, timers };
+  return { adapter, views, calls, timers };
 }
 
-test('profile projection preserves an unquoted long ID and strips private response fields inside the page', async () => {
-  const raw = JSON.stringify(profile()).replace('"id":"' + OWNER + '"', '"id":' + OWNER);
-  const request = page(PROFILE, { response: { raw } });
-  const result = await request.promise;
-  assert.deepEqual(JSON.parse(result.body), { data: { user: { id: OWNER, username: 'clubeuol' } } });
-  assert.doesNotMatch(JSON.stringify(result), /private-synthetic|sessionid|email|viewer|cookies|password/);
-  assert.equal(request.calls[0].path, PROFILE);
-  assert.equal(request.calls[0].options.credentials, 'same-origin');
-  assert.equal(request.calls[0].options.redirect, 'manual');
-  assert.doesNotMatch(JSON.stringify(request.calls[0].options.headers), /Cookie|Authorization|sessionid|token|password/);
+test('official page JSON preserves large IDs, projects only target and strips private fields', async () => {
+  const value = payload(); target(value).reels_media.push({ user: { username: 'another' }, private: SECRET });
+  const raw = JSON.stringify(value).replaceAll('"id":"' + OWNER + '"', '"id":' + OWNER).replace('"pk":"' + STORY + '"', '"pk":' + STORY);
+  const result = await page({ raw });
+  assert.equal(result.profile.id, OWNER); assert.equal(result.reels.reels_media.length, 1);
+  const profile = C.profileIdentity({ data: { user: result.profile } });
+  const offers = C.parseReels(result.reels, profile, NOW);
+  assert.equal(offers[0].storyId, STORY); assert.equal(offers[0].link, LINK);
+  assert.doesNotMatch(JSON.stringify(result), /private-synthetic|email|password|viewer|cookies|csrf/);
 });
-
-test('reel projection keeps only capture metadata and the collector accepts precise numeric IDs', async () => {
-  const raw = JSON.stringify(reels()).replaceAll('"id":"' + OWNER + '"', '"id":' + OWNER).replace('"pk":"' + STORY + '"', '"pk":' + STORY);
-  const result = await page(REELS, { response: { raw } }).promise;
-  const projected = JSON.parse(result.body);
-  assert.deepEqual(Object.keys(projected.reels), [OWNER]);
-  assert.equal(projected.reels[OWNER].items[0].pk, STORY);
-  const offers = C.parseReels(projected, { id: OWNER, username: 'clubeuol' }, NOW);
-  assert.equal(offers.length, 1); assert.equal(offers[0].storyId, STORY); assert.equal(offers[0].link, LINK);
-  assert.doesNotMatch(JSON.stringify(result), /private-synthetic|csrf|phone_number|viewer|cookies|password/);
-  const media = { status: 'ok', reels_media: [reels().reels[OWNER]] };
-  const alternate = await page(REELS, { response: { value: media } }).promise;
-  assert.equal(C.parseReels(JSON.parse(alternate.body), { id: OWNER, username: 'clubeuol' }, NOW).length, 1);
-});
-
-test('expired login, challenge and foreign page origin stop before querying Instagram', async () => {
-  for (const location of [
-    { origin: ORIGIN, pathname: '/accounts/login/' }, { origin: ORIGIN, pathname: '/challenge/' },
-    { origin: ORIGIN, pathname: '/checkpoint/' }, { origin: ORIGIN, pathname: '/consent/' },
-    { origin: 'https://example.invalid', pathname: '/clubeuol/' },
-  ]) {
-    const request = page(PROFILE, { location });
-    assert.deepEqual(await request.promise, { error: 'login_required' }); assert.equal(request.calls.length, 0);
-  }
-  for (const value of [{ message: 'login_required', password: SECRET }, { is_logged_in: false }, { challenge_required: true }]) {
-    assert.deepEqual(await page(PROFILE, { response: { value } }).promise, { error: 'login_required', statusCode: 200 });
-  }
-  assert.deepEqual(await page(PROFILE, { response: { status: 0, responseType: 'opaqueredirect' } }).promise, { error: 'login_required' });
-});
-
-test('malformed API responses and excessive collections never return their body', async () => {
-  for (const response of [
-    { raw: '<html>' + SECRET + '</html>', type: 'text/html' }, { raw: '{"password":' + SECRET },
-    { value: [] }, { value: null }, { value: { data: { user: { id: {} } } } },
-  ]) {
-    const result = await page(PROFILE, { response }).promise;
-    assert.ok(result.error); assert.doesNotMatch(JSON.stringify(result), /private-synthetic/); assert.equal(result.body, undefined);
-  }
-  const many = reels(); many.reels[OWNER].items = Array(101).fill(many.reels[OWNER].items[0]);
-  assert.equal((await page(REELS, { response: { value: many } }).promise).error, 'browser_response_invalid');
-});
-
-test('API byte limit cancels reading and non-200 responses retain only safe status metadata', async () => {
-  let cancelled = false;
-  const large = await page(PROFILE, { response: { raw: 'é'.repeat(40), onCancel: () => { cancelled = true; } } }, 64).promise;
-  assert.equal(large.error, 'body_limit'); assert.equal(cancelled, true);
-  for (const status of [401, 403, 429, 500]) {
-    const result = await page(PROFILE, { response: { status, raw: SECRET, retryAfter: '3600' } }).promise;
-    assert.equal(result.statusCode, status); assert.equal(result.body, ''); assert.equal(result.retryAfter, '3600');
-    assert.doesNotMatch(JSON.stringify(result), /private-synthetic/);
+test('scoped empty reel is empty; absent, unrelated or unscoped data is unknown', async () => {
+  const value = payload(); target(value).reels_media[0].items = [];
+  const empty = await page({ raw: JSON.stringify(value) });
+  assert.deepEqual(C.parseReels(empty.reels, C.profileIdentity({ data: { user: empty.profile } }), NOW), []);
+  for (const value of [{}, { xdt_api__v1__feed__reels_media: { reels_media: [] } }, { xdt_api__v1__feed__reels_media: { reels_media: [{ user: { username: 'other' }, items: [] }] } }]) {
+    assert.equal((await page({ raw: JSON.stringify(value) })).error, 'browser_story_data_missing');
   }
 });
-
-test('network failure remains a bounded safe error without returning the underlying exception', async () => {
-  const request = page(PROFILE, { fetchImpl: async () => { throw new TypeError(SECRET); } });
-  const result = await request.promise;
-  assert.equal(result.error, 'browser_network_error'); assert.doesNotMatch(JSON.stringify(result), /private-synthetic/);
-  const h = browser({ fetchImpl: async () => { throw new TypeError(SECRET); } });
-  await assert.rejects(h.adapter.request(PROFILE), error => error.status === 'unknown' && !String(error).includes(SECRET));
-  assert.equal(h.calls.filter(call => call.action === 'present').length, 0);
+test('bounded hydration waits for inserted JSON without extra requests', async () => {
+  const result = await page({ scripts: ticks => ticks < 3 ? [] : [JSON.stringify(payload())] });
+  assert.equal(result.profile.id, OWNER);
 });
-
-test('automatic capture evaluates fetch in the real Instagram page without presenting login', async () => {
-  const h = browser();
-  const result = await h.adapter.request(PROFILE);
-  assert.equal(JSON.parse(result.body).data.user.id, OWNER);
-  assert.deepEqual(h.calls.filter(call => call.action === 'load'), [{ action: 'load', url: ORIGIN + '/clubeuol/' }]);
-  assert.equal(h.calls.filter(call => call.action === 'present').length, 0);
-  assert.ok(h.calls.some(call => call.action === 'evaluate' && call.callback === true && call.origin === ORIGIN));
-  assert.equal(h.calls.filter(call => call.action === 'fetch').length, 1);
-  await h.adapter.request(PROFILE);
-  assert.equal(h.calls.filter(call => call.action === 'load').length, 1, 'reuse only the existing WebView within this execution');
-  assert.ok(h.timers.every(timer => timer.invalidated));
+test('login redirect/form and challenge stop with authentication pending', async () => {
+  for (const pathname of ['/accounts/login/', '/challenge/', '/checkpoint/', '/consent/'])
+    assert.equal((await page({ location: { origin: ORIGIN, pathname } })).error, 'login_required');
+  assert.equal((await page({ login: {} })).error, 'login_required');
+  assert.equal((await page({ location: { origin: 'https://evil.example', pathname: PATH } })).error, 'login_required');
 });
-
-test('official login cancellation stays unverified; closing a logged-in page is only ready for a real capture', async () => {
-  const cancelled = browser();
-  assert.deepEqual(await cancelled.adapter.connect(), { status: 'cancelled', reason: 'login_incomplete' });
-  assert.equal(cancelled.calls.filter(call => call.action === 'fetch').length, 0);
-  const connected = browser({ present: async location => { location.pathname = '/'; } });
-  assert.deepEqual(await connected.adapter.connect(), { status: 'ready' });
-  assert.deepEqual(connected.calls.filter(call => call.action === 'load'), [{ action: 'load', url: ORIGIN + '/accounts/login/' }]);
-  assert.deepEqual(connected.calls.filter(call => call.action === 'present'), [{ action: 'present', fullscreen: true }]);
-  assert.equal(connected.calls.filter(call => call.action === 'fetch').length, 0);
-  await connected.adapter.request(PROFILE);
-  assert.equal(connected.calls.filter(call => call.action === 'fetch').length, 1);
+test('page errors use actual navigation status only; missing status is not manufactured', async () => {
+  assert.deepEqual(await page({ status: 429 }), { error: 'http_429', statusCode: 429 });
+  assert.equal((await page({ status: 403 })).error, 'http_auth_required');
+  assert.deepEqual(await page({ status: 500 }), { error: 'http_status', statusCode: 500 });
+  assert.equal((await page()).statusCode, undefined);
+  assert.equal((await page({ location: { origin: ORIGIN, pathname: '/someone-else/' } })).error, 'browser_story_page_invalid');
 });
-
-test('automatic capture reports an expired WebView session without displaying authentication', async () => {
-  const h = browser({ load: async (_url, location) => { location.pathname = '/accounts/login/'; } });
-  await assert.rejects(h.adapter.request(PROFILE), error => error.status === 'auth_required' && error.reason === 'login_required');
-  assert.equal(h.calls.filter(call => call.action === 'present' || call.action === 'fetch').length, 0);
+test('identity conflicts are rejected by the existing native parser', async () => {
+  const value = payload(); target(value).reels_media[0].user.pk = '2';
+  const result = await page({ raw: JSON.stringify(value) });
+  assert.throws(() => C.profileIdentity({ data: { user: result.profile } }), /profile_identity_mismatch/);
+  const other = payload(); target(other).reels_media[0].items[0].pk = '12345678901234567891';
+  const mismatched = await page({ raw: JSON.stringify(other) });
+  assert.throws(() => C.parseReels(mismatched.reels, C.profileIdentity({ data: { user: mismatched.profile } }), NOW), /malformed_story_payload/);
 });
-
-test('adapter accepts only the fixed profile and numeric reels routes before creating a browser', async () => {
-  const h = browser();
-  for (const route of ['https://www.instagram.com' + PROFILE, PROFILE + '&token=' + SECRET,
-    '/api/v1/users/web_profile_info/?username=someone-else', '/api/v1/feed/reels_media/?reel_ids=0',
-    '/api/v1/feed/reels_media/?reel_ids=' + '1'.repeat(25), REELS + '&other=1', '/accounts/login/']) {
-    await assert.rejects(h.adapter.request(route), error => error.reason === 'browser_path_invalid');
-  }
-  assert.equal(h.views.length, 0);
-  assert.equal(B.allowedPath(PROFILE), true); assert.equal(B.allowedPath(REELS), true);
+test('malformed, oversized, deep and excessive script structures fail closed', async () => {
+  assert.equal((await page({ raw: '{"xdt_api__v1__feed__reels_media":' })).error, 'browser_story_data_invalid');
+  assert.equal((await page({ raw: 'x'.repeat(4194305) })).error, 'body_limit');
+  assert.equal((await page({ scripts: () => Array(257).fill('{}') })).error, 'structure_limit');
+  let deep = payload(); for (let i=0; i<60; i++) deep = { nested: deep };
+  assert.equal((await page({ raw: JSON.stringify(deep) })).error, 'structure_limit');
+  const many = payload(); target(many).reels_media = Array(101).fill({});
+  assert.equal((await page({ raw: JSON.stringify(many) })).error, 'browser_story_data_invalid');
 });
-
-test('WebView navigation allows only Instagram asset origins and blocks lookalikes or non-HTTPS', async () => {
-  const h = browser(); await h.adapter.request(PROFILE);
-  const allow = h.views[0].shouldAllowRequest;
-  for (const url of ['about:blank', ORIGIN + '/', 'https://scontent.cdninstagram.com/a.jpg', 'https://scontent.fbcdn.net/a.jpg']) assert.equal(allow({ url }), true);
-  for (const url of ['http://www.instagram.com/', 'https://instagram.com.evil.invalid/', 'https://evilinstagram.com/', 'https://instagram.com@evil.invalid/', 'file:///tmp/file', 'javascript:alert(1)']) assert.equal(allow({ url }), false);
-  assert.equal(allow({}), false);
+test('capture loads official page and retains the login WebView; bridge immediate value is supported', async () => {
+  const h = browser({ present: loc => { loc.pathname = '/'; } });
+  assert.equal((await h.adapter.connect()).status, 'ready');
+  assert.equal((await h.adapter.capture()).profile.id, OWNER);
+  assert.equal((await h.adapter.capture()).profile.id, OWNER);
+  assert.equal(h.views.length, 1);
+  assert.deepEqual(h.calls, [['load', ORIGIN + '/accounts/login/'], ['present'], ['load', ORIGIN + PATH], ['load', ORIGIN + PATH]]);
 });
-
-test('concurrent automatic or manual capture cannot overlap the adapter operation', async () => {
+test('automatic capture does not present login and never falls back to manual API', async () => {
+  const h = browser({ load: loc => { loc.pathname = '/accounts/login/'; } });
+  await assert.rejects(h.adapter.capture(), e => e.status === 'auth_required');
+  assert.equal(h.calls.some(c => c[0] === 'present'), false);
+  assert.equal(h.adapter.request, undefined);
+  assert.doesNotMatch(B.pageCapture.toString(), /fetch\(|XMLHttpRequest|document\.cookie|localStorage|sessionStorage/);
+});
+test('cancelled login does not claim readiness', async () => {
+  assert.equal((await browser().adapter.connect()).status, 'cancelled');
+});
+test('errors crossing native bridge are sanitized', async () => {
+  const h = browser({ evaluate: () => { throw Error('JavaScript execution returned a result of an unsupported type ' + SECRET); } });
+  await assert.rejects(h.adapter.capture(), e => e.reason === 'browser_bridge_unsupported' && !e.message.includes(SECRET));
+  const invalid = browser({ evaluate: () => '{private}' });
+  await assert.rejects(invalid.adapter.capture(), e => e.reason === 'browser_response_invalid');
+});
+test('in-flight collection blocks another capture/login; timeout disables old view', async () => {
   let release;
-  const gate = new Promise(resolve => { release = resolve; });
-  const h = browser({ load: () => gate });
-  const pending = h.adapter.request(PROFILE);
-  await assert.rejects(h.adapter.request(REELS), error => error.reason === 'browser_busy');
-  assert.deepEqual(await h.adapter.connect(), { status: 'busy' });
-  assert.equal(h.views.length, 1); release(); await pending;
-  await h.adapter.request(PROFILE);
-  assert.equal(h.calls.filter(call => call.action === 'fetch').length, 2, 'the completed request releases the lock');
-});
-
-test('load timeout disables the orphaned WebView and permits a fresh capture attempt', async () => {
-  let first = true;
-  const h = browser({ load: () => { if (first) { first = false; return new Promise(() => {}); } } });
-  const pending = h.adapter.request(PROFILE);
+  const h = browser({ load: () => new Promise(resolve => { release = resolve; }) });
+  const first = h.adapter.capture();
+  await assert.rejects(h.adapter.capture(), e => e.reason === 'browser_busy');
+  assert.equal((await h.adapter.connect()).status, 'busy');
   h.timers[0].callback();
-  await assert.rejects(pending, error => error.reason === 'browser_timeout');
-  assert.equal(h.views[0].shouldAllowRequest({ url: ORIGIN + '/' }), false);
-  await h.adapter.request(PROFILE); assert.equal(h.views.length, 2);
+  await assert.rejects(first, e => e.reason === 'browser_timeout');
+  assert.equal(h.views[0].shouldAllowRequest({ url: ORIGIN + PATH }), false); release();
+});
+test('WebView navigation restricts origins and does not leak device credentials', async () => {
+  const h = browser(); await h.adapter.capture();
+  assert.equal(h.views[0].shouldAllowRequest({ url: 'https://evil.example/' }), false);
+  assert.equal(h.views[0].shouldAllowRequest({ url: 'https://instagram.com.evil.example/' }), false);
+  assert.equal(h.views[0].shouldAllowRequest({ url: 'https://scontent.cdninstagram.com/image.jpg' }), true);
+  assert.doesNotMatch(JSON.stringify(h.calls), /token|sessionid|password|cookie/);
 });
 
-test('unexpected native callback content is rejected without surfacing credentials', async () => {
-  for (const raw of ['not JSON ' + SECRET, JSON.stringify({ error: SECRET }), 'x'.repeat(4194305)]) {
-    const h = browser({ evaluate: async () => raw });
-    await assert.rejects(h.adapter.request(PROFILE), error => error.reason === 'browser_response_invalid' && !String(error).includes(SECRET));
+
+test('story owner may omit username only when every numeric ID matches scoped profile', async () => {
+  const value = payload();
+  const result = await page({ raw: JSON.stringify(value) });
+  const profile = C.profileIdentity({ data: { user: result.profile } });
+  assert.equal(C.parseReels(result.reels, profile, NOW).length, 1);
+  for (const owner of [{ id: '2' }, { id: OWNER, pk: '2' }, { id: OWNER, username: 'other' }, {}]) {
+    result.reels.reels_media[0].items[0].user = owner;
+    assert.throws(() => C.parseReels(result.reels, profile, NOW), /owner_mismatch/);
   }
 });
 
 
-test('callback bridge returns a supported immediate value while the asynchronous query completes', async () => {
-  const h = browser({ strictBridge: true });
-  const result = await h.adapter.request(PROFILE);
-  assert.equal(JSON.parse(result.body).data.user.id, OWNER);
-  assert.equal(h.calls.filter(call => call.action === 'fetch').length, 1);
-});
-
-
-test('native evaluation rejection is distinct from loading failure without exporting its message', async () => {
-  for (const [message, reason] of [[SECRET, 'browser_evaluation_failed'], ['JavaScript execution returned a result of an unsupported type ' + SECRET, 'browser_bridge_unsupported']]) {
-    const h = browser({ evaluate: async () => { throw Error(message); } });
-    await assert.rejects(h.adapter.request(PROFILE), error => error.reason === reason && !String(error).includes(SECRET));
+test('missing data clicks one exact visible story gate once and reads its hydrated payload', async () => {
+  for (const label of ['Ver story', 'View story', 'See story']) {
+    let clicks = 0;
+    const button = { textContent: label, getAttribute: () => null, getClientRects: () => [{}], click: () => clicks++ };
+    const result = await page({ buttons: [button], scripts: ticks => clicks && ticks >= 2 ? [JSON.stringify(payload())] : [] });
+    assert.equal(result.profile.id, OWNER); assert.equal(clicks, 1);
   }
-  const h = browser({ load: async () => { throw Error(SECRET); } });
-  await assert.rejects(h.adapter.request(PROFILE), error => error.reason === 'browser_load_failed' && !String(error).includes(SECRET));
 });
-
-test('unsupported page streaming API reports a safe diagnostic instead of a generic parse failure', async () => {
-  const result = await page(PROFILE, { fetchImpl: async path => ({ ...apiResponse(path), body: null }) }).promise;
-  assert.deepEqual(result, { error: 'browser_runtime_unsupported', statusCode: 200 });
+test('fallback never clicks hidden, ambiguous, unrelated or login controls', async () => {
+  let clicks = 0;
+  const button = textContent => ({ textContent, getAttribute: () => null, getClientRects: () => [{}], click: () => clicks++ });
+  for (const buttons of [[button('Entrar')], [button('Ver story'),button('Ver story')], [{...button('Ver story'),getClientRects:()=>[]}], [{...button('Ver story'),disabled:true}]]) {
+    assert.equal((await page({ buttons, scripts:()=>[] })).error, 'browser_story_data_missing');
+  }
+  await page({ buttons: [button('Ver story')] });
+  await page({ login: {}, buttons: [button('Ver story')], scripts:()=>[] });
+  await page({ status:429, buttons:[button('Ver story')],scripts:()=>[] });
+  assert.equal(clicks, 0);
 });

@@ -196,3 +196,21 @@ test('bridge, page, response and timeout failures are distinct and use warning t
     assert.equal(icon.innerHTML, '<path d="M12 5v9M12 18v1"/>');
   }
 });
+
+
+test('login remains available during 429; completed login is not a verified capture', () => {
+  const h = instagramHarness();
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'rate_limited', reason: 'http_429', nextAttemptAt: '2026-10-20T12:30:00.000Z' } } });
+  h.context.reconnectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://connect');
+  h.context.handleNativeInstagramResult('connect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'connected_waiting', reason: 'http_429', nextAttemptAt: '2026-10-20T12:30:00.000Z' } } });
+  assert.match(h.elements.get('hunterInstagramStatus').textContent, /login concluído.*limitação anterior.*HTTP 429.*próxima tentativa/);
+  assert.doesNotMatch(h.toasts.at(-1), /Consulta ao Instagram concluída/);
+  assert.equal(h.refreshes, 0);
+});
+
+test('page data diagnostics remain explicit and safe', () => {
+  const h = instagramHarness();
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'unknown', reason: 'browser_story_data_missing', stage: 'stories_page' } } });
+  assert.match(h.elements.get('hunterInstagramStatus').textContent, /dados dos Stories ainda não estão disponíveis.*página de Stories/);
+});

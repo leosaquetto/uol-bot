@@ -524,6 +524,7 @@
         error: ['Coleta indisponível', 'coleta indisponível', 'attention', 'alert'],
         busy: ['Coleta em andamento', 'outra execução em andamento', 'activity', 'refresh'],
         auth_required: ['Autenticação necessária', 'autenticação necessária; coleta suspensa', 'attention', 'lock'],
+        connected_waiting: ['Login concluído', 'login concluído; coleta aguardando', 'waiting', 'pause'],
         rate_limited: ['Consulta limitada', 'consulta limitada pelo serviço', 'waiting', 'pause'],
         backoff: ['Aguardando', 'aguardando intervalo de segurança', 'waiting', 'pause'],
         cooldown: ['Pausa breve', 'aguardando intervalo mínimo', 'waiting', 'clock'],
@@ -571,6 +572,9 @@
           browser_timeout: 'o navegador excedeu o tempo de consulta',
           request_timeout: 'o Instagram não respondeu dentro do tempo de consulta',
           browser_response_invalid: 'o Instagram retornou dados que a captura não reconheceu',
+          browser_story_page_invalid: 'o navegador não abriu os Stories do clubeuol',
+          browser_story_data_invalid: 'a página de Stories retornou dados inválidos',
+          browser_story_data_missing: 'a página abriu, mas os dados dos Stories ainda não estão disponíveis',
           non_json_response: 'o Instagram retornou uma página em vez dos dados da consulta',
           body_limit: 'a resposta do Instagram excedeu o tamanho permitido',
           profile_identity_mismatch: 'não foi possível validar o perfil clubeuol',
@@ -591,10 +595,11 @@
         };
         if (Object.prototype.hasOwnProperty.call(details, status)) presentation.detail = details[status];
         if (['unknown', 'backoff', 'unavailable', 'failed', 'error'].includes(status) && Object.prototype.hasOwnProperty.call(reasons, reason)) presentation.detail = reasons[reason];
-        const stages = { profile: 'consulta do perfil', stories: 'consulta dos Stories', login: 'verificação do login' };
+        if (status === 'connected_waiting') presentation.detail = 'login concluído; coleta aguardando ' + (reason === 'http_429' ? 'o fim da limitação anterior (HTTP 429)' : 'a renovação do limite diário');
+        const stages = { stories_page: 'página de Stories', profile: 'consulta do perfil', stories: 'consulta dos Stories', login: 'verificação do login' };
         if (!['found', 'empty'].includes(status) && Object.prototype.hasOwnProperty.call(stages, context.stage)) presentation.detail += '; etapa: ' + stages[context.stage];
         if (Number.isInteger(context.statusCode) && context.statusCode >= 100 && context.statusCode <= 599 && context.statusCode !== 429) presentation.detail += ' (HTTP ' + context.statusCode + ')';
-        if (['rate_limited', 'backoff', 'daily_budget'].includes(status) && typeof context.nextAttemptAt === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(context.nextAttemptAt) && Number.isFinite(Date.parse(context.nextAttemptAt))) {
+        if (['rate_limited', 'backoff', 'daily_budget', 'connected_waiting'].includes(status) && typeof context.nextAttemptAt === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(context.nextAttemptAt) && Number.isFinite(Date.parse(context.nextAttemptAt))) {
           presentation.detail += '; próxima tentativa em ' + new Date(context.nextAttemptAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
         }
       }

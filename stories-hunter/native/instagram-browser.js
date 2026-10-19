@@ -1,89 +1,95 @@
-// Own Instagram WebView session. Never receives the device token or imports cookies.
+// Own Instagram WebView session. No device token, cookies or viewer data cross into/out of the page.
 const HunterInstagramBrowser = (() => {
   const ORIGIN = 'https://www.instagram.com';
-  const PROFILE = '/api/v1/users/web_profile_info/?username=clubeuol';
-  const allowedPath = path => path === PROFILE || /^\/api\/v1\/feed\/reels_media\/\?reel_ids=[1-9][0-9]{0,23}$/.test(path);
-  const fail = reason => Object.assign(new Error(reason), { status: 'unknown', reason });
+  const STORY_PATH = '/stories/clubeuol/';
+  const fail = (reason, status = 'unknown', extra = {}) => Object.assign(new Error(reason), { status, reason, ...extra });
 
-  // Runs inside the actual Instagram page. Return only public, allowlisted
-  // fields required by the existing parser, never HTML, cookies or viewer data.
-  async function pageRequest(path, maxBytes, parseJSON) {
-    let statusCode;
-    const done = value => completion(JSON.stringify({ ...(statusCode ? { statusCode } : {}), ...value }));
-    if (location.origin !== 'https://www.instagram.com' || /\/(?:accounts\/login|challenge|checkpoint|consent)(?:\/|$)/.test(location.pathname)) {
-      done({ error: 'login_required' }); return;
-    }
-    if (typeof AbortController !== 'function' || typeof TextDecoder !== 'function') {
-      done({ error: 'browser_runtime_unsupported' }); return;
-    }
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20000);
+  // Read only the JSON already loaded by the official Stories viewer. No fetch,
+  // private API, React internals or exported document/session data.
+  async function pageCapture(parseJSON, waitMs = 10000) {
+    const done = value => completion(JSON.stringify(value));
+    const invalid = reason => { throw new Error(reason); };
+    const scalar = v => typeof v === 'string' && v.length <= 8192 || typeof v === 'number' && Number.isFinite(v) || typeof v === 'boolean' || v === null;
+    const fields = (value, names) => {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) invalid('browser_story_data_invalid');
+      const output = {};
+      for (const name of names) if (name in value) { if (!scalar(value[name])) invalid('browser_story_data_invalid'); output[name] = value[name]; }
+      return output;
+    };
+    const owner = value => fields(value, ['id', 'pk', 'username']);
+    const array = (value, map) => { if (!Array.isArray(value) || value.length > 100) invalid('structure_limit'); return value.map(map); };
+    const item = value => {
+      const out = fields(value, ['id','pk','taken_at','expiring_at','original_width','original_height']);
+      for (const key of ['user','owner']) if (key in value) out[key] = owner(value[key]);
+      out.image_versions2 = { candidates: array(value.image_versions2?.candidates, c => fields(c, ['width','height','url'])) };
+      out.story_link_stickers = array(value.story_link_stickers || [], s => ({ story_link: fields(s.story_link || {}, ['url']) }));
+      return out;
+    };
+    const reel = value => ({ ...fields(value, ['id']), user: owner(value.user), items: array(value.items, item) });
+    const started = Date.now();
+    let gateClicked = false;
     try {
-      let response;
-      try { response = await fetch(path, { method: 'GET', credentials: 'same-origin', redirect: 'manual',
-        headers: { Accept: 'application/json', 'X-IG-App-ID': '936619743392459', 'X-ASBD-ID': '359341' }, signal: controller.signal }); }
-      catch (_) { done({ error: controller.signal.aborted ? 'request_timeout' : 'browser_network_error' }); return; }
-      if (Number.isInteger(response.status) && response.status >= 100 && response.status <= 599) statusCode = response.status;
-      if (response.type === 'opaqueredirect') { done({ error: 'login_required' }); return; }
-      const result = { statusCode: response.status, url: response.url, contentType: response.headers.get('content-type') || '',
-        retryAfter: (response.headers.get('retry-after') || '').slice(0, 128), body: '' };
-      if (response.status !== 200) { done(result); return; }
-      if (!/^application\/(?:json|[\w.-]+\+json)(?:;|$)/i.test(result.contentType)) { done({ error: 'non_json_response' }); return; }
-      if (!response.body || typeof response.body.getReader !== 'function') { done({ error: 'browser_runtime_unsupported' }); return; }
-      let text = '';
-      // Bound the downloaded API response; page assets are not collector requests.
-      const reader = response.body.getReader(), decoder = new TextDecoder(); let count = 0;
       for (;;) {
-        const chunk = await reader.read(); if (chunk.done) break;
-        count += chunk.value.byteLength;
-        if (count > maxBytes) { await reader.cancel(); done({ error: 'body_limit' }); return; }
-        text += decoder.decode(chunk.value, { stream: true });
-      }
-      text += decoder.decode();
-      const value = parseJSON(text);
-      if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
-      if (['login_required','challenge_required','checkpoint_required','checkpoint_challenge_required','consent_required'].includes(value.message) ||
-          ['login_required','challenge_required','checkpoint_required'].some(k => value[k] === true) || value.is_logged_in === false || value.isLoggedIn === false) {
-        done({ error: 'login_required' }); return;
-      }
-      const scalar = v => typeof v === 'string' && v.length <= 8192 || typeof v === 'number' && Number.isFinite(v) || typeof v === 'boolean' || v === null;
-      const fields = (value, names) => {
-        if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
-        const output = {};
-        for (const name of names) if (name in value) { if (!scalar(value[name])) throw new Error(); output[name] = value[name]; }
-        return output;
-      };
-      const owner = value => fields(value, ['id','pk','username']);
-      const array = (value, map) => { if (!Array.isArray(value) || value.length > 100) throw new Error(); return value.map(map); };
-      const item = value => {
-        const out = fields(value, ['id','pk','taken_at','expiring_at','original_width','original_height']);
-        for (const key of ['user','owner']) if (key in value) out[key] = owner(value[key]);
-        out.image_versions2 = { candidates: array(value.image_versions2?.candidates, c => fields(c, ['width','height','url'])) };
-        out.story_link_stickers = array(value.story_link_stickers || [], s => ({ story_link: fields(s.story_link || {}, ['url']) }));
-        return out;
-      };
-      const reel = value => ({ ...fields(value, ['id']), user: owner(value.user), items: array(value.items, item) });
-      let projected;
-      if (path.includes('web_profile_info')) projected = { data: { user: owner(value.data?.user) } };
-      else {
-        projected = fields(value, ['status']);
-        if ('reels' in value) {
-          if (!value.reels || typeof value.reels !== 'object' || Array.isArray(value.reels) || Object.keys(value.reels).length > 100) throw new Error();
-          const id = path.split('=')[1]; projected.reels = {};
-          if (Object.prototype.hasOwnProperty.call(value.reels, id)) projected.reels[id] = reel(value.reels[id]);
+        if (location.origin !== 'https://www.instagram.com' || /\/(?:accounts\/login|challenge|checkpoint|consent)(?:\/|$)/.test(location.pathname) || document.querySelector('input[name="username"],input[name="password"]')) {
+          done({ error: 'login_required' }); return;
         }
-        if ('reels_media' in value) projected.reels_media = array(value.reels_media, reel);
+        // WebKit versions without responseStatus provide no HTTP evidence. Never infer 429 from text.
+        const code = typeof performance !== 'undefined' ? performance.getEntriesByType?.('navigation')?.[0]?.responseStatus : undefined;
+        if (code === 429) { done({ error: 'http_429', statusCode: 429 }); return; }
+        if (code === 401 || code === 403) { done({ error: 'http_auth_required', statusCode: code }); return; }
+        if (Number.isInteger(code) && code >= 400 && code <= 599) { done({ error: 'http_status', statusCode: code }); return; }
+        if (!/^\/stories\/clubeuol\/(?:[1-9][0-9]{0,23}\/?)?$/.test(location.pathname)) {
+          done({ error: 'browser_story_page_invalid' }); return;
+        }
+        const scripts = Array.from(document.querySelectorAll('script[type="application/json"]'));
+        if (scripts.length > 256) invalid('structure_limit');
+        let size = 0, nodes = 0;
+        const reels = [];
+        function walk(value, depth) {
+          if (++nodes > 100000 || depth > 50) invalid('structure_limit');
+          if (!value || typeof value !== 'object') return;
+          if (Object.prototype.hasOwnProperty.call(value, 'xdt_api__v1__feed__reels_media')) {
+            const payload = value.xdt_api__v1__feed__reels_media;
+            if (!payload || !Array.isArray(payload.reels_media) || payload.reels_media.length > 100) invalid('browser_story_data_invalid');
+            for (const entry of payload.reels_media) if (entry?.user?.username === 'clubeuol') reels.push(reel(entry));
+            if (reels.length > 100) invalid('structure_limit');
+          }
+          for (const child of Object.values(value)) walk(child, depth + 1);
+        }
+        for (const script of scripts) {
+          const text = script.textContent || '';
+          size += unescape(encodeURIComponent(text)).length;
+          if (size > 4194304) invalid('body_limit');
+          if (!text.includes('xdt_api__v1__feed__reels_media')) continue;
+          let value; try { value = parseJSON(text); } catch (_) { invalid('browser_story_data_invalid'); }
+          walk(value, 0);
+        }
+        if (reels.length) {
+          // Host validates numeric identity again, using this same scoped reel.
+          done({ profile: reels[0].user, reels: { reels_media: reels } }); return;
+        }
+        // Instagram may hold viewer hydration behind its explicit view button.
+        // One exact, visible button only; never challenge/login/consent controls.
+        if (!gateClicked) {
+          const buttons = Array.from(document.querySelectorAll('button,[role="button"]'));
+          const gates = buttons.filter(button => ['ver story', 'view story', 'see story'].includes((button.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase()) &&
+            !button.disabled && button.getAttribute('aria-disabled') !== 'true' && button.getClientRects().length > 0);
+          if (gates.length === 1) { gateClicked = true; gates[0].click(); }
+        }
+        if (Date.now() - started >= waitMs) { done({ error: 'browser_story_data_missing' }); return; }
+        await new Promise(resolve => setTimeout(resolve, 250));
       }
-      result.body = JSON.stringify(projected); done(result);
-    } catch (_) { done({ error: controller.signal.aborted ? 'request_timeout' : 'browser_response_invalid' }); }
-    finally { clearTimeout(timer); }
+    } catch (error) {
+      const reason = ['browser_story_data_invalid','structure_limit','body_limit'].includes(error?.message) ? error.message : 'browser_script_error';
+      done({ error: reason });
+    }
   }
 
   function create(env) {
-    let view = null, loaded = false, inFlight = false;
-    const bounded = (promise, milliseconds, onTimeout, rejection = 'browser_load_failed') => new Promise((resolve, reject) => {
+    let view = null, disable = () => {}, inFlight = false;
+    const bounded = (promise, milliseconds, rejection = 'browser_load_failed') => new Promise((resolve, reject) => {
       let settled = false;
-      const timer = env.timer(milliseconds, () => { if (!settled) { settled = true; onTimeout(); reject(fail('browser_timeout')); } });
+      const timer = env.timer(milliseconds, () => { if (!settled) { settled = true; disable(); view = null; reject(fail('browser_timeout')); } });
       Promise.resolve(promise).then(value => { if (!settled) { settled = true; timer.invalidate(); resolve(value); } }, error => {
         if (!settled) {
           settled = true; timer.invalidate();
@@ -92,58 +98,51 @@ const HunterInstagramBrowser = (() => {
         }
       });
     });
-    function makeView() {
-      const next = env.webView(); let active = true;
-      next.shouldAllowRequest = request => active && typeof request?.url === 'string' &&
+    function getView() {
+      if (view) return view;
+      view = env.webView(); let active = true;
+      view.shouldAllowRequest = request => active && typeof request?.url === 'string' &&
         (request.url === 'about:blank' || /^https:\/\/(?:[a-z0-9-]+\.)*(?:instagram\.com|cdninstagram\.com|fbcdn\.net)\//i.test(request.url));
-      return { view: next, disable: () => { active = false; } };
-    }
-    async function load(path) {
-      const next = makeView(); view = next.view; loaded = false;
-      await bounded(view.loadURL(ORIGIN + path), 25000, next.disable);
-      loaded = true;
+      disable = () => { active = false; };
+      return view;
     }
     async function connect() {
       if (inFlight) return { status: 'busy' };
       inFlight = true;
       try {
-        await load('/accounts/login/');
-        await view.present(true); // User closes after official login/verification.
-        const location = await bounded(view.evaluateJavaScript('JSON.stringify({origin:location.origin,path:location.pathname})'), 5000, () => { loaded = false; }, 'browser_evaluation_failed');
-        const current = JSON.parse(location);
-        if (current.origin !== ORIGIN || /\/(?:accounts\/login|challenge|checkpoint|consent)(?:\/|$)/.test(current.path)) return { status: 'cancelled', reason: 'login_incomplete' };
-        return { status: 'ready' }; // A successful API read, not closing the sheet, proves authentication.
+        const currentView = getView();
+        await bounded(currentView.loadURL(ORIGIN + '/accounts/login/'), 25000);
+        await currentView.present(true);
+        const raw = await bounded(currentView.evaluateJavaScript('JSON.stringify({origin:location.origin,path:location.pathname,login:!!document.querySelector(\'input[name="username"],input[name="password"]\')})'), 5000, 'browser_evaluation_failed');
+        const current = JSON.parse(raw);
+        if (current.origin !== ORIGIN || current.login || /\/(?:accounts\/login|challenge|checkpoint|consent)(?:\/|$)/.test(current.path)) return { status: 'cancelled', reason: 'login_incomplete' };
+        return { status: 'ready' }; // Only capture proves that Stories can be read.
       } catch (error) {
         return { status: 'unknown', stage: 'login', reason: ['browser_timeout','browser_load_failed','browser_evaluation_failed','browser_bridge_unsupported'].includes(error?.reason) ? error.reason : 'browser_login_failed' };
-      }
-      finally { inFlight = false; }
+      } finally { inFlight = false; }
     }
-    async function request(path) {
-      if (!allowedPath(path)) throw fail('browser_path_invalid');
+    async function capture() {
       if (inFlight) throw fail('browser_busy');
       inFlight = true;
       try {
-        if (!loaded) await load('/clubeuol/');
-        const parse = env.losslessJSON.toString();
-        // WKWebView must not serialize the Promise from this async invocation.
-        // The only capture result crosses the bridge through completion().
-        const code = '(' + pageRequest.toString() + ')(' + JSON.stringify(path) + ',4194304,(() => { const error = () => new Error(); return ' + parse + '; })()).catch(() => completion(JSON.stringify({error:"browser_script_error"}))); "";';
-        const raw = await bounded(view.evaluateJavaScript(code, true), 25000, () => { loaded = false; }, 'browser_evaluation_failed');
+        const currentView = getView();
+        await bounded(currentView.loadURL(ORIGIN + STORY_PATH), 25000);
+        const code = '(' + pageCapture.toString() + ')((() => { const error = () => new Error(); return ' + env.losslessJSON.toString() + '; })()).catch(() => completion(JSON.stringify({error:"browser_script_error"}))); "";';
+        const raw = await bounded(currentView.evaluateJavaScript(code, true), 15000, 'browser_evaluation_failed');
         if (typeof raw !== 'string' || raw.length > 4194304) throw fail('browser_response_invalid');
-        let result;
-        try { result = JSON.parse(raw); } catch (_) { throw fail('browser_response_invalid'); }
+        let result; try { result = JSON.parse(raw); } catch (_) { throw fail('browser_response_invalid'); }
         if (!result || typeof result !== 'object' || Array.isArray(result)) throw fail('browser_response_invalid');
-        if (result?.error) {
-          const reasons = ['login_required','non_json_response','body_limit','request_timeout','browser_network_error','browser_response_invalid','browser_script_error','browser_runtime_unsupported'];
+        if (result.error) {
+          const reasons = ['login_required','http_auth_required','http_429','http_status','body_limit','structure_limit','browser_story_page_invalid','browser_story_data_invalid','browser_story_data_missing','browser_script_error'];
           const reason = reasons.includes(result.error) ? result.error : 'browser_response_invalid';
-          throw Object.assign(new Error(reason), { status: reason === 'login_required' ? 'auth_required' : 'unknown', reason,
-            ...(Number.isInteger(result.statusCode) && result.statusCode >= 100 && result.statusCode <= 599 ? { statusCode: result.statusCode } : {}) });
+          throw fail(reason, ['login_required','http_auth_required'].includes(reason) ? 'auth_required' : reason === 'http_429' ? 'rate_limited' : 'unknown',
+            Number.isInteger(result.statusCode) && result.statusCode >= 100 && result.statusCode <= 599 ? { statusCode: result.statusCode } : {});
         }
         return result;
       } finally { inFlight = false; }
     }
-    return { request, connect };
+    return { capture, connect };
   }
-  return { create, pageRequest, allowedPath };
+  return { create, pageCapture };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = HunterInstagramBrowser;

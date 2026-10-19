@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.9.1";
+const SCRIPT_VERSION = "5.9.2";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -198,7 +198,7 @@ async function runNativeInstagramAction(action) {
   if (access.status !== 'approved') return { status: access.status, access, sources: {} };
   const browser = createNativeInstagramBrowser();
   const collector = HunterCollector.create({ fm: FileManager.local(), keychain: Keychain, now: Date.now,
-    instagramBrowser: { request: path => browser.request(path), connect: async () => {
+    instagramBrowser: { capture: () => browser.capture(), connect: async () => {
       const result = await browser.connect();
       if (result.status !== 'ready') return result;
       access = await createHunterAccess().status({ refresh: true });

@@ -30,12 +30,16 @@ function harness({ instagram = false } = {}) {
     } }; return req; } };
   if (instagram) env.instagramBrowser = {
     connect: async () => ({ status: 'ready' }),
-    request: async route => {
-      const url = 'https://www.instagram.com' + route;
+    capture: async () => {
+      const url = 'https://www.instagram.com/stories/clubeuol/';
       calls.push({ url, transport: 'webview' });
       const result = await responder(url, {}); if (result instanceof Error) throw result;
-      return { statusCode: result.code || 200, url: result.url || url, contentType: result.headers?.['Content-Type'] || 'application/json',
-        retryAfter: result.headers?.['Retry-After'] || '', body: typeof result.value === 'string' ? result.value : JSON.stringify(result.value) };
+      if (result.code && result.code !== 200) throw Object.assign(Error('safe-adapter-error'), {
+        reason: result.code === 429 ? 'http_429' : [401,403].includes(result.code) ? 'http_auth_required' : 'http_status',
+        status: result.code === 429 ? 'rate_limited' : [401,403].includes(result.code) ? 'auth_required' : 'unknown',
+        statusCode: result.code, retryAfter: Number(result.headers?.['Retry-After'] || 0) * 1000 });
+      if (result.value?.message === 'login_required') throw Object.assign(Error('login_required'), { reason: 'login_required', status: 'auth_required' });
+      return { profile: PROFILE, reels: result.value };
     }
   };
   const collector = C.create(env);
@@ -43,8 +47,7 @@ function harness({ instagram = false } = {}) {
   const defaultResponder = (url, req) => {
     if (url.endsWith('/hunter-intake') && req.method === 'POST') return { code: 202, value: { ok: true, accepted: true, persisted: true, receipts: JSON.parse(req.body).observations.map(e => ({ eventId: e.eventId, persisted: true, duplicate: false, status: 'queued' })) } };
     if (url.includes('/hunter-intake-status?')) return { value: { ok: true, persisted: true, status: 'delivered', eventId: decodeURIComponent(url.split('=')[1]) } };
-    if (url.includes('web_profile_info')) return { value: { data: { user: PROFILE } } };
-    if (url.includes('reels_media')) return { value: reel() };
+    if (url.includes('/stories/clubeuol/')) return { value: reel() };
     return { value: HTML };
   };
   responder = defaultResponder;
@@ -87,15 +90,15 @@ test('bootstrap only imports missing credentials and validates narrow device/ses
   assert.throws(() => C.normalizeSession({ ...session(), cookies: 'bad' }), /session_invalid/);
   assert.throws(() => C.normalizeSession({ ...session(), cookies: [{ name: 'sessionid', value: 'x', domain: 'evil.example' }] }), /session_invalid/);
 });
-test('native open collects both sources, persists before intake and caches validated profile for 24h', async () => {
+test('native open uses one official Stories page, persists before intake and deduplicates reopenings', async () => {
   const h = harness({ instagram: true });
   h.setResponder((url, req) => { if (req.method === 'POST') for (const e of JSON.parse(req.body).observations) assert([...h.files.keys()].some(k => k.endsWith('/event-' + e.eventId + '.json'))); return h.defaultResponder(url, req); });
   const result = await h.collector.run(); assert.equal(result.discovered, 2); assert.equal(result.received, 2); assert.equal(result.delivered, 0);
-  assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 2);
-  await h.collector.run(); assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 3); // no inherited five-minute cooldown
+  assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 1);
+  await h.collector.run(); assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 2); // no inherited five-minute cooldown
   h.advance(300000); await C.create(h.env).run();
-  assert.equal(h.calls.filter(c => c.url.includes('web_profile_info')).length, 1);
-  assert.equal(h.calls.filter(c => c.url.includes('reels_media')).length, 3);
+  assert.equal(h.calls.filter(c => c.url.includes('/api/')).length, 0);
+  assert.equal(h.calls.filter(c => c.url.includes('/stories/clubeuol/')).length, 3);
   assert.equal(h.calls.filter(c => c.method === 'POST').length, 1, 'unchanged observation never gets a new event');
   assert.equal(h.collector.summary('test').delivered, 2);
   const outbound = h.calls.filter(c => c.method === 'POST').map(c => c.body).join('');
@@ -161,9 +164,9 @@ test('receipt refresh limits two reads and persists auth suspension', async () =
   await C.create(h.env).refreshReceipts(); await C.create(h.env).flush();
   assert.equal(h.calls.length, calls);
 });
-test('Instagram budget counts identity and reel requests and does not exceed 30', async () => {
+test('Instagram budget counts page captures only and does not exceed 30', async () => {
   const h = harness({ instagram: true });
-  for (let i = 0; i < 29; i++) { assert.equal((await h.collector.collect('instagram')).status, 'found'); h.advance(300000); }
+  for (let i = 0; i < 30; i++) { assert.equal((await h.collector.collect('instagram')).status, 'found'); h.advance(300000); }
   assert.equal(h.calls.length, 30);
   assert.equal((await C.create(h.env).collect('instagram')).status, 'daily_budget');
   assert.equal(h.calls.length, 30);
@@ -225,9 +228,10 @@ test('login never clears a real WebView 429 or its daily request budget', async 
     }
     const count = h.calls.length;
     const result = await h.collector.runInstagram({ connect: true });
-    assert.equal(result.sources.instagram.status, limited === 'rate' ? 'rate_limited' : 'daily_budget');
+    assert.equal(result.sources.instagram.status, 'connected_waiting');
+    assert.equal(result.sources.instagram.reason, limited === 'rate' ? 'http_429' : 'daily_budget');
     assert.ok(Date.parse(result.sources.instagram.nextAttemptAt) > NOW);
-    assert.equal(h.calls.length, count); assert.equal(logins, 0);
+    assert.equal(h.calls.length, count); assert.equal(logins, 1);
   }
 });
 
@@ -250,11 +254,15 @@ test('overlapping automatic and manual collection use the same lease', async () 
   h.setResponder(h.defaultResponder); release(); await running;
 });
 
-test('budget is checked between profile and reels queries', async () => {
+test('last budget slot permits exactly one complete capture; next opening is blocked', async () => {
   const h = harness({ instagram: true });
   for (let i=0; i<29; i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagramWebView-old-' + i + '.json', JSON.stringify({ at: NOW }));
   const result = await h.collector.runInstagram();
-  assert.equal(result.sources.instagram.status, 'daily_budget'); assert.equal(h.calls.length, 1);
+  assert.equal(result.sources.instagram.status, 'found');
+  const count = h.calls.length;
+  assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'daily_budget');
+  assert.equal(h.calls.length, count);
+  assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 1);
 });
 
 
@@ -262,15 +270,26 @@ test('WebView failures retain only the allowlisted reason, query stage and HTTP 
   const h = harness({ instagram: true });
   h.setResponder(() => ({ code: 400, value: { private: 'never-display' } }));
   const first = (await h.collector.runInstagram()).sources.instagram;
-  assert.equal(first.reason, 'http_status'); assert.equal(first.stage, 'profile'); assert.equal(first.statusCode, 400);
-  h.setResponder((url, req) => url.includes('reels_media') ? { code: 500, value: {} } : h.defaultResponder(url, req));
+  assert.equal(first.reason, 'http_status'); assert.equal(first.stage, 'stories_page'); assert.equal(first.statusCode, 400);
+  h.setResponder((url, req) => url.includes('/stories/clubeuol/') ? { code: 500, value: {} } : h.defaultResponder(url, req));
   const second = (await h.collector.runInstagram()).sources.instagram;
-  assert.equal(second.stage, 'stories'); assert.equal(second.statusCode, 500);
-  h.env.instagramBrowser.request = async () => { throw Object.assign(Error('private message'), { reason: 'browser_evaluation_failed', statusCode: 'private status' }); };
+  assert.equal(second.stage, 'stories_page'); assert.equal(second.statusCode, 500);
+  h.env.instagramBrowser.capture = async () => { throw Object.assign(Error('private message'), { reason: 'browser_evaluation_failed', statusCode: 'private status' }); };
   const third = (await h.collector.runInstagram()).sources.instagram;
-  assert.equal(third.reason, 'browser_evaluation_failed'); assert.equal(third.stage, 'stories'); assert.equal(third.statusCode, undefined);
+  assert.equal(third.reason, 'browser_evaluation_failed'); assert.equal(third.stage, 'stories_page'); assert.equal(third.statusCode, undefined);
   h.env.instagramBrowser.connect = async () => ({ status: 'unknown', reason: 'browser_bridge_unsupported', details: 'private login' });
   const login = (await h.collector.runInstagram({ connect: true })).sources.instagram;
   assert.equal(login.reason, 'browser_bridge_unsupported'); assert.equal(login.stage, 'login');
   assert.doesNotMatch(JSON.stringify([first, second, third, login]), /never-display|private/);
+});
+
+
+test('existing 5.9.1 profile 429 remains enforced by page capture after update', async () => {
+  const h = harness({ instagram: true });
+  h.files.set('/docs/uol-hunter-collector-v1/state-instagramWebView-existing.json', JSON.stringify({ at: NOW, status: 'rate_limited', reason: 'http_429', stage: 'profile', retryAt: NOW + 21600000 }));
+  assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'rate_limited');
+  assert.equal(h.calls.length, 0);
+  h.advance(21600000);
+  assert.equal((await C.create(h.env).runInstagram()).sources.instagram.status, 'found');
+  assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 1);
 });

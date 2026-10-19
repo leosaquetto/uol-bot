@@ -65,8 +65,8 @@ const HunterCollector = (() => {
   }
 
   const authPayload = value => plain(value) && (['login_required', 'challenge_required', 'checkpoint_required', 'checkpoint_challenge_required', 'consent_required'].includes(value.message) || ['login_required', 'challenge_required', 'checkpoint_required'].some(k => value[k] === true) || value.is_logged_in === false || value.isLoggedIn === false);
-  function ownerMatches(owner, profile) {
-    if (!plain(owner) || owner.username !== 'clubeuol') return false;
+  function ownerMatches(owner, profile, allowMissingUsername = false) {
+    if (!plain(owner) || (owner.username !== 'clubeuol' && !(allowMissingUsername && !('username' in owner)))) return false;
     const ids = ['id', 'pk'].filter(k => k in owner).map(k => id(owner[k]));
     return ids.length > 0 && ids.every(v => v === profile.id);
   }
@@ -99,7 +99,7 @@ const HunterCollector = (() => {
       if (!ownerMatches(reel?.user, profile) || ('id' in reel && id(reel.id) !== profile.id)) throw error('owner_mismatch');
       if (!Array.isArray(reel.items) || (count += reel.items.length) > 100) throw error('structure_limit');
       for (const item of reel.items) {
-        if (!plain(item) || ('user' in item && !ownerMatches(item.user, profile)) || ('owner' in item && !ownerMatches(item.owner, profile))) throw error('owner_mismatch');
+        if (!plain(item) || ('user' in item && !ownerMatches(item.user, profile, true)) || ('owner' in item && !ownerMatches(item.owner, profile, true))) throw error('owner_mismatch');
         const ids = [];
         if ('pk' in item) ids.push(id(item.pk));
         if ('id' in item) { const p = String(item.id).split('_'); if (p.length > 2 || (p.length === 2 && p[1] !== profile.id)) throw error('malformed_story_payload'); ids.push(id(p[0])); }
@@ -230,7 +230,7 @@ const HunterCollector = (() => {
     const browserReasons = ['http_429','http_auth_required','login_required','login_payload','daily_budget','non_json_response','body_limit','request_timeout',
       'browser_timeout','browser_load_failed','browser_network_error','browser_response_invalid','browser_busy','profile_identity_mismatch','owner_mismatch',
       'browser_evaluation_failed','browser_bridge_unsupported','browser_script_error','browser_runtime_unsupported','browser_login_failed','login_incomplete',
-      'http_status','unexpected_response_url','no_validated_story_structure','api_error','malformed_story_payload','structure_limit','conflicting_story_payload','local_outbox_full'];
+      'browser_story_page_invalid','browser_story_data_invalid','browser_story_data_missing','http_status','unexpected_response_url','no_validated_story_structure','api_error','malformed_story_payload','structure_limit','conflicting_story_payload','local_outbox_full'];
     const nextDay = () => new Date(new Date(now()).setUTCHours(24, 0, 0, 0)).toISOString();
     function browserSummary(status, extra = {}) {
       const s = state(browserState);
@@ -247,36 +247,17 @@ const HunterCollector = (() => {
         return browserSummary('daily_budget', { reason: 'daily_budget', nextAttemptAt: nextDay() });
       return null;
     }
-    async function browserRequest(path) {
-      reserve(browserState);
-      saveState(browserState, { ...state(browserState), lastAttemptAt: new Date(now()).toISOString() });
-      const response = await env.instagramBrowser.request(path);
-      if (!plain(response) || !Number.isInteger(response.statusCode)) throw error('browser_response_invalid');
-      const responseError = (reason, status, retry) => Object.assign(error(reason, status, retry),
-        response.statusCode >= 100 && response.statusCode <= 599 ? { statusCode: response.statusCode } : {});
-      const retry = String(response.retryAfter || ''), delay = /^\d+$/.test(retry) ? Number(retry) * 1000 : Math.max(0, Date.parse(retry) - now()) || 0;
-      if (response.statusCode === 429) throw responseError('http_429', 'rate_limited', Math.max(21600000, Math.min(Number.isFinite(delay) ? delay : 21600000, 8640000000000000 - now())));
-      if ([401,403].includes(response.statusCode)) throw responseError('http_auth_required', 'auth_required');
-      if (response.statusCode !== 200) throw responseError('http_status');
-      if (response.url !== IG + path) throw responseError('unexpected_response_url');
-      if (typeof response.body !== 'string' || bytes(response.body) > LIMITS.body) throw responseError('body_limit');
-      if (!/^application\/(?:json|[\w.-]+\+json)(?:;|$)/i.test(response.contentType || '')) throw responseError('non_json_response');
-      const value = losslessJSON(response.body);
-      if (authPayload(value)) throw error('login_payload', 'auth_required');
-      return value;
-    }
     async function collectInstagram(connect = false) {
       const blocked = browserBlocked(connect); if (blocked) return blocked;
-      if (!env.instagramBrowser || typeof env.instagramBrowser.request !== 'function') return browserSummary('unavailable', { reason: 'browser_unavailable' });
-      let stage = 'profile';
+      if (!env.instagramBrowser || typeof env.instagramBrowser.capture !== 'function') return browserSummary('unavailable', { reason: 'browser_unavailable' });
+      const stage = 'stories_page';
       try {
-        const current = state(browserState); let profile = current.profile;
-        if (!profile || profile.username !== 'clubeuol' || !id(profile.id) || !Number.isFinite(current.profileAt) || current.profileAt > now() || now() - current.profileAt >= 86400000) {
-          profile = profileIdentity(await browserRequest('/api/v1/users/web_profile_info/?username=clubeuol'));
-          saveState(browserState, { ...state(browserState), profile, profileAt: now() });
-        }
-        stage = 'stories';
-        const payloads = parseReels(await browserRequest('/api/v1/feed/reels_media/?reel_ids=' + profile.id), profile, now());
+        reserve(browserState);
+        saveState(browserState, { ...state(browserState), lastAttemptAt: new Date(now()).toISOString() });
+        const captured = await env.instagramBrowser.capture();
+        if (!plain(captured)) throw error('browser_response_invalid');
+        const profile = profileIdentity({ data: { user: captured.profile } });
+        const payloads = parseReels(captured.reels, profile, now());
         let found = 0; for (const payload of payloads) if (enqueue('instagram', payload)) found++;
         const status = payloads.length ? 'found' : 'empty';
         saveState(browserState, { ...state(browserState), suspended: false, retryAt: 0, reason: '', status, lastSuccessAt: new Date(now()).toISOString() });
@@ -372,14 +353,17 @@ const HunterCollector = (() => {
       if (!token()) return summary('not_configured');
       if (connecting) return summary('busy');
       if (connect) {
-        const blocked = browserBlocked(true);
-        if (blocked) return summary('complete', { instagram: blocked });
         if (!env.instagramBrowser?.connect) return summary('complete', { instagram: browserSummary('unavailable', { reason: 'browser_unavailable' }) });
         connecting = true;
         try {
           const result = await env.instagramBrowser.connect();
           if (result?.status !== 'ready') return summary('complete', { instagram: browserSummary(result?.status === 'cancelled' ? 'cancelled' : 'unknown',
             { stage: 'login', reason: browserReasons.includes(result?.reason) ? result.reason : 'login_incomplete' }) });
+          // Renewing local login releases only authentication suspension. Existing
+          // 429 and daily counters survive; login itself is not a collector query.
+          saveState(browserState, { ...state(browserState), suspended: false });
+          const blocked = browserBlocked(true);
+          if (blocked) return summary('complete', { instagram: { ...blocked, status: 'connected_waiting' } });
         } finally { connecting = false; }
       }
       return withLease(async () => {
