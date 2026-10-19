@@ -42,13 +42,13 @@ test('public UI receives no device token, native launch resolves decomposed name
   assert.equal(h.launched[0], 'scriptable:///run?scriptName=' + encodeURIComponent('Bilhete Único'));
   assert.equal(h.files.get('/cloud/Bilhete Único.js'), '// untouched');
 });
-test('integrated launch checks access before passing control to runtime', async () => {
+test('native launch checks access before passing control to runtime', async () => {
   const opened = [];
   const h = harness(path => ({ data: path === '/v1/me' ? { profile: approved } : { allowed: true } }),
     { files: { '/cloud/PillTracker.js': '// original' } });
-  h.host.attachRuntime({ activeId: null, open: async id => { opened.push(id); return { status: 'opened', mode: 'integrated' }; } });
+  h.host.attachRuntime({ activeId: null, open: async id => { opened.push(id); return { status: 'returned', mode: 'native' }; } });
   await h.host.start();
-  assert.equal((await h.host.dispatch('openApp', { id: 'pilltracker' })).mode, 'integrated');
+  assert.equal((await h.host.dispatch('openApp', { id: 'pilltracker' })).mode, 'native');
   assert.deepEqual(opened, ['pilltracker']); assert.equal(h.launched.length, 0);
   h.host.attachRuntime({ activeId: 'pilltracker' });
   await assert.rejects(h.host.dispatch('installUpdate', { id: 'saquettoos' }), /close_app_before_update/);

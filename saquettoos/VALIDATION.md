@@ -1,3 +1,15 @@
+# saquettoOS 1.0.3 — 2026-10-18
+
+## Interfaces originais e retorno à central
+
+- Os seis apps passam de iframe/adapters para execução local da fonte verificada, usando as APIs nativas originais. Nenhuma fonte privada é incluída no artefato; nenhum arquivo de app instalado é alterado por esta mudança.
+- `Script.complete()` do filho é isolado. Nome, arquivo e URLs do script apontam ao app correto. A fonte do Calendário aguarda `t.present()`; a do media-downloader aguarda sua IIFE principal. Transformações limitadas a fontes já verificadas por SHA-256 e aplicadas somente em memória.
+- A central pausa a leitura da fila enquanto a sessão nativa está ativa, aguarda o encerramento e então retoma. A UI não trata uma sessão maior que 90 segundos como erro. Atualizações e uma segunda abertura ficam bloqueadas enquanto o app está ativo.
+- 48 testes direcionados aprovados: 9 host, 12 UI, 8 ciclo de vida, 12 runtime e 7 sessões nativas. Cobrem fechamento, bloqueio de abertura concorrente, pausa da ponte, espera sem timeout, isolamento de identidade e recusa de fonte desconhecida. Build e diff-check aprovados.
+- Os seis arquivos instalados passaram na verificação de fingerprint e compilação do corpo assíncrono sem execução. Nenhum dado de calendário, medicamentos ou benefícios foi acessado pelos testes.
+- Documentação primária consultada: [URLScheme](https://docs.scriptable.app/urlscheme/), [WebView.present](https://docs.scriptable.app/webview/#-present), [UITable.present](https://docs.scriptable.app/uitable/#-present) e [Script.complete](https://docs.scriptable.app/script/#complete). A URL executa scripts, sem contrato documentado de retorno. O retorno implementado usa as promessas das apresentações nativas dentro da sessão aguardada.
+- Pendente no aparelho: abrir UOL a partir da central, confirmar layout/armazenamento original e fechar para voltar; repetir com uma tabela nativa. Testes sintéticos não demonstram a pilha de apresentação do Scriptable. Ações internas que abrem uma nova execução por URL conservam seu comportamento original.
+
 # saquettoOS 1.0.2 — 2026-10-18
 
 ## Nova sequência de apresentação
@@ -8,7 +20,7 @@
 - `saquettoos.startup.v1.json`, na pasta Scriptable, registra versão, etapas, horários e dimensões. Não contém identidade, tokens, nomes/perfis de usuários, URLs de requisições ou dados dos apps.
 - 27 testes direcionados aprovados: host, UI e sete cenários do ciclo de vida. Verificam apresentação antes das avaliações, estado no documento, serialização, fechamento, trabalho nativo pendente e recuperação de dashboard vazio. Build e diff-check aprovados.
 - A prévia completa foi carregada por um `WKWebView` nativo do macOS, após a tela leve: marcador de renderização verdadeiro, seis apps, três imagens decodificadas, shell `display:flex`, dimensões 375 × 855 e título presente. Isso verifica o documento no WebKit, não a apresentação pelo bridge do Scriptable no iPhone.
-- A confirmação da abertura no Scriptable do iPhone continua pendente; a sequência usa o padrão do UOL, mas os testes locais não reproduzem o bridge nativo do Scriptable.
+- Abertura da 1.0.2 confirmada pelo usuário no Scriptable do iPhone. A mesma confirmação revelou falha nos apps adaptados: UOL com layout alterado e aviso de armazenamento; motivação da 1.0.3.
 
 ## Base 1.0.1
 

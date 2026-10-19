@@ -74,6 +74,8 @@ function harness(options = {}) {
     async presentAlert() { alerts.push({ title: this.title, message: this.message }); events.push('alert'); }
   }
   const runtime = {
+    nativeActive: false,
+    async waitForNative() { events.push('native_wait'); await nativeAction.promise; },
     shouldAllowRequest(request) { return request.url === 'about:blank' || request.url === 'about:srcdoc'; },
     async shutdown() { events.push('shutdown'); },
   };
@@ -83,6 +85,11 @@ function harness(options = {}) {
     attachRuntime(value) { assert.equal(value, runtime); },
     async dispatch(action, payload) {
       dispatches.push({ action, payload });
+      if (action === 'openApp') {
+        runtime.nativeActive = true;
+        try { return await nativeAction.promise; }
+        finally { runtime.nativeActive = false; }
+      }
       if (action === 'nativeAction') return nativeAction.promise;
       if (action === 'appEvalResult') { nativeAction.resolve({ status: 'finished' }); return { status: 'received' }; }
       return { status: 'finished' };
@@ -168,6 +175,21 @@ test('idle dismissal cancels native polling and reaches Script.complete without 
   assert.equal(h.callbacks.size, 0);
   assert.equal(h.evaluations.some(item => item.useCallback), false);
   assert.equal(h.evaluations.some(item => item.afterDismiss), false);
+});
+
+test('native app pauses central polling until closure then leaves central running', async t => {
+  const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'clube-uol' } }] });
+  t.after(() => { h.settleNative(); h.dismiss(); });
+  await until(() => h.events.includes('native_wait') || h.done, 'native session did not pause bridge');
+  const count = h.evaluations.length;
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, count);
+  assert.equal(h.complete, false);
+  h.settleNative();
+  await until(() => h.resolutions.length === 1 || h.done, 'native return was not acknowledged');
+  assert.equal(h.complete, false, 'child completion must not end saquettoOS');
+  assert.ok(h.evaluations.length > count);
+  h.dismiss(); await h.finished(); assert.equal(h.complete, true);
 });
 
 test('bridge dispatches evaluation results while another native action is waiting', async t => {

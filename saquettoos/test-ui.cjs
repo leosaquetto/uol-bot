@@ -82,13 +82,26 @@ test('appearance follows system and honors explicit light/dark and material pref
 });
 
 test('only approved, installed and authorized integrated apps receive a frame', () => {
-  for (const options of [{ profile: { status: 'pending' } }, { profile: { status: 'revoked' } }, { app: { allowed: false } }, { app: { installed: false } }, { app: { mode: 'external' } }]) {
+  for (const options of [{ profile: { status: 'pending' } }, { profile: { status: 'revoked' } }, { app: { allowed: false } }, { app: { installed: false } }, { app: { mode: 'external' } }, { app: { mode: 'native' } }]) {
     const denied = fixture(options); assert.equal(denied.show(), false); assert.equal(denied.frames.length, 0);
   }
   const f = fixture(); assert.equal(f.show(), 'session-a');
   assert.equal(f.frame.attributes.sandbox, 'allow-scripts allow-forms');
   assert.equal(f.frame.attributes.referrerpolicy, 'no-referrer');
   assert.equal(f.show(), 'session-a'); assert.equal(f.frames.length, 1, 'Reopening the current instance preserves its frame');
+});
+
+test('native sessions wait for closure without a 90 second timeout or iframe', async () => {
+  const f = fixture({ app: { mode: 'native' } });
+  const session = f.window.saquettoNative('openApp', { id: 'clube-uol' });
+  assert.equal(f.timers.size, 0);
+  assert.equal(f.frames.length, 0);
+  f.resolveNext({ status: 'returned', mode: 'native' });
+  assert.equal((await session).status, 'returned');
+  const ordinary = f.window.saquettoNative('checkUpdates');
+  assert.equal(f.timers.size, 1, 'ordinary requests still have a deadline');
+  f.resolveNext({}); await ordinary;
+  assert.equal(f.timers.size, 0);
 });
 
 test('bridge ignores foreign windows, invalid envelopes and unsupported kinds', async () => {

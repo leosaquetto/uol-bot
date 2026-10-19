@@ -88,8 +88,8 @@
     code_mismatch: 'O código não confere. Confirme o código diretamente com a pessoa.', invalid_code: 'O código não confere. Confirme o código diretamente com a pessoa.', confirmation_mismatch: 'O código não confere. Confirme o código diretamente com a pessoa.',
     admin_required: 'Esta ação exige acesso de administrador.', enrollment_capacity: 'O serviço atingiu o limite de solicitações. Tente novamente mais tarde.',
     app_busy: 'O app ainda está concluindo uma ação. Aguarde antes de voltar ao início.', app_closing: 'O app está sendo fechado. Aguarde a conclusão.',
-    adapter_source_changed: 'Este script mudou desde a adaptação. Use Abrir separado até atualizar o saquettoOS.',
-    adapter_entrypoint_changed: 'Esta versão do script precisa de uma adaptação atualizada.',
+    adapter_source_changed: 'Esta versão do script ainda não foi verificada pela central. Use Executar fora da central ou atualize o saquettoOS.',
+    adapter_entrypoint_changed: 'Esta versão do script precisa de uma atualização de compatibilidade.',
     app_storage_unreadable: 'Não foi possível ler os ajustes desta tela. O arquivo foi preservado.',
     app_storage_unverified: 'Não foi possível confirmar a gravação dos ajustes. Feche e reabra o app.',
     close_app_before_update: 'Volte ao início antes de atualizar seus apps.',
@@ -109,7 +109,9 @@
     if (preview) return Promise.reject(new Error('preview_only'));
     return new Promise((resolve, reject) => {
       const id = 'os-' + (++requestSequence) + '-' + Date.now();
-      const timer = setTimeout(() => { pending.delete(id); reject(new Error('native_timeout')); }, 90000);
+      // Native app sessions end when the user closes the app, not after 90 seconds.
+      const nativeSession = action === 'openApp' && getApp(payload && payload.id)?.mode === 'native';
+      const timer = nativeSession ? null : setTimeout(() => { pending.delete(id); reject(new Error('native_timeout')); }, 90000);
       pending.set(id, { resolve, reject, timer });
       window.__SAQUETTO_QUEUE.push({ id, action, payload: payload || {} });
       if (typeof window.__SAQUETTO_WAKE === 'function') window.__SAQUETTO_WAKE();
@@ -183,7 +185,7 @@
     else if (!app.installed) badge = '<span class="app-badge">' + icon('download') + '</span>';
     else if (app.updateAvailable) badge = '<span class="app-badge">' + icon('refresh') + '</span>';
     const name = inDock ? ({ 'clube-uol': 'Clube UOL', 'super-calendario': 'Calendário', 'media-downloader': 'Downloads', 'lastfm-small': 'Last.fm' }[app.id] || app.name) : app.name;
-    const hint = !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
+    const hint = !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
     return '<button type="button" class="app-tile" data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + allowed(app) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon" style="--app-color:' + appColor(app) + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
   }
   function renderApps() {
@@ -261,7 +263,7 @@
   function appPanel() {
     const app = getApp(panelAppId);
     if (!app) return '<p class="inline-error">Aplicativo não encontrado.</p>';
-    return '<div class="status-card"><span>' + icon(appIcons[app.id] || 'solid') + '</span><h3>' + escapeHTML(app.name) + '</h3><p>' + (!allowed(app) ? 'Seu perfil ainda não tem permissão para este app.' : !app.installed ? 'Instale o script no Scriptable para abrir este aplicativo.' : app.mode === 'integrated' ? 'Este app está preparado para abrir dentro do saquettoOS.' : 'Este app abre sua própria interface no Scriptable.') + '</p></div><div class="group"><div class="group-row"><span class="row-text"><strong>Nome no Scriptable</strong><small>' + escapeHTML(app.scriptName || app.name) + '</small></span></div><div class="group-row"><span class="row-text"><strong>Estado</strong><small>' + (!app.installed ? 'Não instalado' : app.mode === 'integrated' ? 'Integrado' : 'App externo') + '</small></span><span class="version-tag">' + escapeHTML(app.version || '') + '</span></div></div><div class="panel-actions">' + (!allowed(app) ? '<button type="button" class="secondary-button" data-panel="access">Ver meu acesso</button>' : !app.installed ? '<button type="button" class="primary-button" data-panel="updates">Ver instalação e atualizações</button>' : '<button type="button" class="primary-button" data-run-app="' + escapeHTML(app.id) + '">Abrir aplicativo</button><button type="button" class="secondary-button" data-action="standalone" data-app-id="' + escapeHTML(app.id) + '">Abrir separado</button>') + '</div>';
+    return '<div class="status-card"><span>' + icon(appIcons[app.id] || 'solid') + '</span><h3>' + escapeHTML(app.name) + '</h3><p>' + (!allowed(app) ? 'Seu perfil ainda não tem permissão para este app.' : !app.installed ? 'Instale o script no Scriptable para abrir este aplicativo.' : app.mode === 'native' ? 'Abre a interface original do app. Feche a tela do app para voltar à central.' : app.mode === 'integrated' ? 'Este app está preparado para abrir dentro do saquettoOS.' : 'Este app abre sua própria interface no Scriptable.') + '</p></div><div class="group"><div class="group-row"><span class="row-text"><strong>Nome no Scriptable</strong><small>' + escapeHTML(app.scriptName || app.name) + '</small></span></div><div class="group-row"><span class="row-text"><strong>Estado</strong><small>' + (!app.installed ? 'Não instalado' : app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'App externo') + '</small></span><span class="version-tag">' + escapeHTML(app.version || '') + '</span></div></div><div class="panel-actions">' + (!allowed(app) ? '<button type="button" class="secondary-button" data-panel="access">Ver meu acesso</button>' : !app.installed ? '<button type="button" class="primary-button" data-panel="updates">Ver instalação e atualizações</button>' : '<button type="button" class="primary-button" data-run-app="' + escapeHTML(app.id) + '">Abrir aplicativo</button><button type="button" class="secondary-button" data-action="standalone" data-app-id="' + escapeHTML(app.id) + '">Executar fora da central</button>') + '</div>';
   }
   function formatDate(date) { const parsed = new Date(date); return Number.isNaN(parsed.getTime()) ? String(date) : parsed.toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
   function renderPanel() {

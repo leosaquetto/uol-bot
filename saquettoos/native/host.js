@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.2';
+const SAQUETTO_VERSION = '1.0.3';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -391,6 +391,9 @@ async function saquettoMain() {
     }
   }
   while (!dismissed && !startupFailure) {
+    // The child owns native presentation/evaluation until its own UI closes.
+    // Do not poll the covered central while a child WebView callback is pending.
+    if (runtime.nativeActive) { await runtime.waitForNative(); continue; }
     let items;
     try {
       // Every evaluation completes immediately. No native completion callback survives Close.

@@ -1,4 +1,4 @@
-// The installed scripts remain local. Adapters run only reviewed source fingerprints.
+// Installed scripts remain local. Both execution modes require reviewed fingerprints.
 const SaquettoRuntime = (() => {
   const json = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   function createLoader({ fm, catalog, compatibility, hash, script, globals = {} }) {
@@ -14,12 +14,27 @@ const SaquettoRuntime = (() => {
       if (!compatibility[id].sha256.includes(hash(original))) throw new Error('adapter_source_changed');
       const source = transform(original);
       if (typeof source !== 'string') throw new Error('adapter_source_changed');
-      const bindings = { ...globals, Script: { ...script, name: () => names[0].slice(0, -3), complete() {}, setShortcutOutput() {} },
-        config: { runsInApp: true, runsInWidget: false, runsInActionExtension: false, runsWithSiri: false, runsInNotification: false },
-        args: { queryParameters: {}, shortcutParameter: null, urls: [], plainTexts: [], images: [], fileURLs: [] },
+      const name = names[0].slice(0, -3);
+      const bindings = { ...globals, Script: { name: () => name, complete() {}, setShortcutOutput() {},
+          setWidget(widget) { if (typeof script.setWidget === 'function') script.setWidget(widget); } },
+        URLScheme: { forRunningScript: () => 'scriptable:///run?scriptName=' + encodeURIComponent(name),
+          forOpeningScript: () => 'scriptable:///open?scriptName=' + encodeURIComponent(name),
+          forOpeningScriptSettings: () => 'scriptable:///open?scriptName=' + encodeURIComponent(name) + '&openSettings=true',
+          allParameters: () => ({}), parameter: () => undefined },
+        config: { runsInApp: true, runsInWidget: false, runsInAccessoryWidget: false, runsFromHomeScreen: false,
+          runsInActionExtension: false, runsWithSiri: false, runsInNotification: false, widgetFamily: null },
+        args: { queryParameters: {}, shortcutParameter: null, widgetParameter: null, urls: [], plainTexts: [], images: [], fileURLs: [] },
         module: { filename, exports: {} }, ...overrides };
       return new AsyncFunction(...Object.keys(bindings), source + '\nreturn (' + exports + ');')(...Object.values(bindings));
     } };
+  }
+  function nativeSource(id, source) {
+    // These two reviewed scripts otherwise return before their native UI finishes.
+    // Normalize await ownership in memory only; never rewrite an installed app.
+    const entry = id === 'super-calendario' ? '  t.present();' : id === 'media-downloader' ? '(async function () {' : null;
+    if (!entry) return source;
+    if (source.split(entry).length !== 2) throw new Error('adapter_entrypoint_changed');
+    return source.replace(entry, id === 'super-calendario' ? '  await t.present();' : 'await (async function () {');
   }
   // This function is serialized into the sandboxed child, before app scripts.
   function childBridge(initial) {
@@ -138,6 +153,17 @@ const SaquettoRuntime = (() => {
       openingDone = new Promise(resolve => { finishOpening = resolve; });
       try {
         const app = catalog.find(item => item.id === id); if (!app) throw new Error('app_invalid');
+        if (app.mode === 'native') {
+          active = { ...app, panel: null };
+          // Use the actual WebView, UITable, Alert, storage and networking APIs.
+          // Child Script.complete is scoped by the loader; the central stays alive.
+          await loader.load(id, 'null', source => {
+            if (shutdownRequested) throw new Error('app_closed');
+            return nativeSource(id, source);
+          });
+          active = null;
+          return { status: 'returned', appId: id, mode: 'native' };
+        }
         const storagePath = local.joinPath(local.documentsDirectory(), 'saquettoos.appstate.' + id + '.json');
         let storage = {};
         if (local.fileExists(storagePath)) {
@@ -205,8 +231,11 @@ const SaquettoRuntime = (() => {
       await openingDone;
       return close();
     }
-    return { open, close, shutdown, dispatch, shouldAllowRequest, get activeId() { return active?.id || null; } };
+    return { open, close, shutdown, dispatch, shouldAllowRequest,
+      waitForNative: () => openingDone,
+      get nativeActive() { return active?.mode === 'native'; },
+      get activeId() { return active?.id || null; } };
   }
-  return { create, createLoader, inject };
+  return { create, createLoader, inject, nativeSource };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = SaquettoRuntime;
