@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.0';
+const SAQUETTO_VERSION = '1.0.1';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -278,9 +278,11 @@ async function saquettoMain() {
     Script.setShortcutOutput(JSON.stringify(result)); return;
   }
   const view = new WebView();
+  let dismissed = false;
+  const evaluate = code => dismissed ? Promise.reject(new Error('app_closed')) : view.evaluateJavaScript(code);
   let currentPreferences = (await host.state()).preferences;
   const runtime = SaquettoRuntime.create({ fm, local, catalog: SAQUETTO_CATALOG, compatibility: SAQUETTO_COMPATIBILITY,
-    hash: SaquettoUpdater.fingerprint, script: Script, shell: code => view.evaluateJavaScript(code),
+    hash: SaquettoUpdater.fingerprint, script: Script, shell: evaluate,
     uuid: () => UUID.string(), timer: (ms, callback) => Timer.schedule(ms, false, callback),
     request: url => new Request(url), nativeWebView: WebView, openURL: url => Safari.open(url),
     theme: () => {
@@ -288,16 +290,29 @@ async function saquettoMain() {
       return currentPreferences.material === 'glass' && appearance === 'dark' ? 'glass' : appearance;
     } });
   host.attachRuntime(runtime);
-  view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
   const initial = await host.state();
   initial.profile = { ...initial.profile, status: 'loading' };
-  await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(initial)));
-  let dismissed = false;
-  const presentation = view.present(true).then(() => { dismissed = true; });
+  try {
+    // Scriptable does not specify the internal request URL used by loadHTML.
+    // Install the app navigation filter only after this trusted, self-contained document loads.
+    await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(initial)));
+    view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
+    const loaded = await evaluate("!!(document.getElementById('shell') && typeof window.saquettoSetState === 'function' && typeof window.saquettoNative === 'function' && Array.isArray(window.__SAQUETTO_QUEUE))");
+    if (!loaded) throw new Error('interface_unavailable');
+  } catch (_) {
+    const alert = new Alert(); alert.title = 'Não foi possível abrir o saquettoOS';
+    alert.message = 'A interface não terminou de carregar. Feche e abra o script novamente. Versão ' + SAQUETTO_VERSION + '.';
+    alert.addAction('OK'); await alert.presentAlert(); return;
+  }
+  let cancelIdle = null;
+  const presentation = view.present(true).finally(() => {
+    dismissed = true;
+    if (cancelIdle) cancelIdle();
+  });
   const tasks = new Set();
   // Show the offline shell before the access request. Native actions wait for verified initialization.
   const ready = host.start().then(async state => {
-    if (!dismissed) await view.evaluateJavaScript('window.saquettoSetState(' + SaquettoHost.safeJSON(state) + ');');
+    if (!dismissed) await evaluate('window.saquettoSetState(' + SaquettoHost.safeJSON(state) + ');');
     if (!dismissed && allowedApp && action === 'open') {
       // Let the ordinary shell display a friendly failure; never launch another instance.
       const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
@@ -306,7 +321,7 @@ async function saquettoMain() {
     return true;
   }).catch(async () => {
     if (!dismissed) {
-      try { await view.evaluateJavaScript('window.saquettoSetState({profile:{name:"Seu espaço",role:"member",status:"unavailable",appIds:[]}});'); } catch (_) {}
+      try { await evaluate('window.saquettoSetState({profile:{name:"Seu espaço",role:"member",status:"unavailable",appIds:[]}});'); } catch (_) {}
     }
     return false;
   });
@@ -320,22 +335,25 @@ async function saquettoMain() {
       result = { ok: true, data };
     } catch (error) { result = { ok: false, error: /^[a-z_]{1,60}$/.test(error?.message || '') ? error.message : 'operation_failed' }; }
     if (!dismissed) {
-      try { await view.evaluateJavaScript('window.saquettoResolve(' + JSON.stringify(item.id) + ',' + SaquettoHost.safeJSON(result) + ');'); } catch (_) {}
+      try { await evaluate('window.saquettoResolve(' + JSON.stringify(item.id) + ',' + SaquettoHost.safeJSON(result) + ');'); } catch (_) {}
     }
   }
   while (!dismissed) {
-    let item;
+    let items;
     try {
-      item = await Promise.race([presentation.then(() => null), view.evaluateJavaScript(`(() => {
-        const finish = completion;
-        const drain = () => { if (!window.__SAQUETTO_QUEUE?.length) return;
-          window.__SAQUETTO_WAKE = null; finish(window.__SAQUETTO_QUEUE.shift()); };
-        window.__SAQUETTO_WAKE = drain; drain();
-      })()`, true)]);
+      // Every evaluation completes immediately. No native completion callback survives Close.
+      items = await evaluate('window.__SAQUETTO_QUEUE.splice(0, 20)');
     } catch (_) { break; }
-    if (dismissed || !item || typeof item.id !== 'string' || typeof item.action !== 'string') continue;
-    // Callback results must drain while an app action is awaiting its WebView evaluation.
-    const task = process(item); tasks.add(task); task.finally(() => tasks.delete(task));
+    if (dismissed || !Array.isArray(items)) break;
+    for (const item of items) {
+      if (!item || typeof item.id !== 'string' || typeof item.action !== 'string') continue;
+      // Callback results must drain while an app action is awaiting its WebView evaluation.
+      const task = process(item); tasks.add(task); task.finally(() => tasks.delete(task));
+    }
+    if (!items.length) await new Promise(resolve => {
+      const timer = Timer.schedule(100, false, () => { cancelIdle = null; resolve(); });
+      cancelIdle = () => { timer.invalidate(); cancelIdle = null; resolve(); };
+    });
   }
   await ready;
   try { await runtime.shutdown(); } catch (_) {}

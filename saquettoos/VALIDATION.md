@@ -1,4 +1,14 @@
-# saquettoOS 1.0.0 — 2026-10-18
+# saquettoOS 1.0.1 — 2026-10-18
+
+## Correção de abertura e encerramento
+
+- Relato real no iPhone: WebView preta e execução ainda ativa após Close na 1.0.0.
+- O HTML gerado contém a estrutura estática e JavaScript válido. O filtro de requisições era instalado antes de `loadHTML` e podia recusar a URL interna de carregamento; a URL exata emitida pelo iPhone não foi capturada. Agora o documento confiável carrega antes do filtro, e a presença da interface/ponte é verificada antes de apresentar a WebView. Falha de inicialização exibe alerta nativo.
+- A ponte usava `evaluateJavaScript(..., true)` sem chamar `completion` enquanto a fila estava vazia. A documentação do Scriptable exige essa chamada para encerrar a avaliação; `Promise.race` não a cancelava. Agora cada leitura da fila retorna imediatamente, a espera usa Timer nativo cancelado ao fechar, e novas avaliações da tela fechada são recusadas.
+- 6 testes novos do ciclo de vida aprovados, executando `saquettoMain` com mocks. O mesmo harness sobre a 1.0.0 produziu 4 falhas e 2 passes. Mais 32 testes existentes de host/runtime/UI aprovados. Build verifica sintaxe do artefato e da interface.
+- Não houve teste físico da 1.0.1 no iPhone. Abertura, encerramento e sincronização iCloud ainda exigem confirmação no aparelho.
+
+## Base 1.0.0
 
 ## Confirmado
 
