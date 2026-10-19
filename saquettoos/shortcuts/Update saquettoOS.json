@@ -1,0 +1,64 @@
+{
+  "WFWorkflowName": "Update saquettoOS",
+  "WFWorkflowClientVersion": "3036.0.4",
+  "WFWorkflowMinimumClientVersion": 900,
+  "WFWorkflowMinimumClientVersionString": "900",
+  "WFWorkflowIcon": {
+    "WFWorkflowIconStartColor": 4251333119,
+    "WFWorkflowIconGlyphNumber": 59511
+  },
+  "WFWorkflowTypes": [],
+  "WFWorkflowInputContentItemClasses": [],
+  "WFWorkflowImportQuestions": [],
+  "WFQuickActionSurfaces": [],
+  "WFWorkflowHasShortcutInputVariables": false,
+  "WFWorkflowActions": [
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.dictionary",
+      "WFWorkflowActionParameters": {
+        "UUID": "592EE32D-7C81-4F6F-9DD2-894765F529C0",
+        "WFItems": {
+          "Value": {
+            "WFDictionaryFieldValueItems": [
+              {
+                "WFItemType": 0,
+                "WFKey": {
+                  "Value": {
+                    "string": "action",
+                    "attachmentsByRange": {}
+                  },
+                  "WFSerializationType": "WFTextTokenString"
+                },
+                "WFValue": {
+                  "Value": {
+                    "string": "update-auto",
+                    "attachmentsByRange": {}
+                  },
+                  "WFSerializationType": "WFTextTokenString"
+                }
+              }
+            ]
+          },
+          "WFSerializationType": "WFDictionaryFieldValue"
+        }
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "dk.simonbs.Scriptable.ParameterizedRunScriptIntent",
+      "WFWorkflowActionParameters": {
+        "UUID": "9F013165-9708-47DF-9128-9192AE5AF606",
+        "fileName": "saquettoOS",
+        "ShowWhenRun": false,
+        "runInApp": false,
+        "parameter": {
+          "Value": {
+            "OutputUUID": "592EE32D-7C81-4F6F-9DD2-894765F529C0",
+            "Type": "ActionOutput",
+            "OutputName": "Dicionário"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "WFWorkflowName": "saquettoOS",
+  "WFWorkflowClientVersion": "3036.0.4",
+  "WFWorkflowMinimumClientVersion": 900,
+  "WFWorkflowMinimumClientVersionString": "900",
+  "WFWorkflowIcon": {
+    "WFWorkflowIconStartColor": 4251333119,
+    "WFWorkflowIconGlyphNumber": 59511
+  },
+  "WFWorkflowTypes": [],
+  "WFWorkflowInputContentItemClasses": [],
+  "WFWorkflowImportQuestions": [],
+  "WFQuickActionSurfaces": [],
+  "WFWorkflowHasShortcutInputVariables": false,
+  "WFWorkflowActions": [
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.openurl",
+      "WFWorkflowActionParameters": {
+        "UUID": "4C005441-907C-44CB-9DD4-95D96DDD6C0B",
+        "WFInput": "scriptable:///run/Clube%20UOL%20Premium"
+      }
+    }
+  ]
+}

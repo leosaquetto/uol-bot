@@ -1,0 +1,8 @@
+[
+  {"id":"clube-uol","name":"Clube UOL Premium","scriptName":"Clube UOL Premium","mode":"integrated","icon":"uol","color":"violet","manifestBase":"https://raw.githubusercontent.com/leosaquetto/uol-bot/main/stories-hunter/releases/","artifactPath":"stories-hunter/dist/Hunter.js","envelope":"uol"},
+  {"id":"bilhete-unico","name":"Bilhete Único","scriptName":"Bilhete Único","mode":"integrated","icon":"transit","color":"blue"},
+  {"id":"super-calendario","name":"Super Calendário","scriptName":"Super Calendário","mode":"integrated","icon":"calendar","color":"red"},
+  {"id":"media-downloader","name":"media-downloader","scriptName":"media-downloader","mode":"integrated","icon":"download","color":"cyan"},
+  {"id":"pilltracker","name":"PillTracker","scriptName":"PillTracker","mode":"integrated","icon":"pill","color":"pink"},
+  {"id":"lastfm-small","name":"Last.fm Small","scriptName":"Last.fm Small","mode":"integrated","icon":"music","color":"red"}
+]

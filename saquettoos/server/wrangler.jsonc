@@ -1,0 +1,18 @@
+{
+  "$schema": "../../cloudflare-workers/uol-ingressos-discord-worker/node_modules/wrangler/config-schema.json",
+  "name": "saquettoos-access",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-18",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.01,
+    "logs": { "enabled": true, "invocation_logs": false, "head_sampling_rate": 0.01 },
+    "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ACCESS", "class_name": "AccessWorkspace" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AccessWorkspace"] }]
+}

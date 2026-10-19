@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR" data-appearance="dark" data-material="glass">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#101225">
+  <title>saquettoOS</title>
+  <style>__SAQUETTO_STYLES__</style>
+</head>
+<body>
+  <div class="wallpaper" aria-hidden="true"><div class="aurora aurora-one"></div><div class="aurora aurora-two"></div><div class="aurora aurora-three"></div></div>
+  <main id="shell" class="shell">
+    <div id="preview-note" class="preview-note" hidden>Prévia de interface <span>Sem conexão com o Scriptable</span></div>
+    <header class="topbar">
+      <button class="brand-button" type="button" data-action="home" aria-label="Início do saquettoOS">
+        <span class="brand-mark" id="brand-mark" aria-hidden="true"></span>
+        <span class="wordmark">saquetto<span>OS</span></span>
+      </button>
+      <div class="topbar-actions">
+        <button id="notifications-button" class="round-button" type="button" data-panel="notifications" aria-label="Abrir notificações"><span data-icon="bell"></span><span class="notification-dot" id="notification-dot" hidden></span></button>
+        <button id="profile-button" class="profile-button" type="button" data-panel="settings" aria-label="Abrir perfil e ajustes"><span id="profile-initials">S</span><span class="profile-presence" id="profile-presence"></span></button>
+      </div>
+    </header>
+
+    <section id="home-screen" class="home-screen" aria-label="Tela inicial">
+      <div class="welcome">
+        <p class="eyebrow" id="greeting">SEU ESPAÇO. SEUS APPS.</p>
+        <h1>Tudo no seu <span>lugar.</span></h1>
+        <p class="welcome-copy" id="welcome-copy">Uma casa para os seus scripts.</p>
+      </div>
+      <div id="access-banner" class="access-banner surface" hidden></div>
+      <div class="library-heading"><h2>Seus apps</h2><span class="library-count" id="library-count"></span></div>
+      <div id="app-grid" class="app-grid" role="list" aria-label="Aplicativos"></div>
+      <div id="search-empty" class="empty-search" hidden><span data-icon="search"></span><p>Nenhum app encontrado.</p><button class="text-button" type="button" data-action="clearSearch">Limpar busca</button></div>
+      <div class="home-bottom">
+        <button type="button" id="update-peek" class="update-peek" data-panel="updates"><span class="peek-icon" data-icon="sparkles"></span><span><strong id="update-peek-title">Seu espaço, sempre em dia</strong><small id="update-peek-copy">Confira as versões dos seus apps</small></span><span class="peek-arrow" data-icon="chevron"></span></button>
+        <label class="search-box"><span data-icon="search"></span><input id="app-search" type="search" placeholder="Buscar nos seus apps" autocomplete="off" autocapitalize="off" aria-label="Buscar aplicativos"><span class="search-shortcut" aria-hidden="true">⌕</span></label>
+        <nav id="dock" class="dock surface" aria-label="Apps favoritos"></nav>
+        <div class="home-caption"><span class="caption-dot"></span><span id="home-caption">saquettoOS</span></div>
+      </div>
+    </section>
+
+    <section id="app-stage" class="app-stage" hidden aria-label="Aplicativo aberto">
+      <header id="app-stage-header" class="app-stage-header surface"><button type="button" class="back-button" data-action="home"><span data-icon="back"></span>Início</button><strong id="app-stage-name"></strong><button type="button" class="round-button" data-action="standalone" aria-label="Abrir app no Scriptable"><span data-icon="external"></span></button></header>
+      <div id="app-frame-container" class="app-frame-container"></div>
+    </section>
+  </main>
+
+  <div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
+  <section id="sheet" class="sheet surface" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden tabindex="-1">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <header class="sheet-header"><div><p class="eyebrow" id="sheet-eyebrow">SAQUETTOOS</p><h2 id="sheet-title">Ajustes</h2></div><button type="button" class="round-button" id="close-sheet" aria-label="Fechar painel"><span data-icon="close"></span></button></header>
+    <div id="sheet-content" class="sheet-content"></div>
+  </section>
+  <div id="toast" class="toast surface" role="status" aria-live="polite" hidden></div>
+  <script id="saquetto-initial" type="application/json">__SAQUETTO_INITIAL_JSON__</script>
+  <script>__SAQUETTO_APP__</script>
+</body>
+</html>
