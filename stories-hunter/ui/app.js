@@ -563,12 +563,37 @@
         const reasons = {
           network_error: 'falha de rede ao consultar o Instagram',
           browser_network_error: 'falha de rede ao consultar o Instagram',
+          browser_evaluation_failed: 'não foi possível executar a consulta no navegador deste iPhone',
+          browser_bridge_unsupported: 'o navegador não conseguiu devolver o resultado da consulta',
+          browser_script_error: 'a consulta falhou ao executar no navegador',
+          browser_runtime_unsupported: 'o navegador não oferece um recurso necessário à leitura da resposta',
+          browser_load_failed: 'não foi possível carregar a página do Instagram',
+          browser_timeout: 'o navegador excedeu o tempo de consulta',
+          request_timeout: 'o Instagram não respondeu dentro do tempo de consulta',
+          browser_response_invalid: 'o Instagram retornou dados que a captura não reconheceu',
+          non_json_response: 'o Instagram retornou uma página em vez dos dados da consulta',
+          body_limit: 'a resposta do Instagram excedeu o tamanho permitido',
+          profile_identity_mismatch: 'não foi possível validar o perfil clubeuol',
+          owner_mismatch: 'não foi possível confirmar que os Stories pertencem ao clubeuol',
+          no_validated_story_structure: 'a resposta não contém uma lista de Stories validável',
+          api_error: 'o Instagram recusou a consulta',
+          malformed_story_payload: 'os dados de um Story não passaram na validação',
+          structure_limit: 'a resposta contém mais dados do que a captura permite',
+          conflicting_story_payload: 'a resposta contém dados conflitantes para o mesmo Story',
+          http_status: 'o Instagram não aceitou a consulta',
+          unexpected_response_url: 'a consulta retornou de um endereço inesperado',
+          browser_login_failed: 'não foi possível verificar o navegador após fechar o login',
+          login_incomplete: 'o login ainda não foi confirmado',
+          local_outbox_full: 'a fila local está cheia; aguarde o envio das capturas pendentes',
           http_429: 'Instagram limitou as consultas (HTTP 429)',
           rate_limited: 'Instagram limitou as consultas (HTTP 429)',
           daily_budget: 'limite diário de consultas deste iPhone atingido'
         };
         if (Object.prototype.hasOwnProperty.call(details, status)) presentation.detail = details[status];
         if (['unknown', 'backoff', 'unavailable', 'failed', 'error'].includes(status) && Object.prototype.hasOwnProperty.call(reasons, reason)) presentation.detail = reasons[reason];
+        const stages = { profile: 'consulta do perfil', stories: 'consulta dos Stories', login: 'verificação do login' };
+        if (!['found', 'empty'].includes(status) && Object.prototype.hasOwnProperty.call(stages, context.stage)) presentation.detail += '; etapa: ' + stages[context.stage];
+        if (Number.isInteger(context.statusCode) && context.statusCode >= 100 && context.statusCode <= 599 && context.statusCode !== 429) presentation.detail += ' (HTTP ' + context.statusCode + ')';
         if (['rate_limited', 'backoff', 'daily_budget'].includes(status) && typeof context.nextAttemptAt === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(context.nextAttemptAt) && Number.isFinite(Date.parse(context.nextAttemptAt))) {
           presentation.detail += '; próxima tentativa em ' + new Date(context.nextAttemptAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
         }
@@ -4223,6 +4248,14 @@
           ? hunterInstagramAction === 'connect' ? 'Conectando…' : 'Conectar Instagram neste iPhone'
           : hunterInstagramAction === 'collect' ? 'Coletando Stories…' : 'Coletar Stories agora';
       });
+      const diagnostic = document.getElementById('hunterInstagramStatus');
+      if (diagnostic) {
+        const source = INITIAL.hunterCollection && INITIAL.hunterCollection.sources && INITIAL.hunterCollection.sources.instagram;
+        diagnostic.hidden = access.state !== 'approved';
+        diagnostic.textContent = hunterInstagramAction !== null ? (hunterInstagramAction === 'connect' ? 'Instagram: aguardando login e consulta…' : 'Instagram: consultando Stories…')
+          : source ? 'Instagram: ' + hunterStatusPresentation(source.status, source.found, source.reason, source).detail + '.'
+          : 'Instagram: sessão ainda não verificada. Conecte uma vez; a coleta usa a sessão salva neste iPhone.';
+      }
     }
 
     function manageHunterAccess() {
@@ -4240,6 +4273,10 @@
 
     function runHunterInstagramAction(action) {
       if (!['connect', 'collect'].includes(action) || !INITIAL.nativeBrowser || hunterAccessState().state !== 'approved' || hunterInstagramAction !== null) return;
+      if (action === 'collect' && INITIAL.hunterCollection?.sources?.instagram?.status === 'auth_required') {
+        showHunterInstagramToast('Toque em “Conectar Instagram neste iPhone” antes de coletar Stories.', false);
+        renderHunterAccessUI(); return;
+      }
       hunterInstagramAction = action;
       renderHunterAccessUI();
       window.location.href = 'hunter-instagram://' + action;
@@ -4251,22 +4288,28 @@
       if (['access_revoked', 'access_expired', 'access_pending', 'activation_required'].includes(result.status)) {
         INITIAL.hunterAccess = { ...(INITIAL.hunterAccess || {}), status: result.status };
       }
-      renderHunterAccessUI();
       const source = result.sources && result.sources.instagram;
       if (source) {
         const previous = INITIAL.hunterCollection || {};
         INITIAL.hunterCollection = { ...previous, ...result, sources: { ...(previous.sources || {}), ...result.sources } };
         setHunterCollectionStatus(INITIAL.hunterCollection);
       }
+      renderHunterAccessUI();
       const verified = source && ['found', 'empty'].includes(source.status);
       const detail = source && hunterStatusPresentation(source.status, source.found, source.reason, source).detail;
-      showToast(verified ? 'Consulta ao Instagram concluída neste iPhone.'
+      showHunterInstagramToast(verified ? 'Consulta ao Instagram concluída neste iPhone.'
         : source ? 'Instagram: ' + detail + '.'
         : result.status === 'busy' ? 'Outra operação está em andamento. Tente ao concluir.'
         : result.status === 'cancelled' ? 'Conexão cancelada. Captura não confirmada.'
         : result.status === 'auth_required' ? 'Entre no Instagram neste iPhone em Ajustes.'
-        : 'Captura não confirmada. Confira o diagnóstico e o acesso deste iPhone.');
+        : 'Captura não confirmada. Confira o diagnóstico e o acesso deste iPhone.', verified);
       if (verified) streamLiveOffers(true);
+    }
+
+    function showHunterInstagramToast(message, verified) {
+      showToast(message);
+      const icon = document.getElementById('hubToast')?.querySelector?.('svg');
+      if (icon && !verified) icon.innerHTML = '<path d="M12 5v9M12 18v1"/>';
     }
 
     // NAVIGATION_PERSONALIZATION_START

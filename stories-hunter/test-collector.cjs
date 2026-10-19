@@ -256,3 +256,21 @@ test('budget is checked between profile and reels queries', async () => {
   const result = await h.collector.runInstagram();
   assert.equal(result.sources.instagram.status, 'daily_budget'); assert.equal(h.calls.length, 1);
 });
+
+
+test('WebView failures retain only the allowlisted reason, query stage and HTTP status', async () => {
+  const h = harness({ instagram: true });
+  h.setResponder(() => ({ code: 400, value: { private: 'never-display' } }));
+  const first = (await h.collector.runInstagram()).sources.instagram;
+  assert.equal(first.reason, 'http_status'); assert.equal(first.stage, 'profile'); assert.equal(first.statusCode, 400);
+  h.setResponder((url, req) => url.includes('reels_media') ? { code: 500, value: {} } : h.defaultResponder(url, req));
+  const second = (await h.collector.runInstagram()).sources.instagram;
+  assert.equal(second.stage, 'stories'); assert.equal(second.statusCode, 500);
+  h.env.instagramBrowser.request = async () => { throw Object.assign(Error('private message'), { reason: 'browser_evaluation_failed', statusCode: 'private status' }); };
+  const third = (await h.collector.runInstagram()).sources.instagram;
+  assert.equal(third.reason, 'browser_evaluation_failed'); assert.equal(third.stage, 'stories'); assert.equal(third.statusCode, undefined);
+  h.env.instagramBrowser.connect = async () => ({ status: 'unknown', reason: 'browser_bridge_unsupported', details: 'private login' });
+  const login = (await h.collector.runInstagram({ connect: true })).sources.instagram;
+  assert.equal(login.reason, 'browser_bridge_unsupported'); assert.equal(login.stage, 'login');
+  assert.doesNotMatch(JSON.stringify([first, second, third, login]), /never-display|private/);
+});

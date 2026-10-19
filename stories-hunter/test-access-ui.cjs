@@ -83,7 +83,7 @@ function instagramHarness() {
   const h = harness({ nativeBrowser: true, hunterAccess: { status: 'approved', role: 'member' }, hunterCollection: { sources: { portal: { status: 'found', found: 3 } } } });
   h.refreshes = 0;
   h.context.streamLiveOffers = force => { assert.equal(force, true); h.refreshes++; };
-  vm.runInContext(['reconnectHunterInstagram', 'collectHunterInstagram', 'runHunterInstagramAction', 'handleNativeInstagramResult'].map(fn).join('\n'), h.context);
+  vm.runInContext(['reconnectHunterInstagram', 'collectHunterInstagram', 'runHunterInstagramAction', 'handleNativeInstagramResult', 'showHunterInstagramToast'].map(fn).join('\n'), h.context);
   h.context.renderHunterAccessUI();
   return h;
 }
@@ -155,4 +155,44 @@ test('WebView diagnostics distinguish retry causes, show allowed retry dates, an
   assert.match(text, /após falha de consulta/);
   h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'unknown', reason: 'network_error' } } });
   assert.match(h.toasts.at(-1), /falha de rede/); assert.doesNotMatch(h.toasts.at(-1), /limite/);
+});
+
+
+test('Settings retains safe Instagram failure details and guides an unauthenticated manual capture', () => {
+  const h = instagramHarness();
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: {
+    transport: 'webview', status: 'unknown', reason: 'http_status', stage: 'profile', statusCode: 400
+  } } });
+  assert.match(h.elements.get('hunterInstagramStatus').textContent, /não aceitou.*consulta do perfil.*HTTP 400/);
+  assert.match(h.toasts.at(-1), /consulta do perfil.*HTTP 400/);
+  assert.equal(h.elements.get('hunterInstagramStatus').hidden, false);
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: {
+    transport: 'webview', status: 'unknown', reason: '<img private-secret>', stage: '<img private-secret>', statusCode: 'private-secret'
+  } } });
+  assert.doesNotMatch(h.elements.get('hunterInstagramStatus').textContent + h.toasts.at(-1), /private-secret|<img|HTTP/);
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'auth_required' } } });
+  h.context.collectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-dashboard');
+  assert.match(h.toasts.at(-1), /Conectar Instagram neste iPhone/);
+  h.context.reconnectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://connect');
+});
+
+test('bridge, page, response and timeout failures are distinct and use warning toast icons', () => {
+  const h = instagramHarness();
+  const icon = { innerHTML: '<polyline/>' };
+  h.context.document.getElementById('hubToast').querySelector = () => icon;
+  for (const [reason, expected] of [
+    ['browser_bridge_unsupported', /devolver o resultado/],
+    ['browser_evaluation_failed', /executar a consulta/],
+    ['browser_response_invalid', /não reconheceu/],
+    ['browser_runtime_unsupported', /recurso necessário/],
+    ['browser_timeout', /excedeu o tempo/],
+    ['profile_identity_mismatch', /validar o perfil/],
+  ]) {
+    h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'unknown', reason, stage: 'stories' } } });
+    assert.match(h.elements.get('hunterInstagramStatus').textContent, expected);
+    assert.match(h.toasts.at(-1), expected);
+    assert.equal(icon.innerHTML, '<path d="M12 5v9M12 18v1"/>');
+  }
 });

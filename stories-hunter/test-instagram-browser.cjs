@@ -32,13 +32,19 @@ function apiResponse(path, options = {}) {
     body: { getReader: () => ({ async read() { if (read) return { done: true }; read = true; return { done: false, value: bytes }; },
       async cancel() { options.onCancel?.(); } }) } };
 }
-function executePage(code, { location = { origin: ORIGIN, pathname: '/clubeuol/' }, response = {}, fetchImpl } = {}) {
+function executePage(code, { location = { origin: ORIGIN, pathname: '/clubeuol/' }, response = {}, fetchImpl, strictBridge = false } = {}) {
   const calls = [];
   const promise = new Promise((resolve, reject) => {
     const context = { location, AbortController, TextDecoder, setTimeout: () => 1, clearTimeout() {},
       completion: value => resolve(JSON.parse(value)),
       fetch: async (path, options) => { calls.push({ path, options }); return fetchImpl ? fetchImpl(path, options) : apiResponse(path, response); } };
-    try { Promise.resolve(vm.runInNewContext(code, context)).catch(reject); } catch (error) { reject(error); }
+    try {
+      const immediate = vm.runInNewContext(code, context);
+      if (strictBridge && immediate && typeof immediate.then === 'function') {
+        immediate.catch(() => {});
+        reject(new Error('JavaScript execution returned a result of an unsupported type'));
+      } else Promise.resolve(immediate).catch(reject);
+    } catch (error) { reject(error); }
   });
   return { promise, calls };
 }
@@ -63,7 +69,7 @@ function browser(options = {}) {
           calls.push({ action: 'evaluate', callback, origin: location.origin });
           if (!callback) return JSON.stringify({ origin: location.origin, path: location.pathname });
           if (options.evaluate) return options.evaluate(code, callback);
-          const result = executePage(code, { location, response: options.response, fetchImpl: options.fetchImpl });
+          const result = executePage(code, { location, response: options.response, fetchImpl: options.fetchImpl, strictBridge: options.strictBridge });
           const output = await result.promise; calls.push(...result.calls.map(call => ({ action: 'fetch', ...call })));
           return JSON.stringify(output);
         },
@@ -110,7 +116,7 @@ test('expired login, challenge and foreign page origin stop before querying Inst
     assert.deepEqual(await request.promise, { error: 'login_required' }); assert.equal(request.calls.length, 0);
   }
   for (const value of [{ message: 'login_required', password: SECRET }, { is_logged_in: false }, { challenge_required: true }]) {
-    assert.deepEqual(await page(PROFILE, { response: { value } }).promise, { error: 'login_required' });
+    assert.deepEqual(await page(PROFILE, { response: { value } }).promise, { error: 'login_required', statusCode: 200 });
   }
   assert.deepEqual(await page(PROFILE, { response: { status: 0, responseType: 'opaqueredirect' } }).promise, { error: 'login_required' });
 });
@@ -225,4 +231,27 @@ test('unexpected native callback content is rejected without surfacing credentia
     const h = browser({ evaluate: async () => raw });
     await assert.rejects(h.adapter.request(PROFILE), error => error.reason === 'browser_response_invalid' && !String(error).includes(SECRET));
   }
+});
+
+
+test('callback bridge returns a supported immediate value while the asynchronous query completes', async () => {
+  const h = browser({ strictBridge: true });
+  const result = await h.adapter.request(PROFILE);
+  assert.equal(JSON.parse(result.body).data.user.id, OWNER);
+  assert.equal(h.calls.filter(call => call.action === 'fetch').length, 1);
+});
+
+
+test('native evaluation rejection is distinct from loading failure without exporting its message', async () => {
+  for (const [message, reason] of [[SECRET, 'browser_evaluation_failed'], ['JavaScript execution returned a result of an unsupported type ' + SECRET, 'browser_bridge_unsupported']]) {
+    const h = browser({ evaluate: async () => { throw Error(message); } });
+    await assert.rejects(h.adapter.request(PROFILE), error => error.reason === reason && !String(error).includes(SECRET));
+  }
+  const h = browser({ load: async () => { throw Error(SECRET); } });
+  await assert.rejects(h.adapter.request(PROFILE), error => error.reason === 'browser_load_failed' && !String(error).includes(SECRET));
+});
+
+test('unsupported page streaming API reports a safe diagnostic instead of a generic parse failure', async () => {
+  const result = await page(PROFILE, { fetchImpl: async path => ({ ...apiResponse(path), body: null }) }).promise;
+  assert.deepEqual(result, { error: 'browser_runtime_unsupported', statusCode: 200 });
 });
