@@ -9,7 +9,7 @@ const OWNER = '12345678901234567890';
 const STORY = '45678901234567890123';
 const HTML = '<div class="col beneficio"><a href="/campanhasdeingresso/pAa-show"><img data-src="https://d310rdc9v8uuq.cloudfront.net/banner.jpg"><p class="titulo"><strong>2 ingressos &amp; show</strong></p><p class="parceiro">Teatro</p></a></div><!-- Fim div beneficio -->';
 const PROFILE = { username: 'clubeuol', id: OWNER };
-const session = () => ({ user_agent: 'test-browser', cookies: [{ name: 'sessionid', value: 'synthetic-session', domain: '.instagram.com' }] });
+const session = () => ({ user_agent: 'test-browser', cookies: [{ name: 'sessionid', value: 'synthetic-session', domain: '.instagram.com' }, { name: 'ds_user_id', value: '100', domain: '.instagram.com' }] });
 function reel(item = {}) {
   const taken = NOW / 1000 - 60;
   return { status: 'ok', reels: { [OWNER]: { id: OWNER, user: PROFILE, items: [{ id: STORY + '_' + OWNER, pk: STORY, taken_at: taken, expiring_at: taken + 86400,
@@ -169,4 +169,87 @@ test('uncertain receipt remains observable at 15 minute intervals without resend
   assert.equal(h.calls.length, calls + 1);
   assert.equal(h.collector.summary('test').delivered, 1);
   assert.equal(h.calls.filter(c => c.method === 'POST').length, 1);
+});
+
+test('explicit Instagram reconnection replaces only a fresh session and preserves evidence', async () => {
+  const h = harness({ instagram: true });
+  h.setResponder(() => ({ code: 401, value: {} }));
+  await h.collector.collect('instagram');
+  h.advance(C.LIMITS.instagram);
+  const before = new Map(h.files);
+  h.setResponder(h.defaultResponder);
+  const fresh = session(); fresh.cookies[0].value = 'renewed-private-session';
+  const result = await h.collector.reconnectInstagram(fresh);
+  assert.equal(result.sessionUpdated, true);
+  assert.equal(result.sources.instagram.status, 'found');
+  assert.equal(result.sources.instagram.found, 1);
+  assert.equal(JSON.parse(h.keys.get(C.KEYS.instagram)).cookies[0].value, 'renewed-private-session');
+  for (const [key, value] of before) assert.equal(h.files.get(key), value, 'history changed: ' + key);
+  assert.ok(h.calls.every(c => !c.url.endsWith('/campanhasdeingresso')));
+  assert.doesNotMatch(JSON.stringify(result), /renewed-private-session|synthetic-session|cookies|user_agent|h1\./);
+});
+
+test('same Instagram session and mismatched account never release authentication suspension', async () => {
+  const h = harness({ instagram: true });
+  h.setResponder(() => ({ code: 401, value: {} })); await h.collector.collect('instagram');
+  const count = h.calls.length, previous = h.keys.get(C.KEYS.instagram);
+  assert.equal((await h.collector.reconnectInstagram(session())).status, 'session_unchanged');
+  assert.equal((await h.collector.collect('instagram')).reason, 'authentication_suspended');
+  assert.equal(h.calls.length, count); assert.equal(h.keys.get(C.KEYS.instagram), previous);
+  const old = session();
+  h.keys.set(C.KEYS.instagram, JSON.stringify(old));
+  const fresh = session(); fresh.cookies[0].value = 'renewed'; fresh.cookies[1].value = '200';
+  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'instagram_account_mismatch');
+  fresh.cookies.pop();
+  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'instagram_account_unverified');
+  assert.equal(h.calls.length, count);
+});
+
+test('failed suspension write rolls back session so explicit recovery can be retried', async () => {
+  const h = harness({ instagram: true });
+  h.setResponder(() => ({ code: 401, value: {} })); await h.collector.collect('instagram');
+  h.advance(C.LIMITS.instagram);
+  const previous = h.keys.get(C.KEYS.instagram), write = h.env.fm.writeString;
+  let fail = true;
+  h.env.fm.writeString = (p, text) => {
+    if (fail && text.includes('"status":"reconnected"')) { fail = false; throw Error('disk unavailable'); }
+    return write(p, text);
+  };
+  const fresh = session(); fresh.cookies[0].value = 'renewed';
+  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'reconnect_storage_failed');
+  assert.equal(h.keys.get(C.KEYS.instagram), previous);
+  assert.equal((await h.collector.collect('instagram')).reason, 'authentication_suspended');
+  h.setResponder(h.defaultResponder);
+  assert.equal((await h.collector.reconnectInstagram(fresh)).sources.instagram.status, 'found');
+});
+
+test('renewed Instagram session respects rate-limit deadline and existing daily request budget', async () => {
+  for (const limited of ['rate', 'daily']) {
+    const h = harness({ instagram: true });
+    if (limited === 'rate') {
+      h.setResponder(() => ({ code: 429, value: {}, headers: { 'Retry-After': '21600' } }));
+      await h.collector.collect('instagram');
+    } else {
+      for (let i = 0; i < C.LIMITS.requests; i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagram-budget-' + i + '.json', JSON.stringify({ at: NOW - C.LIMITS.instagram - 1 }));
+    }
+    const count = h.calls.length, before = new Map(h.files);
+    const fresh = session(); fresh.cookies[0].value = 'renewed';
+    const result = await h.collector.reconnectInstagram(fresh);
+    assert.equal(result.sessionUpdated, true);
+    assert.equal(result.sources.instagram.status, limited === 'rate' ? 'backoff' : 'daily_budget');
+    assert.equal(h.calls.length, count);
+    for (const [key, value] of before) assert.equal(h.files.get(key), value);
+  }
+});
+
+test('overlapping collection and reconnection use the same lease', async () => {
+  const h = harness({ instagram: true }); let release;
+  h.setResponder(async () => { await new Promise(resolve => { release = resolve; }); return { value: HTML }; });
+  const running = h.collector.run();
+  while (!release) await new Promise(resolve => setImmediate(resolve));
+  const fresh = session(); fresh.cookies[0].value = 'renewed';
+  const original = h.keys.get(C.KEYS.instagram);
+  assert.equal((await h.collector.reconnectInstagram(fresh)).status, 'busy');
+  assert.equal(h.keys.get(C.KEYS.instagram), original);
+  h.setResponder(h.defaultResponder); release(); await running;
 });

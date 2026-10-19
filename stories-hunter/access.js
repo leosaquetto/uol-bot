@@ -23,7 +23,7 @@ const HunterAccess = (() => {
   function create(env) {
     const keychain = env.keychain, now = env.now || Date.now;
     const normalizeSession = env.normalizeSession || (typeof HunterCollector !== 'undefined' && HunterCollector.normalizeSession);
-    let statusFlight = null, requestFlight = null;
+    let statusFlight = null, requestFlight = null, reconnectFlight = null;
     const get = key => keychain.contains(key) ? keychain.get(key) : '';
     const unavailable = reason => ({ status: 'unavailable', reason: reason || 'access_unavailable' });
 
@@ -130,6 +130,27 @@ const HunterAccess = (() => {
       return statusFlight;
     }
 
+    function reconnectInstagram(install) {
+      if (!reconnectFlight) reconnectFlight = (async () => {
+        try {
+          const auth = credentials();
+          if (!auth || typeof install !== 'function') throw fail('activation_required');
+          // Explicit recovery requires a fresh authorization; cached/offline
+          // approval must never authorize replacing the technical session.
+          const access = safeState(await request('/hunter-access/status', auth), auth.deviceId);
+          save(access);
+          if (access.state !== 'approved') return summary(access);
+          const config = await request('/hunter-access/config', auth);
+          if (config.ok !== true || config.deviceId !== auth.deviceId || config.role !== access.role || typeof normalizeSession !== 'function') throw fail('access_config_invalid');
+          let session;
+          try { session = normalizeSession(config.instagramSession); } catch (_) { throw fail('access_config_invalid'); }
+          // The callback stays native. No credential enters the WebView result.
+          return await install(session);
+        } catch (error) { return unavailable(error.reason || 'instagram_reconnect_failed'); }
+      })().finally(() => { reconnectFlight = null; });
+      return reconnectFlight;
+    }
+
     async function submit(labelValue) {
       if (!label(labelValue)) return unavailable('device_label_invalid');
       try {
@@ -221,7 +242,7 @@ const HunterAccess = (() => {
         return { ok: true, deviceId: auth.deviceId, account, identityDigest: response.identityDigest.toLowerCase(), cookies };
       } catch (error) { return { ok: false, reason: error.reason || 'access_unavailable' }; }
     }
-    return { status, requestAccess, devices, decide, accountConfig };
+    return { status, requestAccess, devices, decide, accountConfig, reconnectInstagram };
   }
   return { create, KEYS, TTL };
 })();

@@ -297,9 +297,6 @@
       flex-shrink: 0;
       position: relative;
     }
-    .source-mini.mini-insta {
-      border-radius: 2.3px;
-    }
     .source-mini.overlap {
       margin-left: -2px;
       box-shadow: -0.5px 0 0 0.5px #181d26;
@@ -912,10 +909,14 @@
       justify-content: center;
       flex-shrink: 0;
     }
+    .source-mini.mini-insta,
     .source-mini-circle.mini-insta {
       background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    }
+    .source-mini-circle.mini-insta {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
+    .source-mini.mini-insta svg,
     .source-mini-circle.mini-insta svg {
       width: 11px;
       height: 11px;
@@ -923,6 +924,10 @@
       fill: #ffffff;
       display: block;
       filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.35));
+    }
+    .source-mini.mini-insta svg {
+      width: 61.111111%;
+      height: 61.111111%;
     }
     .source-mini-circle.overlap {
       margin-left: -5px;

@@ -115,3 +115,21 @@ test('approved owner with no friends refreshes the access UI before the empty-de
   assert.equal(ui.INITIAL.hunterAccess.role, 'owner');
   assert.equal(notices.length, 1); assert.match(notices[0].message, /Nenhuma solicitação pendente/);
 });
+
+test('Instagram recovery route is explicit, serialized and never opens an external browser', async () => {
+  const view = { evaluateJavaScript: async () => {} }; let finish, calls = 0;
+  const context = vm.createContext({
+    reconnectNativeInstagram: async target => { assert.equal(target, view); calls++; await new Promise(resolve => { finish = resolve; }); },
+    Safari: { open: () => assert.fail('external navigation'), openInApp: () => assert.fail('external navigation') },
+    console: { warn() {} },
+  });
+  vm.runInContext(browserCode, context); context.installHunterBrowser(view);
+  assert.equal(view.shouldAllowRequest({ url: 'hunter-instagram://reconnect?session=untrusted' }), false);
+  assert.equal(calls, 0);
+  assert.equal(view.shouldAllowRequest({ url: 'hunter-instagram://reconnect' }), false);
+  await Promise.resolve(); await Promise.resolve();
+  assert.equal(calls, 1);
+  assert.equal(view.shouldAllowRequest({ url: 'hunter-instagram://reconnect' }), false);
+  assert.equal(calls, 1);
+  finish(); await view.hunterActionTask;
+});

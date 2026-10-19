@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.8.5";
+const SCRIPT_VERSION = "5.8.6";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -184,6 +184,18 @@ function createHunterAccess() {
     normalizeSession: HunterCollector.normalizeSession });
 }
 
+async function runNativeInstagramReconnect() {
+  const collector = HunterCollector.create({ fm: FileManager.local(), keychain: Keychain, now: Date.now,
+    uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
+    pause: milliseconds => new Promise(resolve => Timer.schedule(milliseconds, false, resolve)) });
+  return createHunterAccess().reconnectInstagram(session => collector.reconnectInstagram(session));
+}
+
+async function reconnectNativeInstagram(view) {
+  const result = await runNativeInstagramReconnect();
+  await view.evaluateJavaScript("handleNativeInstagramReconnect(" + JSON.stringify(result).replace(/</g, "\\u003c") + ");");
+}
+
 async function hunterNotice(title, message) {
   const alert = new Alert(); alert.title = title; alert.message = message;
   alert.addAction("OK"); await alert.presentAlert();
@@ -280,6 +292,11 @@ async function main() {
     return;
   }
   if (action === "open" && typeof autoUpdateHunterOnOpen === "function" && await autoUpdateHunterOnOpen()) {
+    Script.complete(); return;
+  }
+  if (action === "reconnect-instagram") {
+    const result = await runNativeInstagramReconnect();
+    if (typeof Script.setShortcutOutput === "function") Script.setShortcutOutput(JSON.stringify(result));
     Script.complete(); return;
   }
   const collectionPausedForUpdate = hunterCollectionPausedForUpdate(action);
@@ -388,7 +405,16 @@ function installHunterBrowser(view) {
       }
       return false;
     }
-    if (/^hunter-(?:account|access|update):/i.test(raw)) return false;
+    if (raw === "hunter-instagram://reconnect" || raw === "hunter-instagram://reconnect/") {
+      if (!opening) {
+        opening = true;
+        view.hunterActionTask = Promise.resolve().then(() => reconnectNativeInstagram(view))
+          .catch(() => view.evaluateJavaScript("handleNativeInstagramReconnect({status:'unavailable'});").catch(() => {}))
+          .finally(() => { opening = false; });
+      } else view.evaluateJavaScript("handleNativeInstagramReconnect({status:'busy'});").catch(() => {});
+      return false;
+    }
+    if (/^hunter-(?:account|access|update|instagram):/i.test(raw)) return false;
     const external = raw.startsWith(externalRoute);
     const route = external ? externalRoute : internalRoute;
     if (!raw.startsWith(route)) return true;

@@ -78,3 +78,23 @@ test('collection status distinguishes approval, suspension and unavailable verif
   assert.match(template, /id="btnHunterAccess" onclick="manageHunterAccess\(\)"/);
   assert.match(fn('openSettingsModal'), /renderHunterAccessUI\(\)/);
 });
+
+test('Instagram recovery requires an explicit approved-device action and reports source proof accurately', () => {
+  const h = harness({ nativeBrowser: true, hunterAccess: { status: 'approved', role: 'member' }, hunterCollection: { sources: { portal: { status: 'found', found: 3 } } } });
+  let refreshes = 0;
+  h.context.streamLiveOffers = force => { assert.equal(force, true); refreshes++; };
+  vm.runInContext(['reconnectHunterInstagram', 'handleNativeInstagramReconnect'].map(fn).join('\n'), h.context);
+  h.context.renderHunterAccessUI();
+  assert.equal(h.context.window.location.href, 'hunter-dashboard');
+  assert.equal(h.elements.get('btnReconnectInstagram').hidden, false);
+  h.context.reconnectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://reconnect');
+  assert.equal(h.elements.get('btnReconnectInstagram').disabled, true);
+  h.context.handleNativeInstagramReconnect({ status: 'complete', sessionUpdated: true, sources: { instagram: { status: 'backoff', found: 0 } } });
+  assert.equal(refreshes, 0); assert.match(h.toasts.at(-1), /limite/); assert.doesNotMatch(h.toasts.at(-1), /reconectado/);
+  h.context.handleNativeInstagramReconnect({ status: 'complete', sessionUpdated: true, sources: { instagram: { status: 'found', found: 1 } } });
+  assert.equal(refreshes, 1); assert.match(h.toasts.at(-1), /reconectado/);
+  assert.equal(h.context.INITIAL.hunterCollection.sources.portal.found, 3);
+  h.context.INITIAL.hunterAccess.status = 'access_revoked'; h.context.renderHunterAccessUI();
+  assert.equal(h.elements.get('btnReconnectInstagram').hidden, true);
+});

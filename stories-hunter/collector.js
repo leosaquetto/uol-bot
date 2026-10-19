@@ -297,7 +297,7 @@ const HunterCollector = (() => {
       const events = records('event-'), receipts = records('receipt-');
       return { status, discovered: Object.values(sources).reduce((n, s) => n + (s.found || 0), 0), received: receipts.length, delivered: receipts.filter(r => r.value.status === 'delivered' || read('terminal-' + r.value.eventId + '.json')?.status === 'delivered').length, pending: Math.max(0, events.length - receipts.length), sources };
     }
-    async function run() {
+    async function withLease(operation) {
       if (!token()) return summary('not_configured');
       const leaseId = uuid(), leaseName = 'lease-' + leaseId + '.json';
       writeNew(leaseName, { id: leaseId, at: now(), expires: now() + 180000 });
@@ -308,12 +308,58 @@ const HunterCollector = (() => {
       const contenders = records('lease-').map(r => r.value).filter(v => v.expires > now()).sort((a, b) => a.at - b.at || a.id.localeCompare(b.id));
       if (contenders[0]?.id !== leaseId) { if (read(leaseName)?.id === leaseId) fm.remove(file(leaseName)); return summary('busy'); }
       try {
+        return await operation();
+      } finally { if (read(leaseName)?.id === leaseId) fm.remove(file(leaseName)); }
+    }
+    async function run() {
+      return withLease(async () => {
         await refreshReceipts(); await flush();
         const sources = { portal: await collect('portal'), instagram: await collect('instagram') };
         await flush(); return summary('complete', sources);
-      } finally { if (read(leaseName)?.id === leaseId) fm.remove(file(leaseName)); }
+      });
     }
-    return { importBootstrap, run, enqueue, flush, summary, collect, refreshReceipts };
+    async function reconnectInstagram(value) {
+      const candidate = normalizeSession(value);
+      return withLease(async () => {
+        const previous = keychain.contains(KEYS.instagram) ? keychain.get(KEYS.instagram) : null;
+        let old;
+        try { old = previous ? normalizeSession(JSON.parse(previous)) : null; } catch (_) {}
+        const cookie = (session, name) => session?.cookies.find(c => c.name === name)?.value;
+        if (cookie(old, 'sessionid') === cookie(candidate, 'sessionid')) return { status: 'session_unchanged', reason: 'fresh_session_required' };
+        const oldAccount = cookie(old, 'ds_user_id'), newAccount = cookie(candidate, 'ds_user_id');
+        if (!newAccount || (previous !== null && !oldAccount)) return { status: 'auth_required', reason: 'instagram_account_unverified' };
+        if (oldAccount && oldAccount !== newAccount) return { status: 'auth_required', reason: 'instagram_account_mismatch' };
+        const before = state('instagram'), reconnectId = uuid();
+        const encoded = JSON.stringify(candidate);
+        let installed = false;
+        try {
+          // Persist suspension before replacing credentials. Keep request
+          // ledgers, receipts, profile cache and all rate-limit deadlines.
+          saveState('instagram', { ...before, suspended: true, status: 'auth_required', reason: 'reconnection_pending', reconnectId });
+          if (state('instagram').reconnectId !== reconnectId || !state('instagram').suspended) throw error('reconnect_storage_failed');
+          keychain.set(KEYS.instagram, encoded);
+          if (keychain.get(KEYS.instagram) !== encoded) throw error('reconnect_storage_failed');
+          installed = true;
+          saveState('instagram', { ...before, suspended: false, status: 'reconnected', reason: '', reconnectId });
+          const saved = state('instagram');
+          if (saved.reconnectId !== reconnectId || saved.suspended || saved.status !== 'reconnected') throw error('reconnect_storage_failed');
+        } catch (_) {
+          // A failed state write must not strand the new session behind the
+          // old suspension and make every subsequent recovery "unchanged".
+          try {
+            if (previous !== null) keychain.set(KEYS.instagram, previous);
+            else if (keychain.contains(KEYS.instagram)) keychain.remove(KEYS.instagram);
+            const restored = previous === null ? !keychain.contains(KEYS.instagram) : keychain.get(KEYS.instagram) === previous;
+            if (restored) saveState('instagram', before);
+          } catch (_) {}
+          return { status: 'unavailable', reason: 'reconnect_storage_failed' };
+        }
+        const sources = { instagram: await collect('instagram') };
+        await flush();
+        return { ...summary('complete', sources), sessionUpdated: installed };
+      });
+    }
+    return { importBootstrap, run, enqueue, flush, summary, collect, refreshReceipts, reconnectInstagram };
   }
   return { create, parsePortal, parseReels, losslessJSON, campaign, media, profileIdentity, normalizeSession, KEYS, LIMITS };
 })();

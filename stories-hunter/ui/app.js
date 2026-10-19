@@ -4186,11 +4186,43 @@
           : access.state === 'approved' ? 'Verificar acesso' : 'Solicitar acesso';
         button.disabled = !INITIAL.nativeBrowser;
       }
+      const instagram = document.getElementById('btnReconnectInstagram');
+      if (instagram) {
+        instagram.hidden = access.state !== 'approved';
+        instagram.disabled = !INITIAL.nativeBrowser;
+      }
     }
 
     function manageHunterAccess() {
       if (!INITIAL.nativeBrowser) { showToast('Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.'); return; }
       window.location.href = 'hunter-access://manage';
+    }
+
+    function reconnectHunterInstagram() {
+      if (!INITIAL.nativeBrowser || hunterAccessState().state !== 'approved') return;
+      const button = document.getElementById('btnReconnectInstagram');
+      if (button.disabled) return;
+      button.disabled = true; button.textContent = 'Reconectando…';
+      window.location.href = 'hunter-instagram://reconnect';
+    }
+
+    function handleNativeInstagramReconnect(result) {
+      const button = document.getElementById('btnReconnectInstagram');
+      if (button) { button.disabled = false; button.textContent = 'Reconectar Instagram'; }
+      const source = result.sources && result.sources.instagram;
+      if (source) {
+        const previous = INITIAL.hunterCollection || {};
+        INITIAL.hunterCollection = { ...previous, ...result, sources: { ...(previous.sources || {}), ...result.sources } };
+        setHunterCollectionStatus(INITIAL.hunterCollection);
+      }
+      const verified = source && ['found', 'empty'].includes(source.status);
+      showToast(verified ? 'Instagram reconectado. Coleta concluída.'
+        : result.status === 'session_unchanged' ? 'O servidor ainda tem a mesma sessão. Renove o login Instagram antes de reconectar.'
+        : source && source.status === 'auth_required' ? 'Instagram ainda exige autenticação. A coleta continua suspensa.'
+        : result.sessionUpdated ? 'Sessão atualizada. A próxima coleta respeitará o limite atual.'
+        : result.status === 'busy' ? 'Outra operação está em andamento. Tente ao concluir.'
+        : 'Reconexão não concluída. Confira o acesso e a sessão técnica.');
+      if (verified) streamLiveOffers(true);
     }
 
     // NAVIGATION_PERSONALIZATION_START

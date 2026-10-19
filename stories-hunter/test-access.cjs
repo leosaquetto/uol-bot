@@ -294,3 +294,35 @@ test('owner decisions send personal grants only when explicitly approving', asyn
   }
   assert.equal(h.calls.length, count);
 });
+
+test('explicit Instagram recovery uses fresh approval and validated native configuration once', async () => {
+  const h = harness({ existing: true, instagram: true });
+  const fresh = { ...session, cookies: [{ ...session.cookies[0], value: 'renewed-private-session' }] };
+  h.setResponder(url => ({ value: url.endsWith('/config')
+    ? { ok: true, deviceId: 'existing-phone', role: 'member', instagramSession: fresh }
+    : h.state('approved') }));
+  await h.client.status(); const start = h.calls.length;
+  let installs = 0;
+  const install = async candidate => { installs++; assert.equal(candidate.cookies[0].value, 'renewed-private-session'); return { status: 'complete', sessionUpdated: true }; };
+  const results = await Promise.all([h.client.reconnectInstagram(install), h.client.reconnectInstagram(install)]);
+  assert.equal(installs, 1);
+  assert.deepEqual(h.calls.slice(start).map(c => c.url.slice(ORIGIN.length)), ['/hunter-access/status', '/hunter-access/config']);
+  results.forEach(privateFree);
+});
+
+test('Instagram recovery rejects revoked, offline and mismatched configuration without changing sessions', async () => {
+  for (const failure of ['revoked', 'offline', 'mismatch', 'invalid']) {
+    const h = harness({ existing: true, instagram: true });
+    const original = h.keys.get(A.KEYS.instagram);
+    h.setResponder(() => ({ value: h.state('approved') })); await h.client.status();
+    h.setResponder(url => {
+      if (failure === 'offline') throw Error('offline');
+      return { value: url.endsWith('/config')
+        ? { ok: true, deviceId: failure === 'mismatch' ? 'different-device' : 'existing-phone', role: 'member', instagramSession: failure === 'invalid' ? {} : session }
+        : h.state(failure === 'revoked' ? 'revoked' : 'approved') };
+    });
+    const result = await h.client.reconnectInstagram(() => assert.fail('must not install'));
+    assert.equal(result.status, failure === 'revoked' ? 'access_revoked' : 'unavailable');
+    assert.equal(h.keys.get(A.KEYS.instagram), original); privateFree(result);
+  }
+});
