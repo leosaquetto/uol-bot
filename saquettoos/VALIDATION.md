@@ -1,3 +1,8 @@
+# saquettoOS 1.0.5 — 2026-10-19
+
+- Ajuste visual adicional: “lugar” e os avatares com inicial, na home e nos Ajustes, usam o mesmo degradê Hedgy do “OS” claro. Letras brancas e indicador de presença preservados.
+- Build/sintaxe e diff-check aprovados. No navegador integrado, as três superfícies da home clara retornam o mesmo gradiente computado; avatar dos Ajustes também conferido. Captura local `/tmp/saquettoos-1.0.5-light.png`. Sem mudanças de comportamento que justifiquem repetir os testes da 1.0.4.
+
 # saquettoOS 1.0.4 — 2026-10-19
 
 ## Tela inicial e identidade visual
