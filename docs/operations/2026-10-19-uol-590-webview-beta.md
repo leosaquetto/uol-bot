@@ -35,3 +35,12 @@ Para optar pela beta no aparelho já instalado, executar:
 Somente depois desse teste promover com `release.cjs promote`, sem reconstruir o artefato. Se a sessão não persistir, manter beta e registrar o impedimento, sem retornar silenciosamente à sessão compartilhada.
 
 O atualizador do próprio script e a central do saquettoOS continuam disponíveis. A substituição externa do arquivo do Clube UOL é dispensável; nenhum ramo das automações de outros scripts foi alterado.
+
+## Publicação verificada em 19/10/2026
+
+- Artefato: commit `a0a44da20b22c3b6a616d58085c4626c536f1c50`; manifesto beta: `b1be8fbd5a581b420cef7afb2101a2b4f65ce3f9`.
+- Bytes remotos conferidos contra o artefato local: 706137 bytes, SHA-256 `bbc86386f574c9c85b1c0ce755ec099b0679076b1c0224ea08ef6afec5e76f0e`.
+- CI completo aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39294146086 . Os 46 testes finais direcionados e os 32 testes de Stories/deduplicação do Worker passaram localmente.
+- Manifesto stable e espelho legado continuam na 5.8.6, com integridade remota verificada.
+- ntfy aceitou o aviso de beta: ID `zCNYUK7AkNHu`, timestamp `1792430872`, título `Scriptable - Clube UOL Premium`. Link abre o atualizador interno com `channel=beta`. Aceite do serviço não comprova entrega ou instalação no aparelho.
+- Teste real solicitado ao usuário; promoção a stable permanece pendente.
