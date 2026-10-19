@@ -26,10 +26,13 @@ function execute(code, options = {}) {
       document: { querySelector: () => options.login || null,
         querySelectorAll: selector => selector === 'button,[role="button"]' ? (options.buttons || []) : (options.scripts ? options.scripts(ticks) : [options.raw ?? JSON.stringify(payload())]).map(textContent => ({ textContent })) },
       performance: { getEntriesByType: () => [{ responseStatus: options.status }] },
-      Date: { now: () => ticks * 250 }, setTimeout: fn => { ticks++; fn(); },
-      completion: value => queueMicrotask(() => resolve(JSON.parse(value))),
-      fetch: () => { throw Error('No collector fetch permitted'); },
+      Date: { now: () => ticks * 250, parse: Date.parse }, setTimeout: fn => { ticks++; fn(); },
+      completion: value => { options.onCompletion?.(value); queueMicrotask(() => resolve(JSON.parse(value))); },
+      URL, TextDecoder, getComputedStyle: button => button.style || { visibility: 'visible', display: 'block' },
+      fetch: options.fetch || (() => { throw Error('No collector fetch permitted'); }),
+      XMLHttpRequest: options.XMLHttpRequest,
     };
+    options.onContext?.(context);
     try {
       const immediate = vm.runInNewContext(code, context);
       if (immediate && typeof immediate.then === 'function') reject(Error('Unsupported immediate Promise'));
@@ -124,7 +127,7 @@ test('automatic capture does not present login and never falls back to manual AP
   await assert.rejects(h.adapter.capture(), e => e.status === 'auth_required');
   assert.equal(h.calls.some(c => c[0] === 'present'), false);
   assert.equal(h.adapter.request, undefined);
-  assert.doesNotMatch(B.pageCapture.toString(), /fetch\(|XMLHttpRequest|document\.cookie|localStorage|sessionStorage/);
+  assert.doesNotMatch(B.pageCapture.toString(), /fetch\(|new\s+XMLHttpRequest|document\.cookie|localStorage|sessionStorage/);
 });
 test('cancelled login does not claim readiness', async () => {
   assert.equal((await browser().adapter.connect()).status, 'cancelled');
@@ -184,4 +187,142 @@ test('fallback never clicks hidden, ambiguous, unrelated or login controls', asy
   await page({ login: {}, buttons: [button('Ver story')], scripts:()=>[] });
   await page({ status:429, buttons:[button('Ver story')],scripts:()=>[] });
   assert.equal(clicks, 0);
+});
+
+function gate(click, label = 'Ver story') {
+  return { textContent: label, getAttribute: () => null, getClientRects: () => [{}], click };
+}
+function networkPayload() {
+  return JSON.stringify({ data: { xdt_api__v1__feed__reels_media: target(payload()) } })
+    .replaceAll('"id":"' + OWNER + '"', '"id":' + OWNER).replace('"pk":"' + STORY + '"', '"pk":' + STORY);
+}
+function response(raw, options = {}) {
+  let position = 0, cancellations = 0;
+  const chunks = options.chunks || [new TextEncoder().encode(raw)];
+  const value = { status: options.status || 200, url: options.url || ORIGIN + '/graphql/query',
+    headers: { get: name => name === 'retry-after' ? options.retryAfter ?? null : null },
+    clone: () => ({ body: { getReader: () => ({
+      read: async () => position < chunks.length ? { done: false, value: chunks[position++] } : { done: true },
+      cancel: () => { cancellations++; }
+    }) } }) };
+  return { value, cancellations: () => cancellations };
+}
+function xhrHarness(deliver) {
+  const calls = [], instances = [];
+  class XHR {
+    constructor() { this.listeners = new Set(); this.responseType = ''; instances.push(this); }
+    open(method, url) { this.responseURL = new URL(url, ORIGIN).href; calls.push(['open', method, url]); }
+    send(body) { calls.push(['send', body]); deliver?.(this); }
+    addEventListener(type, fn) { assert.equal(type, 'loadend'); this.listeners.add(fn); }
+    removeEventListener(type, fn) { this.listeners.delete(fn); }
+    getResponseHeader(name) { return name === 'retry-after' ? this.retryAfter ?? null : null; }
+    finish(raw, options = {}) {
+      this.status = options.status || 200; this.retryAfter = options.retryAfter;
+      this.responseText = raw; this.responseType = options.responseType ?? this.responseType;
+      for (const listener of [...this.listeners]) listener();
+    }
+  }
+  return { XHR, calls, instances, open: XHR.prototype.open, send: XHR.prototype.send };
+}
+test('gate fetch hydration preserves exact IDs, strips unrelated data and restores the original fetch', async () => {
+  let context, clicks = 0, calls = 0;
+  const reply = response(networkPayload());
+  const originalFetch = function (url, init) { calls++; assert.equal(this, context); assert.equal(url, '/graphql/query'); assert.equal(init.body, SECRET); return Promise.resolve(reply.value); };
+  const result = await page({ scripts: () => [], fetch: originalFetch, onContext: value => { context = value; },
+    buttons: [gate(() => { clicks++; context.fetch('/graphql/query', { method: 'POST', body: SECRET }); })] });
+  assert.equal(result.profile.id, OWNER); assert.equal(result.reels.reels_media[0].items[0].pk, STORY);
+  assert.doesNotMatch(JSON.stringify(result), /private-synthetic|password|cookies|viewer|email/);
+  assert.equal(clicks, 1); assert.equal(calls, 1); assert.equal(context.fetch, originalFetch);
+  assert.equal(reply.cancellations(), 1);
+});
+test('gate XHR hydration observes text without issuing requests or rounding IDs and restores both hooks', async () => {
+  let context, clicks = 0;
+  const h = xhrHarness(xhr => xhr.finish(networkPayload()));
+  const result = await page({ scripts: () => [], XMLHttpRequest: h.XHR, onContext: value => { context = value; },
+    buttons: [gate(() => { clicks++; const xhr = new context.XMLHttpRequest(); xhr.open('POST', '/graphql/query'); xhr.send(SECRET); })] });
+  assert.equal(result.profile.id, OWNER); assert.equal(result.reels.reels_media[0].items[0].pk, STORY);
+  assert.equal(clicks, 1); assert.deepEqual(h.calls, [['open', 'POST', '/graphql/query'], ['send', SECRET]]);
+  assert.equal(h.XHR.prototype.open, h.open); assert.equal(h.XHR.prototype.send, h.send);
+  assert.equal(h.instances[0].listeners.size, 0); assert.doesNotMatch(JSON.stringify(result), /private-synthetic/);
+});
+test('direct same-origin reels response is scoped; unrelated and cross-origin hydration is ignored', async () => {
+  for (const endpoint of ['/api/v1/feed/reels_media/', ORIGIN + '/api/v1/feed/reels_media/']) {
+    let context;
+    const result = await page({ scripts: () => [], onContext: value => { context = value; },
+      fetch: () => Promise.resolve(response(JSON.stringify(target(payload())), { url: new URL(endpoint, ORIGIN).href }).value),
+      buttons: [gate(() => context.fetch(endpoint))] });
+    assert.equal(result.profile.id, OWNER);
+  }
+  for (const url of ['https://evil.example/graphql/query', ORIGIN + '/api/v1/accounts/current_user/']) {
+    let context, clones = 0, calls = 0;
+    const result = await page({ scripts: () => [], onContext: value => { context = value; },
+      fetch: () => { calls++; return Promise.resolve({ status: 200, url, clone: () => { clones++; throw Error(SECRET); } }); },
+      buttons: [gate(() => context.fetch(url))] });
+    assert.equal(result.error, 'browser_story_data_missing'); assert.equal(calls, 1); assert.equal(clones, 0);
+  }
+});
+test('only actual observed HTTP failures carry rate-limit deadlines; hooks are restored on failure', async () => {
+  for (const transport of ['fetch', 'xhr']) {
+    let context;
+    const h = xhrHarness(xhr => xhr.finish('', { status: 429, retryAfter: '120' }));
+    const originalFetch = () => Promise.resolve(response('', { status: 429, retryAfter: '120' }).value);
+    const result = await page({ scripts: () => [], XMLHttpRequest: h.XHR, fetch: originalFetch, onContext: value => { context = value; },
+      buttons: [gate(() => {
+        if (transport === 'fetch') context.fetch('/graphql/query');
+        else { const xhr = new context.XMLHttpRequest(); xhr.open('POST', '/graphql/query'); xhr.send(); }
+      })] });
+    assert.deepEqual(result, { error: 'http_429', statusCode: 429, retryAfter: 120000 });
+    assert.equal(context.fetch, originalFetch); assert.equal(h.XHR.prototype.open, h.open); assert.equal(h.XHR.prototype.send, h.send);
+  }
+  const h = browser({ evaluate: () => JSON.stringify({ error: 'http_429', statusCode: 429, retryAfter: 120000 }) });
+  await assert.rejects(h.adapter.capture(), e => e.status === 'rate_limited' && e.retryAfter === 120000 && e.statusCode === 429);
+});
+test('XHR JSON, absent bodies and unsupported fetch streams never use parsed or rounded responses', async () => {
+  for (const type of ['json', 'arraybuffer']) {
+    let context;
+    const h = xhrHarness(xhr => { xhr.response = JSON.parse(networkPayload()); xhr.finish(networkPayload(), { responseType: type }); });
+    const result = await page({ scripts: () => [], XMLHttpRequest: h.XHR, onContext: value => { context = value; },
+      buttons: [gate(() => { const xhr = new context.XMLHttpRequest(); xhr.open('POST', '/graphql/query'); xhr.send(); })] });
+    assert.equal(result.error, 'browser_story_data_missing');
+  }
+  let context;
+  const h = xhrHarness(xhr => xhr.finish(undefined));
+  assert.equal((await page({ scripts: () => [], XMLHttpRequest: h.XHR, onContext: value => { context = value; },
+    buttons: [gate(() => { const xhr = new context.XMLHttpRequest(); xhr.open('POST', '/graphql/query'); xhr.send(); })] })).error, 'browser_story_data_missing');
+  const result = await page({ scripts: () => [], onContext: value => { context = value; },
+    fetch: () => Promise.resolve({ status: 200, url: ORIGIN + '/graphql/query', headers: { get: () => null }, clone: () => ({ body: null }) }),
+    buttons: [gate(() => context.fetch('/graphql/query'))] });
+  assert.equal(result.error, 'browser_story_data_missing');
+});
+test('capture expiry restores hooks and ignores late fetch and detached XHR callbacks', async () => {
+  let context, resolveFetch, detachedListener, completions = 0, clones = 0;
+  const h = xhrHarness(xhr => { detachedListener = [...xhr.listeners][0]; });
+  const originalFetch = () => new Promise(resolve => { resolveFetch = resolve; });
+  const result = await page({ scripts: () => [], XMLHttpRequest: h.XHR, fetch: originalFetch, onContext: value => { context = value; },
+    onCompletion: () => completions++, buttons: [gate(() => {
+      context.fetch('/graphql/query'); const xhr = new context.XMLHttpRequest(); xhr.open('POST', '/graphql/query'); xhr.send();
+    })] });
+  assert.equal(result.error, 'browser_story_data_missing'); assert.equal(h.instances[0].listeners.size, 0);
+  assert.equal(context.fetch, originalFetch); assert.equal(h.XHR.prototype.open, h.open); assert.equal(h.XHR.prototype.send, h.send);
+  resolveFetch({ url: ORIGIN + '/graphql/query', status: 200, clone: () => { clones++; throw Error(SECRET); } });
+  h.instances[0].status = 200; h.instances[0].responseText = networkPayload(); detachedListener();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(completions, 1); assert.equal(clones, 0);
+});
+test('network observation enforces byte and response budgets, and never clicks CSS-hidden gates', async () => {
+  for (const [raw, reason] of [['x'.repeat(4194305), 'body_limit'], ['{"xdt_api__v1__feed__reels_media":', 'browser_story_data_invalid']]) {
+    let context;
+    const result = await page({ scripts: () => [], onContext: value => { context = value; }, fetch: () => Promise.resolve(response(raw).value),
+      buttons: [gate(() => context.fetch('/graphql/query'))] });
+    assert.equal(result.error, reason);
+  }
+  let context, calls = 0;
+  const result = await page({ scripts: () => [], onContext: value => { context = value; }, fetch: () => { calls++; return Promise.resolve(response('{}').value); },
+    buttons: [gate(() => { for (let i = 0; i < 17; i++) context.fetch('/graphql/query'); })] });
+  assert.equal(result.error, 'structure_limit'); assert.equal(calls, 17);
+  for (const style of [{ visibility: 'hidden', display: 'block' }, { visibility: 'visible', display: 'none' }]) {
+    let clicks = 0;
+    await page({ scripts: () => [], buttons: [{ ...gate(() => clicks++), style }] });
+    assert.equal(clicks, 0);
+  }
 });

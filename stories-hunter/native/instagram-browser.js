@@ -4,8 +4,8 @@ const HunterInstagramBrowser = (() => {
   const STORY_PATH = '/stories/clubeuol/';
   const fail = (reason, status = 'unknown', extra = {}) => Object.assign(new Error(reason), { status, reason, ...extra });
 
-  // Read only the JSON already loaded by the official Stories viewer. No fetch,
-  // private API, React internals or exported document/session data.
+  // Read only data loaded by the official Stories viewer. Temporary response hooks
+  // observe gate hydration; they issue no requests and export only scoped Stories.
   async function pageCapture(parseJSON, waitMs = 10000) {
     const done = value => completion(JSON.stringify(value));
     const invalid = reason => { throw new Error(reason); };
@@ -27,7 +27,136 @@ const HunterInstagramBrowser = (() => {
     };
     const reel = value => ({ ...fields(value, ['id']), user: owner(value.user), items: array(value.items, item) });
     const started = Date.now();
-    let gateClicked = false;
+    let gateClicked = false, active = true, observed = false, networkBytes = 0, responses = 0;
+    let networkError = null;
+    const networkReels = [], restore = [], readers = new Set(), listeners = new Set();
+    const byteLength = text => unescape(encodeURIComponent(text)).length;
+    const project = (text, direct = false) => {
+      if (!text.includes('xdt_api__v1__feed__reels_media') && !(direct && text.includes('reels_media'))) return [];
+      let value; try { value = parseJSON(text.replace(/^for \(;;\);\s*/, '')); } catch (_) { invalid('browser_story_data_invalid'); }
+      const reels = [];
+      let nodes = 0;
+      function add(payload) {
+        if (!payload || !Array.isArray(payload.reels_media) || payload.reels_media.length > 100) invalid('browser_story_data_invalid');
+        for (const entry of payload.reels_media) if (entry?.user?.username === 'clubeuol') reels.push(reel(entry));
+        if (reels.length > 100) invalid('structure_limit');
+      }
+      function walk(entry, depth) {
+        if (++nodes > 100000 || depth > 50) invalid('structure_limit');
+        if (!entry || typeof entry !== 'object') return;
+        if (Object.prototype.hasOwnProperty.call(entry, 'xdt_api__v1__feed__reels_media')) add(entry.xdt_api__v1__feed__reels_media);
+        for (const child of Object.values(entry)) walk(child, depth + 1);
+      }
+      if (direct && value && Object.prototype.hasOwnProperty.call(value, 'reels_media')) add(value);
+      walk(value, 0);
+      return reels;
+    };
+    const safeError = error => ({ error: ['browser_story_data_invalid','structure_limit','body_limit'].includes(error?.message) ? error.message : 'browser_script_error' });
+    const endpoint = value => {
+      try {
+        const url = new URL(typeof value === 'string' ? value : value?.url, location.origin);
+        if (url.origin !== 'https://www.instagram.com') return null;
+        return /^\/graphql\/query\/?$/.test(url.pathname) ? 'graphql' : /^\/api\/v1\/feed\/reels_media\/?$/.test(url.pathname) ? 'reels' : null;
+      } catch (_) { return null; }
+    };
+    function statusFailure(code, retryHeader) {
+      if (code === 429) {
+        let retryAfter = 0;
+        if (typeof retryHeader === 'string' && retryHeader.length <= 128) {
+          const value = retryHeader.trim();
+          const delay = /^\d+(?:\.\d+)?$/.test(value) ? Number(value) * 1000 : Date.parse(value) - Date.now();
+          if (Number.isFinite(delay) && delay > 0 && delay <= Number.MAX_SAFE_INTEGER) retryAfter = delay;
+        }
+        return { error: 'http_429', statusCode: 429, ...(retryAfter ? { retryAfter } : {}) };
+      }
+      if (code === 401 || code === 403) return { error: 'http_auth_required', statusCode: code };
+      if (Number.isInteger(code) && code >= 400 && code <= 599) return { error: 'http_status', statusCode: code };
+      return null;
+    }
+    function acceptText(text, direct) {
+      if (!active || networkError) return;
+      networkReels.push(...project(text, direct));
+      if (networkReels.length > 100) invalid('structure_limit');
+    }
+    function reserveResponse() {
+      if (!active || networkError) return false;
+      if (++responses > 16) { networkError = { error: 'structure_limit' }; return false; }
+      return true;
+    }
+    function observe() {
+      if (observed) return;
+      observed = true;
+      const originalFetch = globalThis.fetch;
+      if (typeof originalFetch === 'function') {
+        const wrappedFetch = function (...args) {
+          const kind = endpoint(args[0]);
+          const inspect = kind && reserveResponse();
+          const pending = originalFetch.apply(this, args);
+          if (inspect) Promise.resolve(pending).then(async response => {
+            if (!active || networkError || !endpoint(response.url)) return;
+            const failure = statusFailure(response.status, response.headers?.get('retry-after'));
+            if (failure) { networkError = failure; return; }
+            if (response.status !== 200) return;
+            // Consume only a clone, through a bounded stream. Never buffer an unbounded body.
+            const copy = response.clone();
+            if (!copy.body?.getReader || typeof TextDecoder !== 'function') return;
+            const reader = copy.body.getReader(), decoder = new TextDecoder();
+            readers.add(reader);
+            let text = '';
+            try {
+              while (active && !networkError) {
+                const chunk = await reader.read();
+                if (!active || networkError) return;
+                if (chunk.done) { text += decoder.decode(); acceptText(text, kind === 'reels'); return; }
+                networkBytes += chunk.value.byteLength;
+                if (networkBytes > 4194304) invalid('body_limit');
+                text += decoder.decode(chunk.value, { stream: true });
+              }
+            } finally { readers.delete(reader); Promise.resolve(reader.cancel()).catch(() => {}); }
+          }).catch(error => { if (active && !networkError) networkError = safeError(error); });
+          return pending;
+        };
+        globalThis.fetch = wrappedFetch;
+        restore.push(() => { if (globalThis.fetch === wrappedFetch) globalThis.fetch = originalFetch; });
+      }
+      const proto = globalThis.XMLHttpRequest?.prototype;
+      if (proto && typeof proto.open === 'function' && typeof proto.send === 'function') {
+        const originalOpen = proto.open, originalSend = proto.send, requests = new WeakMap();
+        const wrappedOpen = function (...args) {
+          requests.set(this, endpoint(args[1]));
+          return originalOpen.apply(this, args);
+        };
+        const wrappedSend = function (...args) {
+          const kind = requests.get(this);
+          if (kind && reserveResponse()) {
+            const xhr = this;
+            const entry = { xhr, listener: null };
+            entry.listener = () => {
+              xhr.removeEventListener('loadend', entry.listener); listeners.delete(entry);
+              if (!active || networkError || !endpoint(xhr.responseURL)) return;
+              try {
+                const failure = statusFailure(xhr.status, xhr.getResponseHeader('retry-after'));
+                if (failure) { networkError = failure; return; }
+                // responseType=json has already rounded large IDs; never reuse it.
+                if (xhr.status !== 200 || (xhr.responseType && xhr.responseType !== 'text')) return;
+                const text = xhr.responseText;
+                if (typeof text !== 'string') return;
+                networkBytes += byteLength(text);
+                if (networkBytes > 4194304) invalid('body_limit');
+                acceptText(text, kind === 'reels');
+              } catch (error) { networkError = safeError(error); }
+            };
+            listeners.add(entry); xhr.addEventListener('loadend', entry.listener);
+          }
+          return originalSend.apply(this, args);
+        };
+        proto.open = wrappedOpen; proto.send = wrappedSend;
+        restore.push(() => {
+          if (proto.open === wrappedOpen) proto.open = originalOpen;
+          if (proto.send === wrappedSend) proto.send = originalSend;
+        });
+      }
+    }
     try {
       for (;;) {
         if (location.origin !== 'https://www.instagram.com' || /\/(?:accounts\/login|challenge|checkpoint|consent)(?:\/|$)/.test(location.pathname) || document.querySelector('input[name="username"],input[name="password"]')) {
@@ -43,45 +172,43 @@ const HunterInstagramBrowser = (() => {
         }
         const scripts = Array.from(document.querySelectorAll('script[type="application/json"]'));
         if (scripts.length > 256) invalid('structure_limit');
-        let size = 0, nodes = 0;
+        let size = 0;
         const reels = [];
-        function walk(value, depth) {
-          if (++nodes > 100000 || depth > 50) invalid('structure_limit');
-          if (!value || typeof value !== 'object') return;
-          if (Object.prototype.hasOwnProperty.call(value, 'xdt_api__v1__feed__reels_media')) {
-            const payload = value.xdt_api__v1__feed__reels_media;
-            if (!payload || !Array.isArray(payload.reels_media) || payload.reels_media.length > 100) invalid('browser_story_data_invalid');
-            for (const entry of payload.reels_media) if (entry?.user?.username === 'clubeuol') reels.push(reel(entry));
-            if (reels.length > 100) invalid('structure_limit');
-          }
-          for (const child of Object.values(value)) walk(child, depth + 1);
-        }
         for (const script of scripts) {
           const text = script.textContent || '';
-          size += unescape(encodeURIComponent(text)).length;
+          size += byteLength(text);
           if (size > 4194304) invalid('body_limit');
-          if (!text.includes('xdt_api__v1__feed__reels_media')) continue;
-          let value; try { value = parseJSON(text); } catch (_) { invalid('browser_story_data_invalid'); }
-          walk(value, 0);
+          reels.push(...project(text));
+          if (reels.length > 100) invalid('structure_limit');
         }
+        if (networkError) { done(networkError); return; }
+        reels.push(...networkReels);
         if (reels.length) {
           // Host validates numeric identity again, using this same scoped reel.
           done({ profile: reels[0].user, reels: { reels_media: reels } }); return;
         }
+        // Install before the gate click, so its async hydration is observed.
+        observe();
         // Instagram may hold viewer hydration behind its explicit view button.
         // One exact, visible button only; never challenge/login/consent controls.
         if (!gateClicked) {
           const buttons = Array.from(document.querySelectorAll('button,[role="button"]'));
           const gates = buttons.filter(button => ['ver story', 'view story', 'see story'].includes((button.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase()) &&
-            !button.disabled && button.getAttribute('aria-disabled') !== 'true' && button.getClientRects().length > 0);
+            !button.disabled && button.getAttribute('aria-disabled') !== 'true' && button.getClientRects().length > 0 &&
+            (typeof getComputedStyle !== 'function' || !['hidden', 'collapse'].includes(getComputedStyle(button).visibility) && getComputedStyle(button).display !== 'none'));
           if (gates.length === 1) { gateClicked = true; gates[0].click(); }
         }
         if (Date.now() - started >= waitMs) { done({ error: 'browser_story_data_missing' }); return; }
         await new Promise(resolve => setTimeout(resolve, 250));
       }
     } catch (error) {
-      const reason = ['browser_story_data_invalid','structure_limit','body_limit'].includes(error?.message) ? error.message : 'browser_script_error';
-      done({ error: reason });
+      done(safeError(error));
+    } finally {
+      active = false;
+      for (const undo of restore) undo();
+      for (const { xhr, listener } of listeners) xhr.removeEventListener('loadend', listener);
+      for (const reader of readers) Promise.resolve(reader.cancel()).catch(() => {});
+      networkReels.length = 0; listeners.clear(); readers.clear();
     }
   }
 
@@ -136,7 +263,8 @@ const HunterInstagramBrowser = (() => {
           const reasons = ['login_required','http_auth_required','http_429','http_status','body_limit','structure_limit','browser_story_page_invalid','browser_story_data_invalid','browser_story_data_missing','browser_script_error'];
           const reason = reasons.includes(result.error) ? result.error : 'browser_response_invalid';
           throw fail(reason, ['login_required','http_auth_required'].includes(reason) ? 'auth_required' : reason === 'http_429' ? 'rate_limited' : 'unknown',
-            Number.isInteger(result.statusCode) && result.statusCode >= 100 && result.statusCode <= 599 ? { statusCode: result.statusCode } : {});
+            { ...(Number.isInteger(result.statusCode) && result.statusCode >= 100 && result.statusCode <= 599 ? { statusCode: result.statusCode } : {}),
+              ...(reason === 'http_429' && Number.isFinite(result.retryAfter) && result.retryAfter > 0 && result.retryAfter <= Number.MAX_SAFE_INTEGER ? { retryAfter: result.retryAfter } : {}) });
         }
         return result;
       } finally { inFlight = false; }
