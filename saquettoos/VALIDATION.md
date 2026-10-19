@@ -1,3 +1,10 @@
+# saquettoOS 1.0.9 — 2026-10-19
+
+- Os seis apps usam símbolos SVG fornecidos, normalizados para máscara clara. O Super Calendário usa o último `IMG_5428_clean.svg` (15 caminhos preservados); PillTracker usa `capsule_icon_black.svg`. O UOL exibe somente seu símbolo, com traço ligeiramente engrossado. A marca saquettoOS usa o novo vetor Hedgy em claro/escuro.
+- Grade e dock mantêm recipientes iguais. Os símbolos de PillTracker e media-downloader passaram de 68% para 62% do recipiente; Bilhete Único e Last.fm Small, para 64,6% (redução de 5%). Reflexo dos símbolos tem transição gradual. No claro, dois orbs ciano/violeta animados atravessam o vidro; material sólido e Reduzir Transparência ocultam os orbs, e Reduzir Movimento congela a animação.
+- Build/sintaxe aprovado: 265.746 bytes, SHA-256 `0050e973e7b805d59fbbe9b07f29035911396704c0950660a69b9d990ef3f7b7`. 17 testes UI aprovados e `git diff --check` limpo. Prévia no navegador integrado: dez recipientes de 74 px, grade/dock idênticos, símbolos de 45,9 px (Pill/media), 47,8 px (Bilhete/Last.fm) e 50,3 px (demais), sem overflow ou erros/avisos no console. Claro e escuro inspecionados; capturas `/tmp/saquettoos-1.0.9-light.png` e `/tmp/saquettoos-1.0.9-dark.png`, fora do Git.
+- Limite: a prévia é sintética e não comprova a apresentação no iPhone. A causa exata da antiga tela preta após reaberturas no Scriptable permanece sem confirmação no aparelho; os testes sintéticos de encerramento da 1.0.7 são a evidência disponível.
+
 # saquettoOS 1.0.8 — 2026-10-19
 
 - Corrigida a aplicação do tingimento: degradê Hedgy pertence ao recipiente de vidro no modo claro; o símbolo permanece branco/claro. Escuro conserva vidro neutro transparente e símbolo claro. Removidos os aros explícitos dos ícones nos dois modos e dos mini-ícones; profundidade usa somente reflexo e sombras suaves.

@@ -143,8 +143,10 @@
   function appGraphic(app) {
     const url = appImage(app);
     if (url) return '<img src="' + escapeHTML(url) + '" alt="">';
-    // Masks tint every built-in symbol consistently without changing the supplied UOL geometry.
-    const supplied = app.id === 'clube-uol' && typeof state.assets.uolGlyph === 'string' && /^data:image\/svg\+xml;base64,[A-Za-z0-9+/]+={0,2}$/.test(state.assets.uolGlyph) ? state.assets.uolGlyph : '';
+    // Supplied silhouettes share the same light mask treatment as built-in symbols.
+    const glyphKey = { 'clube-uol': 'uolGlyph', pilltracker: 'pillGlyph', 'lastfm-small': 'lastfmGlyph', 'bilhete-unico': 'transitGlyph', 'super-calendario': 'calendarGlyph', 'media-downloader': 'mediaGlyph' }[app.id];
+    const glyphAsset = glyphKey && state.assets[glyphKey];
+    const supplied = typeof glyphAsset === 'string' && /^data:image\/svg\+xml;base64,[A-Za-z0-9+/]+={0,2}$/.test(glyphAsset) ? glyphAsset : '';
     const mask = supplied || 'data:image/svg+xml,' + encodeURIComponent(icon(appIcons[app.id] || 'solid').replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('currentColor', '#fff').replace('stroke-width="1.8"', 'stroke-width="1.5"'));
     return '<span class="app-glyph" aria-hidden="true" style="--glyph-mask:url(' + escapeHTML(JSON.stringify(mask)) + ')"></span>';
   }
@@ -181,8 +183,9 @@
     document.documentElement.dataset.appearance = resolved === 'light' ? 'light' : 'dark';
     document.documentElement.dataset.material = state.preferences.material === 'solid' ? 'solid' : 'glass';
     document.documentElement.dataset.showAppNames = String(state.preferences.showAppNames === true);
+    const brandGlyph = typeof state.assets.brandGlyph === 'string' && /^data:image\/svg\+xml;base64,[A-Za-z0-9+/]+={0,2}$/.test(state.assets.brandGlyph) ? state.assets.brandGlyph : '';
     const logo = safeImage(resolved === 'light' ? state.assets.logoLight : state.assets.logoDark);
-    $('#brand-mark').innerHTML = logo ? '<img src="' + escapeHTML(logo) + '" alt="">' : icon('sparkles');
+    $('#brand-mark').innerHTML = brandGlyph ? '<span class="brand-glyph" aria-hidden="true" style="--glyph-mask:url(' + escapeHTML(JSON.stringify(brandGlyph)) + ')"></span>' : logo ? '<img src="' + escapeHTML(logo) + '" alt="">' : icon('sparkles');
     document.querySelector('meta[name="theme-color"]').content = resolved === 'light' ? '#f0f2f8' : '#0d1020';
   }
   if (mediaQuery.addEventListener) mediaQuery.addEventListener('change', applyAppearance); else mediaQuery.addListener(applyAppearance);

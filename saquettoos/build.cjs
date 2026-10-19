@@ -5,13 +5,18 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const root = __dirname;
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const dataURL = name => 'data:image/png;base64,' + fs.readFileSync(path.join(root, 'assets', name)).toString('base64');
 const safe = value => JSON.stringify(value).replace(/</g, '\\u003c');
 const catalog = JSON.parse(read('catalog.json'));
-// This supplied glyph is deliberately limited to static, self-contained svg/path markup.
-const uolGlyph = read('assets/uol_icon_linear_white.svg').trim();
-if (!/^<svg\b[\s\S]*<\/svg>$/.test(uolGlyph) || /<(?!\/?(?:svg|path)(?:\s|\/?>))|(?:href|on[\w-]+|style)\s*=|url\s*\(/i.test(uolGlyph)) throw new Error('UOL glyph must be a self-contained static SVG');
-const assets = { logoLight: dataURL('saquettoos-white.png'), logoDark: dataURL('saquettoos-violet.png'), uolGlyph: 'data:image/svg+xml;base64,' + Buffer.from(uolGlyph).toString('base64') };
+// Supplied symbols are normalized to monochrome, self-contained static shapes.
+const glyphDataURL = name => {
+  const svg = read('assets/' + name).trim();
+  if (!/^<svg\b[\s\S]*<\/svg>$/.test(svg) || /<(?!\/?(?:svg|g|path|circle)(?:\s|\/?>))|(?:href|on[\w-]+|style)\s*=|url\s*\(/i.test(svg)) throw new Error(name + ' must be a self-contained static SVG');
+  return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
+};
+const assets = { brandGlyph: glyphDataURL('brand-symbol.svg'),
+  uolGlyph: glyphDataURL('uol-symbol.svg'), pillGlyph: glyphDataURL('pilltracker-symbol.svg'),
+  lastfmGlyph: glyphDataURL('last-fm-symbol.svg'), transitGlyph: glyphDataURL('bilhete-unico-symbol.svg'),
+  calendarGlyph: glyphDataURL('calendar-symbol.svg'), mediaGlyph: glyphDataURL('media-downloader-symbol.svg') };
 const html = read('ui/index.html').replace('__SAQUETTO_STYLES__', () => read('ui/styles.css'))
   .replace('__SAQUETTO_APP__', () => read('ui/app.js'));
 if (!html.includes('__SAQUETTO_INITIAL_JSON__')) throw new Error('Missing initial state marker');
@@ -29,7 +34,7 @@ fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 const file = path.join(root, 'dist/saquettoOS.js');
 fs.writeFileSync(file, code);
 if (process.argv.includes('--preview')) {
-  const demo = { version: '1.0.8', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
+  const demo = { version: '1.0.9', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
     apps: catalog.map(app => ({ ...app, installed: true, allowed: true })), assets,
     preferences: { appearance: 'system', material: 'glass', channel: 'stable', showAppNames: false, favorites: catalog.slice(0, 4).map(app => app.id), notifications: { enabled: false, updates: true, access: true } },
     notifications: [], accessConfigured: true, update: { items: [] } };
