@@ -1,3 +1,11 @@
+# saquettoOS 1.0.6 — 2026-10-19
+
+- Foto do iPhone confirmou abertura direta da 1.0.5 e regressão de layout: cabeçalho sob a barra nativa. A regra de altura fixa havia sobrescrito o padding com `safe-area-inset-top`. Restaurado em todos os breakpoints, incluindo modo compacto; painéis também respeitam esse limite superior. Sem altura de toolbar fixada no código.
+- A [API WebView do Scriptable](https://docs.scriptable.app/webview/#-present) documenta apresentação fullscreen, sem controle para ocultar Close/Share. Insets seguem o [contrato de área segura do WebKit](https://webkit.org/blog/7929/designing-websites-for-iphone-x/).
+- Detecção de modo compacto desconta insets superior/inferior. Quando não há altura para os seis apps e nomes, somente a grade encolhe/rola; busca e dock permanecem fixos, com dimensões de ícone iguais.
+- 17 testes UI aprovados, build/sintaxe e diff-check. Navegador integrado com insets sintéticos de 91 px acima/34 px abaixo: em 390 × 844, padding superior 111 px e painel começa em y=111; dock termina em y=788. Em 390 × 380 com nomes ligados, cabeçalho começa em y=98 e dock termina em y=346; rolagem da grade permite alcançar o último nome sem mover o dock. Console sem erros/avisos capturados. Captura `/tmp/saquettoos-1.0.6-safe-area.png` fora do Git.
+- Os insets foram simulados no Chromium: isso verifica a geometria CSS, não o valor informado pelo WKWebView do Scriptable. Confirmação da área segura real permanece no iPhone.
+
 # saquettoOS 1.0.5 — 2026-10-19
 
 - Ajuste visual adicional: “lugar” e os avatares com inicial, na home e nos Ajustes, usam o mesmo degradê Hedgy do “OS” claro. Letras brancas e indicador de presença preservados.

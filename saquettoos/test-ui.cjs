@@ -8,7 +8,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, 'ui/app.js'), 'utf8');
 
-function fixture({ preview = false, profile = {}, app = {}, dark = true, preferences = {}, viewport } = {}) {
+function fixture({ preview = false, profile = {}, app = {}, dark = true, preferences = {}, viewport, safeArea = {} } = {}) {
   const nodes = new Map();
   const frames = [];
   const windowEvents = {};
@@ -42,6 +42,7 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true, prefere
   const visualViewport = viewport && { scale: 1, height: 740, ...viewport, events: {}, addEventListener(name, fn) { this.events[name] = fn; } };
   const window = {
     visualViewport,
+    getComputedStyle() { return { getPropertyValue(name) { return String(safeArea[name] || 0) + 'px'; } }; },
     __SAQUETTO_PREVIEW__: preview, __SAQUETTO_WAKE() { wakeCount++; },
     matchMedia() { return media; }, addEventListener(name, fn) { windowEvents[name] = fn; }
   };
@@ -292,5 +293,19 @@ test('keyboard viewport ignores unpresented size and pinch zoom, and compacts th
   assert.equal(f.document.documentElement.style['--viewport-height'], '380px');
   viewport.scale = 1; viewport.height = 740; viewport.events.resize();
   assert.equal(f.document.documentElement.style['--viewport-height'], '740px');
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'false');
+});
+
+test('compact viewport uses space remaining below native chrome and above the home indicator', () => {
+  const safeArea = { '--safe-top': 91, '--safe-bottom': 34 };
+  const f = fixture({ viewport: { height: 560 }, safeArea });
+  assert.equal(f.document.documentElement.style['--viewport-height'], '560px');
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'true');
+  f.window.visualViewport.height = 844;
+  f.window.visualViewport.events.resize();
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'false');
+  f.window.visualViewport.height = 560;
+  safeArea['--safe-top'] = 0; safeArea['--safe-bottom'] = 0;
+  f.windowEvents.resize();
   assert.equal(f.document.documentElement.dataset.compactViewport, 'false');
 });

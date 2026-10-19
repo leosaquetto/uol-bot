@@ -490,10 +490,14 @@
     const viewport = window.visualViewport;
     if (!viewport || viewport.scale > 1.05 || !Number.isFinite(viewport.height) || viewport.height <= 0) return;
     document.documentElement.style.setProperty('--viewport-height', Math.round(viewport.height) + 'px');
-    document.documentElement.dataset.compactViewport = String(viewport.height < 480);
+    const style = window.getComputedStyle(document.documentElement);
+    const safeTop = parseFloat(style.getPropertyValue('--safe-top')) || 0;
+    const safeBottom = parseFloat(style.getPropertyValue('--safe-bottom')) || 0;
+    document.documentElement.dataset.compactViewport = String(viewport.height - safeTop - safeBottom < 480);
   }
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', fitViewport);
+    window.addEventListener('resize', fitViewport);
     fitViewport();
   }
   $('#shell').dataset.enter = 'true';

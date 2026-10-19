@@ -26,7 +26,7 @@ fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 const file = path.join(root, 'dist/saquettoOS.js');
 fs.writeFileSync(file, code);
 if (process.argv.includes('--preview')) {
-  const demo = { version: '1.0.5', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
+  const demo = { version: '1.0.6', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
     apps: catalog.map(app => ({ ...app, installed: true, allowed: true })), assets,
     preferences: { appearance: 'system', material: 'glass', channel: 'stable', showAppNames: false, favorites: catalog.slice(0, 4).map(app => app.id), notifications: { enabled: false, updates: true, access: true } },
     notifications: [], accessConfigured: true, update: { items: [] } };
