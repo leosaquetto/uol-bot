@@ -46,9 +46,20 @@ new version. The private publication manifest was reconciled.
   badges and category classification are unchanged.
 
 Focused offline tests cover approval, identity, suspension, storage failure,
-concurrency, request limits, UI routing and catalog merging. Physical iPhone
-reconnection requires the owner to run the new action; publishing or syncing the
-script is not proof that its local Keychain and collector state were updated.
+concurrency, request limits, UI routing and catalog merging. The owner confirmed
+5.8.6 on the iPhone and ran the explicit recovery. It reported session replacement;
+the subsequent collection diagnostic reported `backoff` ("aguardando intervalo
+de segurança"). Local session replacement is confirmed by that runtime result,
+but a successful iPhone Instagram read remains unproven until the guard expires.
+The current UI does not expose the deadline, so no release time is asserted.
+
+Stable 5.8.6 points to artifact commit `2608cfc99b963cac0ebca252b37d0b8ece65ae14`:
+693781 bytes, SHA-256 `f09dc2ccce09b8993ddd7261f666b4f03d5abf4777b58c7de5f0ad60b1f80a7f`.
+Remote manifest and artifact integrity were verified. The existing saquettoOS
+updater reads the same stable channel; no saquettoOS change was necessary.
+ntfy accepted one update notice titled **Scriptable - Clube UOL Premium** at
+13:50:18 São Paulo (receipt `rvoL7bIdWb4f`). This acceptance is independent of the
+owner's confirmation that automatic updating had already reached 5.8.6.
 
 Private evidence: `~/.config/uol-ticket-research/instagram-reconnect-2026-10-19-evidence.json`
 and the matching sanitized catalog/Story receipts. Prior FBNS registration remains
