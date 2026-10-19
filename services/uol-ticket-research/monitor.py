@@ -79,6 +79,8 @@ def private_config(path):
         raise ValueError('invalid_push_mode')
     if config.get('collectionBackend', 'html') not in ('html', 'json'):
         raise ValueError('invalid_collection_backend')
+    if 'browserGateFallback' in config and type(config['browserGateFallback']) is not bool:
+        raise ValueError('invalid_browser_gate_fallback')
     if 'pollIntervalSeconds' in config:
         period = config['pollIntervalSeconds']
         if type(period) is not int or not JSON_PERIOD <= period <= 3600:
@@ -435,7 +437,10 @@ class Monitor:
     def collection_cost(self):
         # One fixed reels GET with a fresh identity; cold lookup needs one extra GET.
         self._reserved_profile_identity = self.profile_identity()
-        return (1 if self._reserved_profile_identity else 2) if self.config.get('collectionBackend') == 'json' else 2
+        primary = (1 if self._reserved_profile_identity else 2) if self.config.get('collectionBackend') == 'json' else 2
+        # Reserve navigation + at most one viewer-gate click before any network.
+        # Resources loaded by that bounded page are not collector queries.
+        return primary + (2 if self.config.get('browserGateFallback') is True else 0)
 
     def update_push_settlement(self, batch, status='pending', reason=''):
         """Only counts and timing leave the durable batch's private matching state."""
@@ -580,7 +585,7 @@ class Monitor:
         s['requests'] += result.get('requests', 0)
         s['lastObservationAt'] = result['checkedAt']
         s['lastResult'] = {k: result.get(k) for k in ('status', 'reason', 'duration_ms', 'requests', 'body_bytes',
-                                                    'structuralDiagnostics')}
+                                                    'structuralDiagnostics', 'browserFallback', 'gateClicked')}
         s['sourceStatus'] = result['status']
         identity = result.get('profileIdentity')
         if (self.config.get('collectionBackend') == 'json' and isinstance(identity, dict)
@@ -839,6 +844,9 @@ def run(directory, config_path, once=False):
                                 profile_identity=monitor._reserved_profile_identity).collect()
                         else:
                             result = InstagramClient(directory/'session.json').collect()
+                        if config.get('browserGateFallback') is True:
+                            from instagram_browser import browser_gate_fallback
+                            result = browser_gate_fallback(result, directory/'session.json', enabled=True)
                     except SessionError as e:
                         result = {'checkedAt': timestamp(), 'status': 'auth_required', 'reason': e.reason,
                                   'requests': 0, 'duration_ms': 0, 'body_bytes': 0, 'stories': []}

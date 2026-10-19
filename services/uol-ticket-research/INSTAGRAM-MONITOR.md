@@ -85,6 +85,39 @@ sudo cat /var/lib/uol-instagram-monitor/status.json
 
 Interromper apenas este complemento: `sudo systemctl stop uol-instagram-monitor`. Preservar bancos e sessão. O status do processo deve ser combinado com `sourceStatus`, última leitura válida e recibos; processo ativo sozinho não comprova coleta saudável.
 
+### Fallback da tela “Ver story”
+
+`browserGateFallback: true` habilita um fallback local no Oracle, preservando
+`collectionBackend` e `pushMode`. Ele só abre um navegador quando o transporte
+primário termina em `unknown/no_validated_story_structure`. `found`, `empty`,
+autenticação, HTTP 429, erro de rede e payload inválido nunca acionam esse caminho.
+
+`instagram_browser.py` envia a sessão existente do próprio Oracle por stdin ao
+helper `instagram_browser.mjs`; cookies não aparecem em argv, logs ou resultados.
+O helper usa o `playwright-core` já instalado em `/opt/saquetto-drops` e Chrome
+local, com sandbox. Na página exata de Stories do `clubeuol`, clica uma única vez
+em um botão visível e inequívoco **Ver story / View story**, somente se ainda não
+houver dados estruturados do perfil. Lê novamente o JSON carregado e aplica o
+mesmo parser Python de IDs, datas, imagens e destinos. Não realiza login, troca de
+conta/IP nem contorna desafios ou 429.
+
+A reserva anterior à rede aumenta conservadoramente em duas ações de coleta
+(navegação e possível clique), inclusive quando o HTTP primário já resolve. O
+teto diário, lock e backoff são os existentes. Recursos normais da página não
+são consultas adicionais do coletor. O processo do navegador é descartado no
+fim da tentativa; prazo externo de 45 segundos encerra também seus filhos.
+
+Implantar `instagram_browser.py`, `instagram_browser.mjs` e `monitor.py` em
+`/opt/uol-instagram-monitor`, e o drop-in opcional
+`deploy/uol-instagram-browser.conf` em
+`/etc/systemd/system/uol-instagram-monitor.service.d/browser.conf`. Ele aumenta
+apenas os limites do monitor para um navegador temporário; mantém
+`NoNewPrivileges`, `ProtectSystem`, `ProtectHome` e `PrivateTmp`. Após atualizar
+atomicamente a configuração privada: `systemctl daemon-reload` e restart apenas
+de `uol-instagram-monitor`. Verificar `status.json`, `lastResult.browserFallback`,
+`lastResult.gateClicked` e o motivo/resultado real; processo ativo sozinho não
+prova que a tela de confirmação foi observada em produção.
+
 ## Validação
 
 Testes locais do parser/mídia, orçamento, fila/reinício, modo do bot, isolamento de forwards, recibos por destino e foto WhatsApp. O Worker passa pela CI/release do projeto; a ativação verifica leitura autenticada no Oracle e envio real do Story autorizado, sem mensagens sintéticas para grupos.
