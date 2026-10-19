@@ -2,33 +2,34 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createHash } = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const { assembleUI, assembleUIFromParts } = require('./assemble-ui.cjs');
-const baseline = require('./baseline/manifest.json');
-const { frozenTemplate, restoreProductLabels, restoreHeaderPresentation, restoreInstagramPresentation } = require('./test-support/header-baseline.cjs');
-const restorePresentation = (current, reference) => restoreInstagramPresentation(restoreHeaderPresentation(current, reference), reference);
+const { frozenTemplate } = require('./test-support/header-baseline.cjs');
 
-test('UI outside approved presentation changes remains byte-identical to the frozen template', () => {
-  const output = Buffer.from(restorePresentation(restoreProductLabels(assembleUI()), frozenTemplate()), 'utf8');
-  const reference = baseline.files['stories-hunter/template.html'];
-  assert.equal(output.byteLength, reference.bytes);
-  assert.equal(createHash('sha256').update(output).digest('hex'), reference.sha256);
+test('UI assembly inserts exact CSS and JavaScript sources once into the shell', () => {
+  const read = name => fs.readFileSync(path.join(__dirname, 'ui', name), 'utf8');
+  const shell = read('shell.html');
+  const styles = read('styles.css');
+  const app = read('app.js');
+  const assembled = assembleUI();
+  assert.equal(assembled, shell.replace('__HUNTER_UI_STYLES__', () => styles)
+    .replace('__HUNTER_UI_SCRIPT__', () => app));
+  assert.doesNotMatch(assembled, /__HUNTER_UI_(?:STYLES|SCRIPT)__/);
+  assert.equal(assembled.split(styles).length, 2, 'CSS must appear exactly once');
+  assert.equal(assembled.split(app).length, 2, 'JavaScript must appear exactly once');
 });
 
-test('presentation normalization retains unrelated markup, catalog logic, scroll and access code', () => {
+test('all established navigation and content mounts survive UI redesign', () => {
   const original = frozenTemplate();
-  const current = restoreProductLabels(assembleUI());
-  for (const [before, after] of [
-    ["if (window.scrollY > 8)", "if (window.scrollY > 80)"],
-    ["const offers = sets.activeItems;", "const offers = [];"],
-    ['id="otaUpdateBanner"', 'id="removedUpdateBanner"'],
-    ['function manageHunterAccess()', 'function changedHunterAccess()'],
-    ['margin-left: -2px;', 'margin-left: -20px;'],
-    ['#fd5949 45%', '#000000 45%']
-  ]) {
-    assert.ok(current.includes(before), before);
-    assert.notEqual(restorePresentation(current.replace(before, after), original), original, before);
+  const current = assembleUI();
+  for (const id of ['viewMain', 'viewHistory', 'viewRedemptions', 'settingsModal', 'bottomNav', 'cardList']) {
+    const marker = 'id="' + id + '"';
+    assert.ok(original.includes(marker), 'baseline mount: ' + id);
+    assert.equal(current.split(marker).length, 2, 'unique current mount: ' + id);
   }
+  for (const tab of ['home', 'tickets', 'history', 'redemptions'])
+    assert.equal(current.split('data-tab="' + tab + '"').length, 2, 'unique navigation tab: ' + tab);
 });
 
 test('UI assembly preserves literal replacement sequences and whitespace', () => {

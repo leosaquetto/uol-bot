@@ -195,6 +195,7 @@
       installHeaderLayout();
       // Local storage contains display preferences and public offer history only.
       // Legacy copies may contain cookies/passwords; never hydrate those fields.
+      let localHistorySnapshot = { active: [], history: [] };
       try {
         const localSet = localStorage.getItem('uol_hub_settings');
         if (localSet) {
@@ -211,11 +212,11 @@
         if (localHist) {
           const parsed = JSON.parse(localHist);
           if (parsed && Array.isArray(parsed.active) && Array.isArray(parsed.history)) {
-            historyData = reconcileHistorySnapshots(historyData, parsed);
+            localHistorySnapshot = parsed;
           }
         }
       } catch(e) {}
-      historyData = reconcileHistorySnapshots(historyData, { active: [], history: [] });
+      historyData = reconcileHistorySnapshots(historyData, localHistorySnapshot);
 
       // Native device preference wins over a stale WebView cache after updates.
       initializeNavigationTheme();

@@ -13,17 +13,19 @@ function fn(name) {
   return template.slice(start, template.indexOf('\n    }', start) + '\n    }'.length);
 }
 function element() {
-  return { children: [], style: { setProperty() {} }, textContent: '',
+  return { children: [], style: { setProperty() {} }, textContent: '', actions: new Map(),
     set innerHTML(value) { this.markup = value; this.children = []; }, get innerHTML() { return this.markup || ''; },
-    appendChild(child) { this.children.push(child); } };
+    appendChild(child) { this.children.push(child); },
+    querySelector(selector) { return { addEventListener: (event, callback) => this.actions.set(selector + ':' + event, callback) }; } };
 }
 function harness(active) {
   let time = now;
-  const elements = new Map(), grouped = [], requests = [];
+  const elements = new Map(), grouped = [], requests = [], opened = [];
   class Clock extends Date { static now() { return time; } }
   const context = vm.createContext({
     URL, Date: Clock, Intl, console,
     historyData: { active: clone(active), history: [] }, activeFilter: null, isGrouped: true,
+    linkCheckOverlay: new Map(),
     CATEGORY_MAP: { OUTROS: { label: 'Outros', icon: '' } }, ICONS: {},
     document: { createElement: element, getElementById: id => {
       if (!elements.has(id)) elements.set(id, element()); return elements.get(id);
@@ -31,14 +33,17 @@ function harness(active) {
     localStorage: { getItem: () => null },
     fetch: url => { requests.push(url); throw new Error('unexpected per-card request'); },
     recordSessionImpressions() {}, checkHighlight: () => false, offerImage: () => '',
+    posterImageMarkup: () => '', wirePosterImages() {}, htmlAttribute: String,
+    openDetails: id => opened.push(id), openConfirm() {},
     isStoriesOnlyOffer: () => false, getRedeemedUsersForOffer: () => [], renderRedeemedFriendsPill: () => '',
     buildOfferGroups: (current, history) => [...current, ...history],
     renderGroupedOffers: current => grouped.push(current.map(item => item.id)),
   });
   const dates = template.slice(template.indexOf('// UI_DATE_HELPERS_START'), template.indexOf('// UI_DATE_HELPERS_END'));
-  vm.runInContext(dates + '\n' + ['catalogTime', 'catalogCampaign', 'availabilityEvidence', 'confirmedSoldOutTime',
+  vm.runInContext(dates + '\n' + ['catalogTime', 'catalogCampaign', 'plausibleCaptureTime', 'captureTime',
+    'linkCheckGeneration', 'linkUnavailableAt', 'availabilityEvidence', 'confirmedSoldOutTime',
     'homeOfferSets', 'extractSessionDate', 'renderOffers', 'renderIndividualOffers', 'formatRelativeTime', 'updateCategoryCounts'].map(fn).join('\n'), context);
-  return { context, elements, grouped, requests, setTime: value => { time = value; } };
+  return { context, elements, grouped, requests, opened, setTime: value => { time = value; } };
 }
 const offer = (id, extra = {}) => ({ id, title: id, category: 'OUTROS',
   link: 'https://clube.uol.com.br/campanhasdeingresso/' + id, firstSeen: Date.parse('2026-09-29T12:00:00Z'), ...extra });
@@ -70,7 +75,10 @@ test('Home, active list and counters share proven session cutoffs without reques
   assert.equal(h.elements.get('categoryChips').children[0].textContent, 'Outros 3');
   h.context.isGrouped = false;
   h.context.renderOffers(h.context.historyData.active);
-  const renderedIds = () => h.elements.get('cardList').children.map(card => card.innerHTML.match(/openDetails\('([^']+)'\)/)[1]);
+  const renderedIds = () => h.elements.get('cardList').children.map(card => {
+    card.actions.get('.btn-details:click')();
+    return h.opened.pop();
+  });
   assert.deepEqual(renderedIds(), expected, 'the second tab receives the same filtered active records');
   h.context.updateCategoryCounts(h.context.historyData.active);
   assert.equal(h.elements.get('categoryChips').children[0].textContent, 'Outros 3');
@@ -78,5 +86,22 @@ test('Home, active list and counters share proven session cutoffs without reques
   h.context.renderOffers(h.context.historyData.active);
   assert.deepEqual(renderedIds(), ['tomorrow', 'unknown'], 'a date-only session expires at the next São Paulo civil day');
   assert.deepEqual(clone(h.context.historyData), original);
+  assert.equal(h.requests.length, 0);
+});
+
+test('confirmed link unavailability stays a session overlay and a valid recovery restores the active card', () => {
+  const h = harness([offer('dead'), offer('live')]);
+  const original = clone(h.context.historyData);
+  const dead = h.context.historyData.active[0];
+  const overlayKey = 'dead|' + h.context.linkCheckGeneration(dead);
+  h.context.linkCheckOverlay.set(overlayKey, now);
+  const unavailable = h.context.homeOfferSets(h.context.historyData.active, []);
+  assert.deepEqual(clone(unavailable.activeItems.map(item => item.id)), ['live']);
+  assert.deepEqual(clone(unavailable.unavailableItems.map(item => item.id)), ['dead']);
+  assert.deepEqual(clone(unavailable.soldOutItems), []);
+  assert.deepEqual(clone(h.context.historyData), original, 'the link check must not rewrite availability history');
+  h.context.linkCheckOverlay.delete(overlayKey);
+  const recovered = h.context.homeOfferSets(h.context.historyData.active, []);
+  assert.deepEqual(clone(recovered.activeItems.map(item => item.id)), ['dead', 'live']);
   assert.equal(h.requests.length, 0);
 });

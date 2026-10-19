@@ -41,14 +41,16 @@ function render(source, fixture = {}) {
   }
   const startup = source.indexOf('function buildHunterStartupHTML(');
   const dashboard = source.indexOf('function buildDashboardHTML(');
+  const publicProjection = source.indexOf('function publicHunterCredentials(');
+  const dashboardStart = publicProjection >= 0 && publicProjection < dashboard ? publicProjection : dashboard;
   vm.runInContext(source.slice(startup, source.indexOf('\nfunction installHunterBrowser(', startup)) + '\n' +
-    source.slice(dashboard, source.indexOf('\nawait main();', dashboard)), context);
+    source.slice(dashboardStart, source.indexOf('\nawait main();', dashboard)), context);
   return {
     startup: context.buildHunterStartupHTML(false),
     failure: context.buildHunterStartupHTML(true),
     dashboard: context.buildDashboardHTML(fixture.history || {active: [], history: []},
       {currentUser: fixture.user || 'leosaquetto', userSessions: {}, ...(fixture.settings || {})},
-      {}, [], fixture.receipts || [], !!fixture.updated, fixture.collection || null)
+      fixture.credentials || {}, fixture.cookies || [], fixture.receipts || [], !!fixture.updated, fixture.collection || null)
   };
 }
 

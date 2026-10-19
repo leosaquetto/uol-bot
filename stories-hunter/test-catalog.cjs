@@ -46,6 +46,7 @@ function harness({ cache, history = { active: [], history: [] }, network = () =>
   class Clock extends Date { static now() { return now; } }
   const context = vm.createContext({
     URL, Date: Clock, Intl, console,
+    INITIAL: { nativeLinkChecks: false, nativeBrowser: false },
     historyData: clone(history), currentTab: 'home',
     localStorage: { getItem: k => storage.get(k) || null, setItem: (k, v) => { storage.set(k, v); writes.push(k); } },
     fetch: async (url, options) => { requests.push({ url, options }); return network(url, options); },
@@ -102,7 +103,8 @@ test('healthy 200 uses only catalog, stores ETag with snapshot, preserves local 
   assert.equal(h.requests[0].options.credentials, 'omit');
   const item = h.state().active[0];
   assert.equal(item.id, local.id);
-  assert.equal(item.firstSeen, local.firstSeen);
+  assert.equal(item.firstSeen, now - 3000, 'Worker capture supersedes ambiguous legacy firstSeen');
+  assert.equal(item.legacyFirstSeen, local.firstSeen);
   assert.equal(item.viewsCount, 8);
   assert.equal(item.description, local.description);
   assert.equal(item.validity, local.validity);
@@ -157,7 +159,7 @@ test('refresh deadline covers a stalled response body and releases controls whil
   const started = new Promise(resolve => { bodyStarted = resolve; });
   const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 100 },
     network: (_, options) => ({ ok: true, status: 200,
-      json: () => new Promise((_, reject) => {
+      text: () => new Promise((_, reject) => {
         options.signal.addEventListener('abort', () => reject(new Error('Aborted')));
         bodyStarted();
       }) }) });
@@ -246,22 +248,35 @@ test('canonical duplicate generations choose latest observed offer regardless of
   }
 });
 
-test('hydration preserves valid saved empty active list and history instead of reviving bundled actives', () => {
-  const hydration = template.slice(template.indexOf('// Hidratação via localStorage instantâneo'), template.indexOf('// Reclassifica categorias de ofertas em cache'));
+test('hydration keeps native active offers and quarantines local-only history', () => {
+  const start = template.indexOf('      let localHistorySnapshot = { active: [], history: [] };');
+  const finish = template.indexOf('// Reclassifica categorias de ofertas em cache', start);
+  assert.ok(start > 0 && finish > start, 'load-time hydration remains covered');
+  const hydration = template.slice(start, finish);
+  const reconciliation = template.slice(template.indexOf('    function historyIdentity('), template.indexOf('    const legacyPrivateStorageSnapshot'));
   const bundled = { active: [{ id: 'bundled-active' }], history: [] };
   const saved = { active: [], history: [{ id: 'sold-out', expiredAt: now - 1000 }] };
   for (const data of [saved, { active: [], history: [] }]) {
-    const context = vm.createContext({ historyData: clone(bundled), settings: {}, initializeNavigationTheme() {}, localStorage: {
-      getItem: key => key === 'uol_offers_history' ? JSON.stringify(data) : null,
-    } });
-    vm.runInContext(hydration, context);
-    assert.deepEqual(clone(context.historyData), data);
+    const h = harness({ history: bundled });
+    h.storage.set('uol_offers_history', JSON.stringify(data));
+    h.context.settings = {};
+    h.context.initializeNavigationTheme = () => {};
+    h.context.isPublicSettingsPayload = () => true;
+    h.context.saveSettingsToStorage = () => {};
+    vm.runInContext(reconciliation + '\n' + hydration, h.context);
+    assert.deepEqual(h.state().active.map(item => item.id), ['bundled-active']);
+    assert.deepEqual(h.state().history.map(item => item.id), data.history.map(item => item.id));
+    if (data.history.length) assert.equal(h.state().history[0].cacheUnverified, true);
   }
-  const invalid = vm.createContext({ historyData: clone(bundled), settings: {}, initializeNavigationTheme() {}, localStorage: {
-    getItem: key => key === 'uol_offers_history' ? '{"active":[],"history":"bad"}' : null,
-  } });
-  vm.runInContext(hydration, invalid);
-  assert.deepEqual(clone(invalid.historyData), bundled);
+  const invalid = harness({ history: bundled });
+  invalid.storage.set('uol_offers_history', '{"active":[],"history":"bad"}');
+  invalid.context.settings = {};
+  invalid.context.initializeNavigationTheme = () => {};
+  invalid.context.isPublicSettingsPayload = () => true;
+  invalid.context.saveSettingsToStorage = () => {};
+  vm.runInContext(reconciliation + '\n' + hydration, invalid.context);
+  assert.deepEqual(invalid.state().active.map(item => item.id), ['bundled-active']);
+  assert.equal(invalid.state().history.length, 0);
 });
 
 test('only explicit sold_out moves existing offer to history and never trims unrelated history', () => {
@@ -272,7 +287,8 @@ test('only explicit sold_out moves existing offer to history and never trims unr
   assert.equal(h.state().active.length, 0);
   const ended = h.state().history.find(o => o.id === 'preserved');
   assert.equal(ended.expiredAt, now - 500);
-  assert.equal(ended.firstSeen, old.firstSeen);
+  assert.equal(ended.firstSeen, now - 3000, 'Worker capture takes precedence over ambiguous legacy firstSeen');
+  assert.equal(ended.legacyFirstSeen, old.firstSeen);
   assert.equal(ended.viewsCount, 7);
   assert.ok(h.state().history.some(o => o.id === 'ancient'));
 });
