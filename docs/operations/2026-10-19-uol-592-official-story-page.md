@@ -21,3 +21,17 @@ Conectar permite login mesmo durante espera. Fechar o login libera somente suspe
 - A documentação [WebView do Scriptable](https://docs.scriptable.app/webview/) confirma carregamento da página e callback de avaliação. A evidência no navegador integrado não substitui Scriptable/WebKit físico: captura e persistência entre execuções ainda dependem do iPhone.
 
 Publicação stable e atualização automática autorizadas pelo usuário. Não limpar a espera anterior até 20:50 no aparelho. Primeira abertura após atualização mantém pausa existente; reabrir retoma a coleta elegível.
+
+## Publicação 5.9.2
+
+- Artefato: `53bc1aedfe2e821296e455ac462a43b359f9de7c`; publicação stable: `74fdb5be7bcc6f2bb13cc2917d7433ce2a640b98`.
+- CI aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39300720228 .
+- Manifesto remoto stable, artefato imutável e espelho legado conferidos: 711446 bytes; SHA-256 `bf4ed625406d910eb32c65bff43dc6778abe25f6dda3e58699459adcbbefc47c`.
+- ntfy aceita: `StjmgoAbkqCd`, timestamp `1792434047`, título **Scriptable - Clube UOL Premium**. Corpo orienta abrir o app para atualizar automaticamente ou usar saquettoOS. Nenhum arquivo privado/iCloud foi substituído externamente.
+- Instalação no aparelho e captura física desta versão ainda não confirmadas.
+
+## Ajuste 5.9.3 autorizado após teste do usuário
+
+O usuário confirmou visualmente a 5.9.2 e pediu remover a espera herdada que ainda mostrava 20:50. Isso altera a decisão anterior de preservar o bloqueio da API retirada. A 5.9.3 migra somente estados `instagramWebView` com `reason=http_429` e etapa `profile` ou `stories`, pertencentes aos GETs antigos. Não apaga arquivos, orçamento diário, suspensão de autenticação ou um novo 429 da etapa `stories_page`; estados de origem desconhecida continuam protegidos.
+
+Teste cobre liberação das duas etapas antigas, preservação de 429 da página e de origem desconhecida, orçamento diário, captura e atualização. Validação focada: 33 testes aprovados. A publicação automática segue autorizada; teste físico ainda necessário para fechar a validação.

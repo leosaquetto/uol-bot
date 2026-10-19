@@ -284,12 +284,22 @@ test('WebView failures retain only the allowlisted reason, query stage and HTTP 
 });
 
 
-test('existing 5.9.1 profile 429 remains enforced by page capture after update', async () => {
+test('only the retired private API 429 wait is migrated; page 429s and daily budget remain', async () => {
+  for (const stage of ['profile', 'stories']) {
+    const h = harness({ instagram: true });
+    h.files.set('/docs/uol-hunter-collector-v1/state-instagramWebView-existing.json', JSON.stringify({ at: NOW - 1, status: 'rate_limited', reason: 'http_429', stage, retryAt: NOW + 21600000 }));
+    assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'found');
+    assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 1);
+  }
+  for (const stage of ['stories_page', undefined]) {
+    const h = harness({ instagram: true });
+    h.files.set('/docs/uol-hunter-collector-v1/state-instagramWebView-existing.json', JSON.stringify({ at: NOW - 1, status: 'rate_limited', reason: 'http_429', stage, retryAt: NOW + 21600000 }));
+    assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'rate_limited');
+    assert.equal(h.calls.length, 0);
+  }
   const h = harness({ instagram: true });
-  h.files.set('/docs/uol-hunter-collector-v1/state-instagramWebView-existing.json', JSON.stringify({ at: NOW, status: 'rate_limited', reason: 'http_429', stage: 'profile', retryAt: NOW + 21600000 }));
-  assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'rate_limited');
+  h.files.set('/docs/uol-hunter-collector-v1/state-instagramWebView-existing.json', JSON.stringify({ at: NOW - 1, status: 'rate_limited', reason: 'http_429', stage:'profile', retryAt: NOW + 21600000 }));
+  for (let i=0;i<30;i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagramWebView-old-' + i + '.json', JSON.stringify({ at: NOW }));
+  assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'daily_budget');
   assert.equal(h.calls.length, 0);
-  h.advance(21600000);
-  assert.equal((await C.create(h.env).runInstagram()).sources.instagram.status, 'found');
-  assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 1);
 });

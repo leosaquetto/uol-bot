@@ -239,7 +239,14 @@ const HunterCollector = (() => {
         ...(s.lastSuccessAt ? { lastSuccessAt: s.lastSuccessAt } : {}), ...extra };
     }
     function browserBlocked(connect = false) {
-      const s = state(browserState);
+      let s = state(browserState);
+      // 5.9.0/1 queried private profile/reels endpoints; that saved wait does not
+      // describe the official-page transport. Explicitly migrate only that wait.
+      // Page 429s, daily counters and authentication suspension remain intact.
+      if (s.retryAt > now() && s.reason === 'http_429' && ['profile', 'stories'].includes(s.stage)) {
+        s = { ...s, retryAt: 0, reason: '', status: 'unknown', stage: '', statusCode: undefined, legacyApiWaitCleared: true };
+        saveState(browserState, s);
+      }
       if (s.retryAt > now()) return browserSummary('rate_limited', { reason: 'http_429', nextAttemptAt: new Date(s.retryAt).toISOString() });
       if (s.suspended && !connect) return browserSummary('auth_required', { reason: 'login_required' });
       const day = new Date(now()).toISOString().slice(0, 10);
