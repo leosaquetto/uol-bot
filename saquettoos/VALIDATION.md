@@ -1,3 +1,9 @@
+# saquettoOS 1.0.10 — 2026-10-19
+
+- Last.fm Small recebeu margem interna no `viewBox` do SVG e perdeu apenas a camada de relevo deslocada que acentuava a base da marca; o vetor do símbolo foi preservado. A cápsula do PillTracker passou de 62% para 56% do recipiente, sem alterar o media-downloader.
+- Build/sintaxe aprovado: 265.849 bytes, SHA-256 `2015299b0a81b0be64f926f485352f433aaf6f60b8a9940e3e80af6ad70b5341`. 17 testes UI aprovados e `git diff --check` limpo. Prévia clara e escura conferida no navegador integrado; capturas `/tmp/saquettoos-1.0.10-light.png` e `/tmp/saquettoos-1.0.10-dark-fixed-settled.png`, fora do Git.
+- Limite: a prévia é sintética. O resultado visual no iPhone e a antiga tela preta após reaberturas ainda dependem de confirmação no Scriptable do aparelho.
+
 # saquettoOS 1.0.9 — 2026-10-19
 
 - Os seis apps usam símbolos SVG fornecidos, normalizados para máscara clara. O Super Calendário usa o último `IMG_5428_clean.svg` (15 caminhos preservados); PillTracker usa `capsule_icon_black.svg`. O UOL exibe somente seu símbolo, com traço ligeiramente engrossado. A marca saquettoOS usa o novo vetor Hedgy em claro/escuro.

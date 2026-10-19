@@ -10,8 +10,10 @@ html[data-appearance=light] .app-grid:before{background:radial-gradient(ellipse 
 html[data-appearance=light] .app-grid:after{background:radial-gradient(ellipse 112px 102px at 74% 36%,rgba(134,72,208,.46) 0%,rgba(145,83,213,.31) 34%,rgba(145,83,213,0) 76%);animation:glass-orb-violet 18s ease-in-out -6s infinite alternate}
 @keyframes glass-orb-cyan{from{transform:translate3d(-16px,18px,0)}to{transform:translate3d(42px,-20px,0)}}
 @keyframes glass-orb-violet{from{transform:translate3d(17px,-16px,0)}to{transform:translate3d(-35px,27px,0)}}
-.app-tile[data-open-app="pilltracker"] .app-glyph,.app-tile[data-open-app="media-downloader"] .app-glyph{width:62%;height:62%}
+.app-tile[data-open-app="pilltracker"] .app-glyph{width:56%;height:56%}
+.app-tile[data-open-app="media-downloader"] .app-glyph{width:62%;height:62%}
 .app-tile[data-open-app="bilhete-unico"] .app-glyph,.app-tile[data-open-app="lastfm-small"] .app-glyph{width:64.6%;height:64.6%}
+.app-tile[data-open-app="lastfm-small"] .app-glyph:before{display:none}
 html[data-material=solid] .app-grid:before,html[data-material=solid] .app-grid:after{display:none}
 html[data-material=solid] .app-glyph{--glyph-fill:linear-gradient(175deg,#fff,#e1e5f3)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes fade-in{from{opacity:0}to{opacity:1}}@keyframes sheet-in{from{transform:translate(-50%,30px);opacity:.4}to{transform:translate(-50%,0);opacity:1}}
