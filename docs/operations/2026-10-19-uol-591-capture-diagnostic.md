@@ -25,4 +25,10 @@ A publicação stable segue a autorização do usuário para receber pelo atuali
 - CI aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39297329321 . Todos os 295 testes Stories Hunter passaram.
 - Manifesto stable no endereço usado pelo app, artefato remoto e espelho legado verificados: 712264 bytes, SHA-256 `09f6a7ea847682005c8c6e9d0061b5cc15e36995d7bf29f0a139efe7d5ada36c`.
 - ntfy aceitou ID `gCQ0K1FxzQCP`, timestamp `1792432222`, título **Scriptable - Clube UOL Premium**, versão 5.9.1 no corpo. Sem substituição externa do arquivo no iCloud.
-- Solicitado novo teste no aparelho; captura/persistência permanecem pendentes.
+- Solicitado novo teste no aparelho; resultado e limites de prova registrados abaixo.
+
+## Retorno do teste físico
+
+O usuário informou na 5.9.1: “Instagram limitou as consultas (HTTP 429); etapa: consulta do perfil; próxima tentativa em 19/10, 20:50”. O botão Conectar mostrou o mesmo bloqueio persistido, sem etapa. Horário informado pelo aparelho em America/Sao_Paulo.
+
+Isso confirma que a nova via chegou à consulta HTTP do perfil e que o diagnóstico/espera persistiram entre ações. Não confirma leitura dos Stories, validade da sessão nem persistência entre execuções. A espera mínima de seis horas foi preservada conforme o plano; o texto não permite afirmar que o Instagram enviou exatamente esse prazo em Retry-After. Nenhuma nova tentativa foi disparada para contornar o 429. Conectar é bloqueado antes de apresentar login quando há espera ativa. Próxima validação física deve ocorrer após o prazo exibido.
