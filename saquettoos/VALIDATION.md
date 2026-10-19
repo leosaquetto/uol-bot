@@ -1,3 +1,9 @@
+# saquettoOS 1.0.8 — 2026-10-19
+
+- Corrigida a aplicação do tingimento: degradê Hedgy pertence ao recipiente de vidro no modo claro; o símbolo permanece branco/claro. Escuro conserva vidro neutro transparente e símbolo claro. Removidos os aros explícitos dos ícones nos dois modos e dos mini-ícones; profundidade usa somente reflexo e sombras suaves.
+- Tamanhos de grade/dock e proporção dos símbolos preservados. Navegador integrado confirmou os dez ícones com aproximadamente 74 px, borda de 0 px e ausência do pseudo-elemento de aro. Claro e escuro conferidos; console sem erros/avisos capturados. Capturas `/tmp/saquettoos-1.0.8-light.png` e `/tmp/saquettoos-1.0.8-dark.png`, fora do Git.
+- Build/sintaxe e diff-check aprovados. Alteração visual apenas: os 37 testes direcionados executados na 1.0.7 continuam sendo a evidência para o encerramento, sem repetição desnecessária. Correção de espera pendente preservada; confirmação da tela preta no iPhone continua pendente.
+
 # saquettoOS 1.0.7 — 2026-10-19
 
 - Ícones padronizados: vidro neutro transparente no escuro, vidro tingido e símbolos no degradê Hedgy no claro. SVG UOL fornecido preservado byte a byte e usado como máscara, com a mesma caixa de 68% dos demais símbolos. Customizações com imagem continuam suportadas. Sem blur por ícone; fundos opacos em material sólido/redução de transparência.
