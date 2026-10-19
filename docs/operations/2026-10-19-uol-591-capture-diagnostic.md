@@ -18,3 +18,11 @@ Uma consulta de diagnóstico em outra sessão, no navegador integrado do Mac, re
 Referências primárias: [callback do Scriptable](https://docs.scriptable.app/webview/#evaluatejavascript) e [tipo de retorno não suportado no WebKit](https://developer.apple.com/documentation/webkit/wkerror/code/javascriptresulttypeisunsupported). A compatibilidade do retorno é uma causa plausível da falha imediata; a confirmação depende de nova captura no aparelho.
 
 A publicação stable segue a autorização do usuário para receber pelo atualizador normal e testar no iPhone depois. Pendente: abrir 5.9.1, coletar, conferir o diagnóstico e fechar/reabrir para comprovar persistência. Não declarar a via operacional antes disso.
+
+## Publicação
+
+- Artefato `712149e936d4b25fa575c6e7f8101f21b9093b1e`; publicação beta/stable `c2f45b60348b7e5c3f054f50cd6db7404c2b325e`.
+- CI aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39297329321 . Todos os 295 testes Stories Hunter passaram.
+- Manifesto stable no endereço usado pelo app, artefato remoto e espelho legado verificados: 712264 bytes, SHA-256 `09f6a7ea847682005c8c6e9d0061b5cc15e36995d7bf29f0a139efe7d5ada36c`.
+- ntfy aceitou ID `gCQ0K1FxzQCP`, timestamp `1792432222`, título **Scriptable - Clube UOL Premium**, versão 5.9.1 no corpo. Sem substituição externa do arquivo no iCloud.
+- Solicitado novo teste no aparelho; captura/persistência permanecem pendentes.
