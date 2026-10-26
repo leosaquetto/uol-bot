@@ -140,6 +140,13 @@ agenda coleta. Estado de produção exige verificação própria.
   sem alterar URL/token do gateway nem os destinos do Worker.
   `BEEPER_DELIVERY_OFFER_IDS` é uma allowlist temporária de recuperação e deve
   ficar ausente na operação normal.
+  As exclusões fixas de links em `src/beeper.js` valem para ofertas e Stories:
+  `teatro-tuca`, `morumbi-park-sp`, `ecovilla`, `teatro-liberdade`,
+  `teatro-multiplan`, `teatro-das-artes`, `museu-da-imaginacao-sp`,
+  `teatro-vanucci-rj` e `teatro-riachuelo-rj`, sem distinguir maiúsculas.
+  Elas pulam somente o WhatsApp, inclusive nas pendências anteriores, sem
+  consumir tentativas. Stories registram `skipped` / `whatsapp_link_excluded`;
+  os demais destinos seguem e recibos ou resultados incertos são preservados.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
   edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
   adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por

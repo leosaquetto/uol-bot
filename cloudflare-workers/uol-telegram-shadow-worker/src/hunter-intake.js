@@ -144,7 +144,7 @@ function storyProgress(result, now) {
   const uncertain = entries.some(([, state]) => ["unknown", "in_flight", "reconciling"].includes(state.status));
   const retryable = entries.filter(([, state]) =>
     state.status === "confirmed" ? state.imageConfirmed !== true && !expired
-      : !["unknown", "expired"].includes(state.status) && !expired &&
+      : !["unknown", "expired", "skipped"].includes(state.status) && !expired &&
         !(state.status === "held" && (/^upstream_http_/.test(state.error) || state.error === "retry_limit_reached")));
   if (!retryable.length) {
     return { status: uncertain ? "needs_reconciliation" : expired ? "expired" : "blocked", targets,

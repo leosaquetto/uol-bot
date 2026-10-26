@@ -1,6 +1,6 @@
 import { telegramCall, forwardToCanal2, telegramConfiguration } from "./telegram.js";
 import { getDiscordMessageImageProxy, discordConfiguration } from "./discord.js";
-import { sendBeeperOffer, beeperGatewayConfiguration, beeperDestinationKey } from "./beeper.js";
+import { sendBeeperOffer, beeperGatewayConfiguration, beeperDestinationKey, isBeeperLinkExcluded } from "./beeper.js";
 import { deliveryRetryAt } from "./delivery-state.js";
 import { createAmbiguousResponseTransportError } from "./transport-error.js";
 
@@ -173,12 +173,25 @@ function discordProxyUrl(value) {
   } catch { return ""; }
 }
 
+function beeperStorySkipped(row, state) {
+  return state?.status === "skipped" && state.error === "whatsapp_link_excluded" &&
+    state.messageId === "" && state.imageConfirmed === false && isBeeperLinkExcluded(row.link);
+}
+
+function storyDeliveryComplete(row, targets) {
+  return TARGETS.every(target => targets[target].status === "confirmed" ||
+    target === "beeper" && beeperStorySkipped(row, targets[target])) &&
+    targets.discord.imageConfirmed === true &&
+    (targets.beeper.imageConfirmed === true || beeperStorySkipped(row, targets.beeper));
+}
+
 function hasCompleteRetentionReceipt(row) {
   let targets;
   try { targets = JSON.parse(row.targets_json); } catch { return false; }
   if (!targets || typeof targets !== "object" || Array.isArray(targets)) return false;
   return TARGETS.every(target => {
     const state = targets[target];
+    if (target === "beeper" && beeperStorySkipped(row, state)) return true;
     return state && typeof state === "object" && !Array.isArray(state) &&
       state.status === "confirmed" && typeof state.messageId === "string" &&
       state.messageId.trim().length > 0 && state.imageConfirmed === true;
@@ -187,9 +200,9 @@ function hasCompleteRetentionReceipt(row) {
 
 function receipt(row) {
   const targets = JSON.parse(row.targets_json);
-  const states = TARGETS.map(target => targets[target].status);
-  const status = states.every(state => state === "confirmed") && targets.discord.imageConfirmed === true &&
-    targets.beeper.imageConfirmed === true ? "delivered"
+  const states = TARGETS.filter(target => target !== "beeper" || !beeperStorySkipped(row, targets[target]))
+    .map(target => targets[target].status);
+  const status = storyDeliveryComplete(row, targets) ? "delivered"
     : states.includes("unknown") ? "unknown"
       : states.includes("confirmed") ? "partial"
         : states.every(state => state === "expired") ? "expired"
@@ -442,7 +455,7 @@ export class InstagramStoryInbox {
       // Expiry does not settle an interrupted delivery. Preserve incomplete or
       // malformed evidence even when the bounded outbox must reject new Stories.
       const retentionCutoff = now.getTime() - 2 * DAY_MS;
-      for (const candidate of this.sql(`SELECT canonical_key, targets_json, expires_at,
+      for (const candidate of this.sql(`SELECT canonical_key, link, targets_json, expires_at,
         discord_image_proxy_url FROM instagram_story_outbox`).toArray()) {
         if (this.active.has(candidate.canonical_key) || !hasCompleteRetentionReceipt(candidate)) continue;
         const expiry = Date.parse(candidate.expires_at);
@@ -489,13 +502,18 @@ export class InstagramStoryInbox {
     const key = row.canonical_key, now = this.now();
     if (this.active.has(key)) return receipt(row);
     const targets = JSON.parse(row.targets_json);
-    if (TARGETS.every(target => targets[target].status === "confirmed") &&
-        targets.discord.imageConfirmed === true && targets.beeper.imageConfirmed === true) return receipt(row);
+    if (storyDeliveryComplete(row, targets)) return receipt(row);
     // A persisted reservation with no live owner may already have sent its message.
     for (const target of TARGETS) if (targets[target].status === "in_flight") {
       targets[target].status = target === "beeper" && row.beeper_payload_json ? "reconciling" : "unknown";
       targets[target].error = target === "beeper" && row.beeper_payload_json
         ? "gateway_receipt_pending" : "reservation_without_live_owner";
+    }
+    const beeperExcluded = isBeeperLinkExcluded(row.link);
+    const beeper = targets.beeper;
+    if (beeperExcluded && ["pending", "held", "failed_safe", "expired"].includes(beeper.status) &&
+        !beeper.messageId && !beeper.imageConfirmed) {
+      Object.assign(beeper, { status: "skipped", error: "whatsapp_link_excluded", nextAttemptAt: "" });
     }
     if (story) {
       row.image_url = story.imageUrl;
@@ -524,7 +542,8 @@ export class InstagramStoryInbox {
       // Discord first provides an allowed image proxy for WhatsApp, without a second post.
       for (const target of ["discord", "main", "canal2", "beeper"]) {
         const state = targets[target];
-        if (["confirmed", "unknown"].includes(state.status)) continue;
+        if (["confirmed", "unknown", "skipped"].includes(state.status) ||
+            target === "beeper" && beeperExcluded) continue;
         if (state.status === "held" && (state.error.startsWith("upstream_http_") || state.error === "retry_limit_reached")) continue;
         const instant = this.now();
         if (Date.parse(row.expires_at) <= instant.getTime()) {

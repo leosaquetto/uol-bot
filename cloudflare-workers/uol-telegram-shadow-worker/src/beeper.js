@@ -10,6 +10,30 @@ const BEEPER_GATEWAY_TIMEOUT_MS = 45_000;
 const BEEPER_GATEWAY_HEALTH_TIMEOUT_MS = 5_000;
 const BEEPER_GATEWAY_MAX_RESPONSE_BYTES = 32 * 1024;
 const BEEPER_DELIVERY_FILTER_MAX_IDS = 32;
+const BEEPER_EXCLUDED_LINK_PATTERNS = [
+  "teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
+  "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp",
+  "teatro-vanucci-rj", "teatro-riachuelo-rj",
+];
+const BEEPER_EXCLUDED_LINK = new RegExp(BEEPER_EXCLUDED_LINK_PATTERNS.join("|"), "i");
+
+export function isBeeperLinkExcluded(link) {
+  return BEEPER_EXCLUDED_LINK.test(String(link || ""));
+}
+
+// Identifiers come from internal queries; the fixed fragments contain no SQL syntax.
+export function beeperLinkExcludedSql(linkColumn) {
+  return `(${BEEPER_EXCLUDED_LINK_PATTERNS.map(pattern =>
+    `instr(lower(COALESCE(${linkColumn}, '')), '${pattern}') > 0`).join(" OR ")})`;
+}
+
+export function beeperPendingDeliverySql(linkColumn) {
+  return `(q.in_flight_at <> '' OR (q.sent_at = '' AND (
+    NOT ${beeperLinkExcludedSql(linkColumn)} OR q.pending_message_id <> '' OR
+    q.last_error LIKE 'ambiguous:%' OR
+    q.last_error IN ('terminal:idempotency_conflict', 'beeper_in_flight_recovered')
+  )))`;
+}
 
 function enabled(value) {
   return ["1", "true", "yes", "on", "enabled"].includes(

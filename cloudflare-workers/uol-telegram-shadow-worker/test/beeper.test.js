@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { DatabaseSync } from "node:sqlite";
 
 import {
   beeperDeliveryOfferIds,
@@ -7,7 +8,10 @@ import {
   beeperDestinationKey,
   beeperGatewayConfiguration,
   beeperGatewayReadinessUrl,
+  beeperLinkExcludedSql,
+  beeperPendingDeliverySql,
   buildBeeperOfferText,
+  isBeeperLinkExcluded,
   probeBeeperGateway,
   sendBeeperOffer,
 } from "../src/beeper.js";
@@ -20,6 +24,47 @@ const offer = {
   imageUrl: "https://ddrxgn8ucibei.cloudfront.net/beneficios/offer.jpg",
   discordImageProxyUrl: "https://media.discordapp.net/proxy.jpg",
 };
+
+test("exclui os nove trechos em qualquer parte do link, com a mesma regra em JS e SQL", () => {
+  const database = new DatabaseSync(":memory:");
+  const sql = database.prepare(`SELECT ${beeperLinkExcludedSql("link")} AS excluded FROM (SELECT ? AS link)`);
+  const patterns = ["teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
+    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj"];
+  try {
+    for (const pattern of patterns) {
+      for (const link of [pattern, `https://clube.uol.com.br/campanhasdeingresso/pABC-2-ingressos-${pattern}-extra`,
+        `https://clube.uol.com.br/beneficio?local=${pattern.toUpperCase()}`]) {
+        assert.equal(isBeeperLinkExcluded(link), true, link);
+        assert.equal(isBeeperLinkExcluded(link), true, "não deve alternar entre chamadas");
+        assert.equal(sql.get(link).excluded, 1, link);
+      }
+    }
+    for (const link of [offer.link, "https://clube.uol.com.br/teatro-vanucci-sp", "morumbi-park-rj", "teatro-tuc-a", "", null]) {
+      assert.equal(isBeeperLinkExcluded(link), false, String(link));
+      assert.equal(sql.get(link).excluded, 0, String(link));
+    }
+    assert.equal(isBeeperLinkExcluded({ ...offer, title: patterns.join(" ") }.link), false);
+  } finally { database.close(); }
+});
+
+test("exclusão remove dívida artificial e preserva evidência WhatsApp incerta ou em andamento", () => {
+  const database = new DatabaseSync(":memory:");
+  const sql = database.prepare(`SELECT ${beeperPendingDeliverySql("q.link")} AS pending FROM
+    (SELECT ? AS link, ? AS sent_at, ? AS in_flight_at, ? AS pending_message_id, ? AS last_error) q`);
+  const excluded = "https://clube.uol.com.br/campanhasdeingresso/pABC-teatro-tuca";
+  try {
+    assert.equal(sql.get(excluded, "", "", "", "").pending, 0);
+    assert.equal(sql.get(excluded, "", "", "", "terminal:beeper_http_400").pending, 0);
+    assert.equal(sql.get(offer.link, "", "", "", "").pending, 1);
+    for (const error of ["ambiguous:beeper_send_response_ambiguous", "ambiguous:delivery_unknown",
+      "terminal:idempotency_conflict", "beeper_in_flight_recovered"]) {
+      assert.equal(sql.get(excluded, "", "", "", error).pending, 1, error);
+    }
+    assert.equal(sql.get(excluded, "", "2026-10-26T12:00:00Z", "", "").pending, 1);
+    assert.equal(sql.get(excluded, "", "", "receipt", "").pending, 1);
+    assert.equal(sql.get(excluded, "2026-10-26T12:00:00Z", "", "receipt", "").pending, 0);
+  } finally { database.close(); }
+});
 
 test("separa a idempotência por destino Beeper", () => {
   assert.equal(

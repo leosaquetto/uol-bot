@@ -47,6 +47,9 @@ import {
   beeperDeliveryIdempotencyKey,
   beeperDestinationKey,
   beeperGatewayConfiguration,
+  beeperLinkExcludedSql,
+  beeperPendingDeliverySql,
+  isBeeperLinkExcluded,
   probeBeeperGateway,
   sendBeeperOffer,
 } from "./beeper.js";
@@ -4822,6 +4825,7 @@ export class UolTelegramShadow extends DurableObject {
        SELECT id FROM offers
        WHERE first_seen_at >= ?
          AND discord_sent_at <> ''
+         AND NOT ${beeperLinkExcludedSql("link")}
          AND (
            lower(link) LIKE '%/campanhasdeingresso/%' OR
            lower(category) LIKE '%campanhasdeingresso%'
@@ -4834,7 +4838,8 @@ export class UolTelegramShadow extends DurableObject {
 
   enqueueBeeperOffer(row) {
     const configuration = beeperGatewayConfiguration(this.env);
-    if (!configuration.enabled || !row?.id || !isTicketCampaign(rowToOffer(row))) {
+    if (!configuration.enabled || !row?.id || isBeeperLinkExcluded(row.link) ||
+        !isTicketCampaign(rowToOffer(row))) {
       return false;
     }
     const inserted = this.sqlExec(
@@ -4917,6 +4922,7 @@ export class UolTelegramShadow extends DurableObject {
       `INSERT OR IGNORE INTO beeper_delivery_queue(offer_id)
        SELECT id FROM offers
         WHERE id IN (${placeholders})
+          AND NOT ${beeperLinkExcludedSql("link")}
           AND (
             lower(link) LIKE '%/campanhasdeingresso/%' OR
             lower(category) LIKE '%campanhasdeingresso%'
@@ -4928,7 +4934,9 @@ export class UolTelegramShadow extends DurableObject {
       const cursor = this.sqlExec(
         `UPDATE beeper_delivery_queue
             SET attempts = 0, next_attempt_at = '', in_flight_at = '', last_error = ''
-          WHERE offer_id = ? AND sent_at = ''`,
+          WHERE offer_id = ? AND sent_at = ''
+            AND EXISTS (SELECT 1 FROM offers o WHERE o.id = beeper_delivery_queue.offer_id
+              AND NOT ${beeperLinkExcludedSql("o.link")})`,
         offerId,
       );
       reset += Number(cursor.rowsWritten || 0);
@@ -4950,6 +4958,8 @@ export class UolTelegramShadow extends DurableObject {
       `UPDATE beeper_delivery_queue
           SET attempts = 0, next_attempt_at = '', in_flight_at = ''
         WHERE sent_at = ''
+          AND EXISTS (SELECT 1 FROM offers o WHERE o.id = beeper_delivery_queue.offer_id
+            AND NOT ${beeperLinkExcludedSql("o.link")})
           AND last_error = 'ambiguous:beeper_send_response_ambiguous'`,
     );
     const reset = Number(cursor.rowsWritten || 0);
@@ -4971,7 +4981,7 @@ export class UolTelegramShadow extends DurableObject {
                 THEN 1 ELSE 0 END AS ticket
          FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_pending_v25
          LEFT JOIN offers AS o ON o.id = q.offer_id
-        WHERE q.sent_at = ''
+        WHERE q.sent_at = '' AND ${beeperPendingDeliverySql("o.link")}
         ORDER BY q.offer_id ASC
         LIMIT 512`,
     ).toArray();
@@ -4991,11 +5001,13 @@ export class UolTelegramShadow extends DurableObject {
 
   beeperQueueHasDueWork(now = new Date(), maxAttempts = 10) {
     const due = this.sqlExec(
-      `SELECT offer_id
-         FROM beeper_delivery_queue INDEXED BY beeper_delivery_due_v23
-        WHERE sent_at = '' AND in_flight_at = ''
-          AND next_attempt_at <= ? AND attempts < ?
-        ORDER BY next_attempt_at ASC
+      `SELECT q.offer_id
+         FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_due_v23
+         JOIN offers AS o ON o.id = q.offer_id
+        WHERE q.sent_at = '' AND q.in_flight_at = ''
+          AND q.next_attempt_at <= ? AND q.attempts < ?
+          AND NOT ${beeperLinkExcludedSql("o.link")}
+        ORDER BY q.next_attempt_at ASC
         LIMIT 1`,
       now.toISOString(),
       maxAttempts,
@@ -5010,10 +5022,12 @@ export class UolTelegramShadow extends DurableObject {
     );
     const staleCutoff = new Date(now.getTime() - staleSeconds * 1_000).toISOString();
     return Boolean(this.sqlExec(
-      `SELECT offer_id
-         FROM beeper_delivery_queue INDEXED BY beeper_delivery_inflight_v24
-        WHERE sent_at = '' AND in_flight_at <> '' AND in_flight_at <= ?
-        ORDER BY in_flight_at ASC, offer_id ASC
+      `SELECT q.offer_id
+         FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_inflight_v24
+         JOIN offers AS o ON o.id = q.offer_id
+        WHERE q.sent_at = '' AND q.in_flight_at <> '' AND q.in_flight_at <= ?
+          AND NOT ${beeperLinkExcludedSql("o.link")}
+        ORDER BY q.in_flight_at ASC, q.offer_id ASC
         LIMIT 1`,
       staleCutoff,
     ).toArray()[0]?.offer_id);
@@ -5117,7 +5131,9 @@ export class UolTelegramShadow extends DurableObject {
           SET in_flight_at = '', next_attempt_at = '',
               last_error = CASE WHEN last_error = ''
                 THEN 'beeper_in_flight_recovered' ELSE last_error END
-        WHERE sent_at = '' AND in_flight_at <> '' AND in_flight_at <= ?`,
+        WHERE sent_at = '' AND in_flight_at <> '' AND in_flight_at <= ?
+          AND EXISTS (SELECT 1 FROM offers o WHERE o.id = beeper_delivery_queue.offer_id
+            AND NOT ${beeperLinkExcludedSql("o.link")})`,
       staleCutoff,
     );
     if (Number(recovered.rowsWritten || 0) > 0) {
@@ -5139,6 +5155,7 @@ export class UolTelegramShadow extends DurableObject {
        WHERE q.sent_at = '' AND q.in_flight_at = ''
          AND q.attempts < ?
          AND q.next_attempt_at <= ?
+         AND NOT ${beeperLinkExcludedSql("o.link")}
          AND (
            lower(o.link) LIKE '%/campanhasdeingresso/%' OR
            lower(o.category) LIKE '%campanhasdeingresso%'
@@ -6609,7 +6626,7 @@ export class UolTelegramShadow extends DurableObject {
            (main_message_id > 0 AND main_restock_synced_at = '') OR
            (would_send_canal2 = 1 AND canal2_message_id > 0 AND canal2_restock_synced_at = '')))
          AND NOT EXISTS (SELECT 1 FROM beeper_delivery_queue q
-           WHERE q.offer_id = offers.id AND (q.sent_at = '' OR q.in_flight_at <> ''))
+           WHERE q.offer_id = offers.id AND ${beeperPendingDeliverySql("offers.link")})
          AND NOT EXISTS (SELECT 1 FROM discord_availability_sync d
            WHERE d.offer_id = offers.id AND (
              (offers.status = 'sold_out' AND d.sold_out_synced_at = '') OR
@@ -7989,7 +8006,8 @@ export class UolTelegramShadow extends DurableObject {
         telegramConfiguration(this.env), discordConfiguration(this.env));
       const ticket = isTicketCampaign(rowToOffer(row));
       const beeperDebt = this.sqlExec(
-        "SELECT offer_id FROM beeper_delivery_queue WHERE offer_id = ? AND (sent_at = '' OR in_flight_at <> '') LIMIT 1", id,
+        `SELECT q.offer_id FROM beeper_delivery_queue q JOIN offers o ON o.id = q.offer_id
+         WHERE q.offer_id = ? AND ${beeperPendingDeliverySql("o.link")} LIMIT 1`, id,
       ).toArray()[0];
       if (legacyUnknownTargets.some(target => target !== "main") ||
           ["canal2", "discord", "comment"].some(target => row[`${target}_delivery_unknown_at`]) ||
@@ -8845,7 +8863,9 @@ export class UolTelegramShadow extends DurableObject {
       }
     }
     for (const row of this.sqlExec(
-      "SELECT offer_id, attempts, last_error FROM beeper_delivery_queue WHERE sent_at = ''",
+      `SELECT q.offer_id, q.attempts, q.last_error FROM beeper_delivery_queue q
+       LEFT JOIN offers o ON o.id = q.offer_id
+       WHERE q.sent_at = '' AND ${beeperPendingDeliverySql("o.link")}`,
     ).toArray()) {
       if (row.attempts >= maxAttempts) {
         checks.deadLetters++;

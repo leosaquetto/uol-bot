@@ -138,6 +138,111 @@ test("all four targets confirm once; repeated ingestion and status never expose 
   assert.equal(JSON.stringify(first).includes("discordapp"), false);
 });
 
+test("each WhatsApp exclusion keeps the other three destinations and settles across restart", async () => {
+  for (const pattern of ["teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
+    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj"]) {
+    const sample = fixture({ readiness: () => ({ main: true, canal2: true, discord: true, beeper: false }) });
+    const story = { ...STORY, link: `${STORY.link}-${pattern.toUpperCase()}-extra` };
+    const result = await sample.inbox.ingest(story);
+    assert.equal(result.status, "delivered", pattern);
+    assert.deepEqual(sample.calls.map(call => call.target), ["discord", "main", "canal2"]);
+    assert.deepEqual(result.targets.beeper, { status: "skipped", attempts: 0, nextAttemptAt: "",
+      messageId: "", error: "whatsapp_link_excluded", imageConfirmed: false });
+    const stored = sample.database.prepare("SELECT * FROM instagram_story_outbox").get();
+    assert.equal(stored.beeper_payload_json, "");
+    assert.equal((await sample.inbox.ingest(story)).status, "delivered");
+    const restarted = new InstagramStoryInbox(sample.sql, {}, sample.options);
+    assert.equal((await restarted.resume(result.canonicalKey)).status, "delivered");
+    assert.equal(sample.calls.length, 3);
+    sample.database.close();
+  }
+});
+
+test("excluded WhatsApp does not wait for a Discord proxy or consume a delivery attempt", async () => {
+  let proxyCalls = 0;
+  const sample = fixture();
+  sample.transports.discord = async () => ({ messageId: "discord-receipt", imageProxyUrl: "" });
+  sample.transports.discordProxy = async () => { proxyCalls++; return ""; };
+  const result = await sample.inbox.ingest({ ...STORY, link: `${STORY.link}-ecovilla` });
+  assert.equal(result.targets.beeper.status, "skipped");
+  assert.equal(result.targets.beeper.attempts, 0);
+  assert.equal(result.targets.main.status, "confirmed");
+  assert.equal(result.targets.canal2.status, "confirmed");
+  assert.equal(proxyCalls, 0);
+  assert.equal(sample.calls.some(call => call.target === "beeper"), false);
+  sample.database.close();
+});
+
+test("skipped WhatsApp preserves held and expired aggregate states for the remaining destinations", async () => {
+  const sample = fixture({ mode: () => "shadow" });
+  const result = await sample.inbox.ingest({ ...STORY, link: `${STORY.link}-ecovilla` });
+  assert.equal(result.status, "held");
+  assert.equal(result.targets.beeper.status, "skipped");
+  assert.equal(sample.calls.length, 0);
+  sample.setNow(new Date("2026-10-11T14:29:43Z"));
+  const expired = await sample.inbox.resume(result.canonicalKey);
+  assert.equal(expired.status, "expired");
+  assert.equal(expired.targets.beeper.status, "skipped");
+  assert.equal(sample.calls.length, 0);
+  sample.database.close();
+});
+
+test("exclusions preserve previous confirmed and uncertain WhatsApp evidence without replay", async () => {
+  for (const status of ["confirmed", "unknown", "in_flight", "reconciling"]) {
+    const sample = fixture();
+    const frozen = JSON.stringify({ offer: { link: `${STORY.link}-teatro-tuca` }, idempotencyKey: "original-key" });
+    seedRetentionRow(sample.database, "excluded-evidence", { link: `${STORY.link}-teatro-tuca`,
+      expires_at: "2026-10-10T14:29:43.000Z", beeper_payload_json: frozen,
+      changeTargets: targets => Object.assign(targets.beeper, { status, attempts: 2,
+        messageId: status === "confirmed" ? "previous-receipt" : "", imageConfirmed: status === "confirmed",
+        error: status === "unknown" ? "upstream_http_503" : "" }),
+    });
+    const result = await sample.inbox.resume("excluded-evidence");
+    assert.equal(result.targets.beeper.status, status === "in_flight" ? "reconciling" : status);
+    assert.equal(result.targets.beeper.attempts, 2);
+    assert.equal(result.targets.beeper.messageId, status === "confirmed" ? "previous-receipt" : "");
+    assert.equal(sample.database.prepare("SELECT beeper_payload_json FROM instagram_story_outbox").get().beeper_payload_json, frozen);
+    assert.equal(sample.calls.length, 0);
+    sample.database.close();
+  }
+});
+
+test("exclusions settle existing safe failures without replacing other destination receipts", async () => {
+  for (const status of ["pending", "held", "failed_safe", "expired"]) {
+    const sample = fixture();
+    seedRetentionRow(sample.database, "excluded-pending", { link: `${STORY.link}-ecovilla`,
+      expires_at: "2026-10-10T14:29:43.000Z",
+      changeTargets: targets => Object.assign(targets.beeper, { status, attempts: 2,
+        messageId: "", imageConfirmed: false, error: "upstream_http_429", nextAttemptAt: "2026-10-10T14:00:00Z" }),
+    });
+    const result = await sample.inbox.resume("excluded-pending");
+    assert.equal(result.status, "delivered");
+    assert.equal(result.targets.beeper.status, "skipped");
+    assert.equal(result.targets.beeper.attempts, 2);
+    assert.equal(result.targets.beeper.nextAttemptAt, "");
+    assert.equal(result.targets.main.messageId, "main-receipt");
+    assert.equal(sample.calls.length, 0);
+    sample.database.close();
+  }
+});
+
+test("Hunter treats skipped WhatsApp as terminal while preserving uncertainty at another destination", async () => {
+  let raw = "";
+  const targets = Object.fromEntries(["main", "canal2", "discord", "beeper"].map(target => [target, {
+    status: target === "main" ? "unknown" : target === "beeper" ? "skipped" : "confirmed",
+    imageConfirmed: ["canal2", "discord"].includes(target), error: "", nextAttemptAt: "",
+  }]));
+  const queue = new HunterIntakeQueue({ readState: () => raw, writeState: value => { raw = value; },
+    now: () => NOW.getTime(), budgetAllowed: () => true,
+    processStory: async () => ({ status: "unknown", expiresAt: STORY.expiresAt, targets }),
+  });
+  const eventId = "00000000-0000-4000-8000-000000000001";
+  await queue.accept("phone", { observations: [{ eventId, source: "instagram", observedAt: NOW.toISOString(),
+    payload: { ...STORY, link: `${STORY.link}-ecovilla` } }] });
+  await queue.drain();
+  assert.equal(queue.status("phone", eventId).status, "needs_reconciliation");
+});
+
 test("same benefit in another Story remains eligible independent of offers deduplication", async () => {
   const { inbox, calls, database } = fixture();
   await inbox.ingest(STORY);
@@ -337,6 +442,26 @@ test("retention removes only old complete receipts and preserves pending, active
   assert.equal(after.length, protectedKeys.length);
   assert.deepEqual(after, before);
   assert.equal(sample.calls.length, 4);
+});
+
+test("retention accepts a valid WhatsApp skip and preserves malformed skips or uncertain evidence", async () => {
+  const sample = fixture();
+  const excluded = `${STORY.link}-ecovilla`;
+  const skipped = targets => Object.assign(targets.beeper, { status: "skipped", attempts: 0,
+    messageId: "", imageConfirmed: false, error: "whatsapp_link_excluded" });
+  seedRetentionRow(sample.database, "old-excluded-complete", { link: excluded, changeTargets: skipped });
+  seedRetentionRow(sample.database, "skip-without-excluded-link", { changeTargets: skipped });
+  seedRetentionRow(sample.database, "skip-without-reason", { link: excluded,
+    changeTargets: targets => { skipped(targets); targets.beeper.error = ""; } });
+  seedRetentionRow(sample.database, "excluded-unknown", { link: excluded,
+    changeTargets: targets => { targets.beeper.status = "unknown"; } });
+  seedRetentionRow(sample.database, "excluded-other-incomplete", { link: excluded,
+    changeTargets: targets => { skipped(targets); targets.main.messageId = ""; } });
+  const before = sample.database.prepare("SELECT * FROM instagram_story_outbox WHERE canonical_key != 'old-excluded-complete' ORDER BY canonical_key").all();
+  await sample.inbox.ingest(STORY);
+  assert.equal(sample.database.prepare("SELECT canonical_key FROM instagram_story_outbox WHERE canonical_key = 'old-excluded-complete'").get(), undefined);
+  assert.deepEqual(sample.database.prepare("SELECT * FROM instagram_story_outbox WHERE story_id = '4004185955500703000' ORDER BY canonical_key").all(), before);
+  sample.database.close();
 });
 
 test("capacity remains closed with fifty protected expired receipts and does not consume budget or send", async () => {
