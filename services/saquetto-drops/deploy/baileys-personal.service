@@ -1,0 +1,25 @@
+[Unit]
+Description=Personal Baileys WhatsApp session
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=baileys-personal
+Group=baileys-personal
+WorkingDirectory=/opt/saquetto-drops
+EnvironmentFile=/etc/baileys-personal/service.env
+ExecStart=/usr/local/bin/node src/personal-server.js
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/baileys-personal
+MemoryHigh=192M
+MemoryMax=320M
+
+[Install]
+WantedBy=multi-user.target
