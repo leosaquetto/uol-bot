@@ -6,6 +6,7 @@ import { startWhatsApp } from './whatsapp.js';
 import { acquireLock } from './process-lock.js';
 import { personalAuthorized, personalManualConfig, personalStatus, personalWhatsAppRouteAllowed, validatePersonalToken } from './personal-runtime.js';
 import { createPersonalTextApi, createPersonalTextSender } from './personal-text.js';
+import { createPersonalInbox } from './personal-inbox.js';
 
 process.umask(0o077);
 const data = process.env.BAILEYS_PERSONAL_DATA || '/var/lib/baileys-personal';
@@ -18,8 +19,10 @@ const store = openStore(join(data, 'baileys.sqlite'));
 const qrPath = join(data, 'pairing-qr.private.txt');
 let qrAvailable = false;
 let closing = false;
+const personalInbox = createPersonalInbox({ store });
 
 const whatsapp = startWhatsApp({
+  personalInbox,
   store,
   onQr(qr) {
     qrAvailable = Boolean(qr);

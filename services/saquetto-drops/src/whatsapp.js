@@ -29,7 +29,7 @@ export function applyReceipt({store,messageId,jid,state,level,personalJids=[],on
 }
 
 export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '',
-  onPersonalMessageAccepted = () => {}, logger = console, socketFactory = makeWASocket }) {
+  onPersonalMessageAccepted = () => {}, personalInbox = null, logger = console, socketFactory = makeWASocket }) {
   const auth = sqliteAuth(store);
   let socket, state = 'starting', stopped = false, timer, attempts = 0;
   let syncTimer, stableTimer, detachSocket = () => {};
@@ -145,8 +145,19 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
       if (!id || !from || error) return;
       recordReceipt(id,from,'accepted','server_ack');
     };
+    const forwardInbox = (method, value) => {
+      if (socket !== current || !personalInbox || typeof personalInbox[method] !== 'function') return;
+      try { personalInbox[method](value); }
+      catch { logger.warn?.(JSON.stringify({event:'personal_inbox_event_failed',method})); }
+    };
+    const onHistory = payload => forwardInbox('ingestHistory',payload);
+    const onUpsert = payload => forwardInbox('ingestMessages',payload?.messages || []);
+    const onDelete = payload => forwardInbox('ingestDeletes',payload);
+    const onChats = payload => forwardInbox('ingestChats',payload || []);
+    const onContacts = payload => forwardInbox('ingestContacts',payload || []);
     const onMessages = updates => {
       if (socket !== current) return;
+      forwardInbox('ingestUpdates',updates);
       for (const { key, update } of updates) {
         if (key.fromMe !== true || !key.id || !key.remoteJid) continue;
         if (update.status >= 3) recordReceipt(key.id,key.remoteJid,'confirmed','recipient_receipt');
@@ -164,13 +175,27 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
     current.ev.on('creds.update', onCreds);
     current.ev.on('connection.update', onConnection);
     current.ws.on('CB:ack,class:message', onAck);
+    current.ev.on('messaging-history.set', onHistory);
+    current.ev.on('messages.upsert', onUpsert);
     current.ev.on('messages.update', onMessages);
+    current.ev.on('messages.delete', onDelete);
+    current.ev.on('chats.upsert', onChats);
+    current.ev.on('chats.update', onChats);
+    current.ev.on('contacts.upsert', onContacts);
+    current.ev.on('contacts.update', onContacts);
     current.ev.on('message-receipt.update', onReceipts);
     detachSocket = () => {
       current.ev.off('creds.update', onCreds);
       current.ev.off('connection.update', onConnection);
       current.ws.off('CB:ack,class:message', onAck);
+      current.ev.off('messaging-history.set', onHistory);
+      current.ev.off('messages.upsert', onUpsert);
       current.ev.off('messages.update', onMessages);
+      current.ev.off('messages.delete', onDelete);
+      current.ev.off('chats.upsert', onChats);
+      current.ev.off('chats.update', onChats);
+      current.ev.off('contacts.upsert', onContacts);
+      current.ev.off('contacts.update', onContacts);
       current.ev.off('message-receipt.update', onReceipts);
     };
   };
