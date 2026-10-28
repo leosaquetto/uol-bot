@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {openStore} from '../src/store.js';
 import {createPersonalTextApi,createPersonalTextSender} from '../src/personal-text.js';
+import {createPersonalInbox} from '../src/personal-inbox.js';
 
 const requestId='123e4567-e89b-42d3-a456-426614174000';
 const jid='5511999999999@s.whatsapp.net';
@@ -13,8 +14,9 @@ function fixture(){
   const store=openStore(join(dir,'db.sqlite'));
   const config={operation:{paused:false,dryRun:false,minDelayMs:0},destinations:{self:{type:'contact',jid,verified:true}}};
   const getConfig=()=>config;
-  const api=createPersonalTextApi({store,getConfig,canSend:()=>true,now:()=>1000});
-  return {dir,store,config,getConfig,api,close(){store.close();rmSync(dir,{recursive:true,force:true});}};
+  const inbox=createPersonalInbox({store,now:()=>1000});
+  const api=createPersonalTextApi({store,getConfig,canSend:()=>true,inbox,now:()=>1000});
+  return {dir,store,config,getConfig,inbox,api,close(){store.close();rmSync(dir,{recursive:true,force:true});}};
 }
 
 test('personal text API exposes only aliases and keeps JIDs private',()=>{
@@ -60,5 +62,34 @@ test('personal text sender dispatches once and uncertainty is never replayed',as
     assert.equal(relays.length,1,'unknown dispatch must never be replayed');
     f.store.receipt(job.message_id,jid,'accepted','server_ack');
     assert.equal(f.store.job(job.id).state,'accepted');
+  }finally{f.close();}
+});
+
+test('personal text can enqueue and dispatch only an indexed exact chatRef',async()=>{
+  const f=fixture();try{
+    const targetJid='5511888888888@s.whatsapp.net';
+    f.inbox.ingestChats([{id:targetJid,name:'Diego Acaki Arquiteto'}]);
+    const chat=f.inbox.listChats({query:'Diego'})[0];
+    const chatRequest='123e4567-e89b-42d3-a456-426614174001';
+    const queued=f.api.enqueueChat({requestId:chatRequest,chatRef:chat.chatRef,text:'oi diego'});
+    assert.equal(queued.jobs[0].destination,chat.chatRef);
+    assert.equal(JSON.stringify(queued).includes('551188'),false);
+    const stored=f.store.jobByKey('personal-mcp:'+chatRequest);
+    assert.equal(stored.destination,targetJid,'JID may exist only inside the local job');
+    assert.throws(()=>f.api.enqueueChat({requestId:'123e4567-e89b-42d3-a456-426614174002',chatRef:'11111111-1111-4111-8111-111111111111',text:'x'}),/chat_not_found/);
+
+    const relays=[];
+    const whatsapp={
+      isReady:()=>true,
+      verifyDestination:async d=>({writable:d.jid===targetJid}),
+      socket:()=>({user:{id:jid},waUploadToServer:async()=>{},relayMessage:async(...args)=>relays.push(args)}),
+      ownDestination:()=>f.config.destinations.self,
+    };
+    const generateMessage=async(remoteJid,content,options)=>({key:{id:options.messageId,remoteJid},message:{conversation:content.text}});
+    const sender=createPersonalTextSender({store:f.store,getConfig:f.getConfig,inbox:f.inbox,whatsapp,canSend:()=>true,generateMessage,now:()=>2000});
+    await sender();
+    assert.equal(relays.length,1);
+    assert.equal(relays[0][0],targetJid);
+    assert.equal(f.store.job(stored.id).state,'unknown');
   }finally{f.close();}
 });

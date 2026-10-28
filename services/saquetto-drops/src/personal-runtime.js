@@ -44,6 +44,6 @@ export function personalManualConfig(whatsapp) {
 export function personalWhatsAppRouteAllowed(method, path) {
   if (method === 'GET' && path === '/v1/whatsapp/destinations') return true;
   if (method === 'GET' && /^\/v1\/whatsapp\/requests\/[a-f0-9-]{36}$/i.test(path)) return true;
-  if (method === 'POST' && path === '/v1/whatsapp/send') return true;
+  if (method === 'POST' && (path === '/v1/whatsapp/send' || path === '/v1/whatsapp/send-chat')) return true;
   return false;
 }

@@ -34,9 +34,9 @@ const whatsapp = startWhatsApp({
 
 const getConfig = () => personalManualConfig(whatsapp);
 const canSend = () => !closing && whatsapp.isReady() === true;
-const personalText = createPersonalTextApi({ store, getConfig, canSend });
+const personalText = createPersonalTextApi({ store, getConfig, canSend, inbox: personalInbox });
 const personalInboxApi = createPersonalInboxApi({ inbox: personalInbox, whatsapp });
-const sendNext = createPersonalTextSender({ store, getConfig, whatsapp, canSend });
+const sendNext = createPersonalTextSender({ store, getConfig, inbox: personalInbox, whatsapp, canSend });
 const timers = [setInterval(() => sendNext().catch(() => {}), 1000)];
 
 const server = createServer(async (req, res) => {

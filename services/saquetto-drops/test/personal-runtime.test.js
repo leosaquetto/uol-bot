@@ -51,6 +51,7 @@ test('personal HTTP surface keeps media and arbitrary routes closed', async () =
   assert.equal(mod.personalWhatsAppRouteAllowed('GET','/v1/whatsapp/destinations'),true);
   assert.equal(mod.personalWhatsAppRouteAllowed('GET','/v1/whatsapp/requests/11111111-1111-4111-8111-111111111111'),true);
   assert.equal(mod.personalWhatsAppRouteAllowed('POST','/v1/whatsapp/send'),true);
+  assert.equal(mod.personalWhatsAppRouteAllowed('POST','/v1/whatsapp/send-chat'),true);
   for (const [method,path] of [
     ['POST','/v1/whatsapp/media'],['GET','/v1/whatsapp/media'],['POST','/v1/whatsapp/send/anything'],
     ['GET','/v1/status'],['POST','/v1/whatsapp/destinations']
