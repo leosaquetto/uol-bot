@@ -129,6 +129,12 @@ class PersonalMCPInboxBridgeTests(unittest.TestCase):
         self.assertEqual(api.calls[1][1:], (f"/v1/whatsapp/chats/{self.CHAT}/delete", "c" * 64, {"lastMessageRef": self.MESSAGE}))
         self.assertEqual(api.calls[2][1:], (f"/v1/whatsapp/messages/{self.MESSAGE}/delete", "c" * 64, {"mode": "for_me"}))
 
+    def test_delete_message_everyone_uses_current_runtime_mode(self):
+        api = FakeAPI([(200, {"state": "deleted", "messageRef": self.MESSAGE, "mode": "everyone"})])
+        result = bridge.execute({"action": "delete_message", "messageRef": self.MESSAGE, "mode": "everyone"}, "c" * 64, api)
+        self.assertEqual(result, {"ok": True, "state": "deleted", "messageRef": self.MESSAGE, "mode": "everyone"})
+        self.assertEqual(api.calls[0][3], {"mode": "everyone"})
+
     def test_cleanup_preview_and_apply_preserve_approved_snapshot_only(self):
         chat = {"chatRef": self.CHAT, "name": "Old chat", "kind": "contact", "lastMessageAt": 100, "indexedMessageCount": 1, "lastMessageRef": self.MESSAGE, "deletable": True}
         api = FakeAPI([

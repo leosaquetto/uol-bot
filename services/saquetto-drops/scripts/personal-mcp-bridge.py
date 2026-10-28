@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Narrow SSH stdin bridge for the personal Baileys MCP connection."""
 from __future__ import annotations
-import http.client, json, re, sys, uuid, urllib.parse
+import http.client, json, re, sys, uuid
 from pathlib import Path
-from urllib.parse import urlencode
 from urllib.parse import urlencode
 ENV_FILE=Path('/etc/baileys-personal/service.env'); HOST='127.0.0.1'; PORT=8790
 MAX_ENVELOPE=16*1024; MAX_RESPONSE=64*1024
@@ -188,7 +187,7 @@ def execute(envelope,token,api_call=api):
     if action=='delete_message':
         if not {'action','messageRef'}<=set(envelope)<= {'action','messageRef','mode'} or not valid_request_id(envelope.get('messageRef')): raise RelayError('invalid_request')
         mode=envelope.get('mode','for_me')
-        if mode not in {'for_me','for_everyone'}: raise RelayError('invalid_delete_mode')
+        if mode not in {'for_me','everyone'}: raise RelayError('invalid_delete_mode')
         message_ref=envelope['messageRef']
         return message_action_response(*api_call('POST',f'/v1/whatsapp/messages/{message_ref}/delete',token,{'mode':mode}),message_ref,mode)
     if action=='cleanup_preview':
