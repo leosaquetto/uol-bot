@@ -20,6 +20,14 @@ export function phoneFromCredentialsValue(value){
   throw new Error('primary_identity_unavailable');
 }
 
+export async function waitForSocketOpen(socket,{timeoutMs=15000,pollMs=50}={}){
+  const started=Date.now();
+  while(socket?.ws?.isOpen!==true){
+    if(Date.now()-started>=timeoutMs)throw new Error('pairing_socket_not_open');
+    await new Promise(resolve=>setTimeout(resolve,pollMs));
+  }
+}
+
 export function readPrimaryPhone(dbPath){
   const db=new DatabaseSync(dbPath,{readOnly:true});
   try{
@@ -60,6 +68,7 @@ export async function runHistoryBootstrap({
     const phone=readPrimaryPhone(primaryDb);
     const socket=whatsapp.socket();
     if(!socket||typeof socket.requestPairingCode!=='function'){await close();throw new Error('pairing_code_unavailable');}
+    await waitForSocketOpen(socket);
     const code=await socket.requestPairingCode(phone);
     if(typeof code!=='string'||!code.trim()){await close();throw new Error('pairing_code_unavailable');}
     writeFileSync(codePath,code.trim(),{mode:0o600});
