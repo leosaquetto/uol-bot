@@ -5,8 +5,7 @@ import { openStore } from './store.js';
 import { startWhatsApp } from './whatsapp.js';
 import { acquireLock } from './process-lock.js';
 import { personalAuthorized, personalManualConfig, personalStatus, personalWhatsAppRouteAllowed, validatePersonalToken } from './personal-runtime.js';
-import { createManualApi } from './manual.js';
-import { createSender } from './sender.js';
+import { createPersonalTextApi, createPersonalTextSender } from './personal-text.js';
 
 process.umask(0o077);
 const data = process.env.BAILEYS_PERSONAL_DATA || '/var/lib/baileys-personal';
@@ -31,15 +30,9 @@ const whatsapp = startWhatsApp({
 
 const getConfig = () => personalManualConfig(whatsapp);
 const canSend = () => !closing && whatsapp.isReady() === true;
-const manual = createManualApi({ store, dataDir: data, getConfig, canSend });
-const sendNext = createSender({
-  store, getConfig, whatsapp, canSend, canPilot: () => false,
-  prepare: payload => manual.prepare(payload),
-});
-const timers = [
-  setInterval(() => sendNext().catch(() => {}), 1000),
-  setInterval(() => { try { manual.cleanup(); } catch {} }, 60000),
-];
+const personalText = createPersonalTextApi({ store, getConfig, canSend });
+const sendNext = createPersonalTextSender({ store, getConfig, whatsapp, canSend });
+const timers = [setInterval(() => sendNext().catch(() => {}), 1000)];
 
 const server = createServer(async (req, res) => {
   const reply = (code, value) => {
@@ -53,7 +46,7 @@ const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (req.method === 'GET' && path === '/v1/status') return reply(200, personalStatus({ whatsapp, pairingRequired: qrAvailable }));
   if (personalWhatsAppRouteAllowed(req.method, path)) {
-    const result = await manual.route(req, path);
+    const result = await personalText.route(req, path);
     return reply(result.status, result.body);
   }
   return reply(404, { code: 'not_found' });
