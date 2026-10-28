@@ -46,7 +46,7 @@ test('primary socket keeps the existing paired identity and limited sync',async(
   }finally{await whatsapp.stop();store.close();rmSync(dir,{recursive:true,force:true});}
 });
 
-test('history bootstrap uses a separate desktop identity and accepts full history',async()=>{
+test('history bootstrap requests full history without overriding pairing browser identity',async()=>{
   const dir=mkdtempSync(join(tmpdir(),'personal-history-bootstrap-'));
   const store=openStore(join(dir,'state.sqlite'));
   const socket={user:{id:'111:1@s.whatsapp.net'},ev:new EventEmitter(),ws:new EventEmitter(),end(){}};
@@ -54,8 +54,7 @@ test('history bootstrap uses a separate desktop identity and accepts full histor
   const whatsapp=startWhatsApp({store,personalInbox:{},historyBootstrap:true,socketFactory:value=>{options=value;return socket;},logger:{log(){}}});
   try{
     assert.equal(options.syncFullHistory,true);
-    assert.equal(options.browser?.[0],'Mac OS');
-    assert.equal(options.browser?.[1],'Desktop');
+    assert.equal(Object.hasOwn(options,'browser'),false);
     assert.equal(options.shouldSyncHistoryMessage?.({syncType:999}),true);
   }finally{await whatsapp.stop();store.close();rmSync(dir,{recursive:true,force:true});}
 });

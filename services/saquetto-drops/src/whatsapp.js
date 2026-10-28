@@ -1,4 +1,4 @@
-import makeWASocket, { Browsers, DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
+import makeWASocket, { DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
 import { sqliteAuth } from './auth.js';
 
 const silentLogger = { level: 'silent', trace() {}, debug() {}, info() {}, warn() {}, error() {}, fatal() {}, child() { return this; } };
@@ -47,10 +47,9 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
     pendingReceived = false;
     const current = socket = socketFactory({
       auth: auth.state, logger: silentLogger, markOnlineOnConnect: false,
-      // The persistent primary session must keep the identity it was paired with.
-      // A separate one-time bootstrap may pair as Desktop to hydrate old chats.
+      // Keep the paired browser identity unchanged. The isolated bootstrap only
+      // asks for full history; overriding browser identity can invalidate pairing.
       ...(historyBootstrap ? {
-        browser: Browsers.macOS('Desktop'),
         syncFullHistory: true,
         shouldSyncHistoryMessage: () => true,
       } : { syncFullHistory: false }),
