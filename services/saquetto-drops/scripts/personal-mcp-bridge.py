@@ -180,10 +180,14 @@ def execute(envelope,token,api_call=api):
         else:
             payload={'requestId':request_id,'chatRef':target,'text':message}; path='/v1/whatsapp/send-chat'
         return send_response(*api_call('POST',path,token,payload),target,request_id)
-    if action in {'archive_chat','delete_chat'}:
+    if action=='archive_chat':
+        if set(envelope)!={'action','chatRef'} or not valid_request_id(envelope.get('chatRef')): raise RelayError('invalid_request')
+        chat_ref=envelope['chatRef']
+        return chat_action_response(*api_call('POST',f'/v1/whatsapp/chats/{chat_ref}/archive',token,{}),chat_ref,'archived')
+    if action=='delete_chat':
         if set(envelope)!={'action','chatRef','lastMessageRef'} or not valid_request_id(envelope.get('chatRef')) or not valid_request_id(envelope.get('lastMessageRef')): raise RelayError('invalid_request')
-        chat_ref=envelope['chatRef']; operation='archive' if action=='archive_chat' else 'delete'; state='archived' if action=='archive_chat' else 'deleted'
-        return chat_action_response(*api_call('POST',f'/v1/whatsapp/chats/{chat_ref}/{operation}',token,{'lastMessageRef':envelope['lastMessageRef']}),chat_ref,state)
+        chat_ref=envelope['chatRef']
+        return chat_action_response(*api_call('POST',f'/v1/whatsapp/chats/{chat_ref}/delete',token,{'lastMessageRef':envelope['lastMessageRef']}),chat_ref,'deleted')
     if action=='delete_message':
         if not {'action','messageRef'}<=set(envelope)<= {'action','messageRef','mode'} or not valid_request_id(envelope.get('messageRef')): raise RelayError('invalid_request')
         mode=envelope.get('mode','for_me')

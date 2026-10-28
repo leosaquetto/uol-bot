@@ -119,13 +119,13 @@ class PersonalMCPInboxBridgeTests(unittest.TestCase):
             (200, {"state": "deleted", "chatRef": self.CHAT}),
             (200, {"state": "deleted", "messageRef": self.MESSAGE, "mode": "for_me"}),
         ])
-        archived = bridge.execute({"action": "archive_chat", "chatRef": self.CHAT, "lastMessageRef": self.MESSAGE}, "c" * 64, api)
+        archived = bridge.execute({"action": "archive_chat", "chatRef": self.CHAT}, "c" * 64, api)
         deleted = bridge.execute({"action": "delete_chat", "chatRef": self.CHAT, "lastMessageRef": self.MESSAGE}, "c" * 64, api)
         message = bridge.execute({"action": "delete_message", "messageRef": self.MESSAGE, "mode": "for_me"}, "c" * 64, api)
         self.assertEqual(archived, {"ok": True, "state": "archived", "chatRef": self.CHAT})
         self.assertEqual(deleted, {"ok": True, "state": "deleted", "chatRef": self.CHAT})
         self.assertEqual(message, {"ok": True, "state": "deleted", "messageRef": self.MESSAGE, "mode": "for_me"})
-        self.assertEqual(api.calls[0][1:], (f"/v1/whatsapp/chats/{self.CHAT}/archive", "c" * 64, {"lastMessageRef": self.MESSAGE}))
+        self.assertEqual(api.calls[0][1:], (f"/v1/whatsapp/chats/{self.CHAT}/archive", "c" * 64, {}))
         self.assertEqual(api.calls[1][1:], (f"/v1/whatsapp/chats/{self.CHAT}/delete", "c" * 64, {"lastMessageRef": self.MESSAGE}))
         self.assertEqual(api.calls[2][1:], (f"/v1/whatsapp/messages/{self.MESSAGE}/delete", "c" * 64, {"mode": "for_me"}))
 

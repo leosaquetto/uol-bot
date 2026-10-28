@@ -118,6 +118,8 @@ test('cleanup preview snapshots exact refs and apply never expands beyond the ap
     assert.equal(receipts.find(x=>x.chatRef===b.chatRef).state,'failed');
     assert.equal(receipts.find(x=>x.chatRef===b.chatRef).code,'last_message_changed');
     assert.equal(f.calls.length,1,'only the still-matching chat may be mutated');
+    await assert.rejects(f.actions.applyCleanup({snapshotId:preview.snapshotId,chatRefs:[b.chatRef]}),/snapshot_consumed/);
+    assert.equal(f.calls.length,1,'approved cleanup snapshot is single-use and cannot replay mutations');
   }finally{f.close();}
 });
 
