@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
+import makeWASocket, { Browsers, DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
 import { sqliteAuth } from './auth.js';
 
 const silentLogger = { level: 'silent', trace() {}, debug() {}, info() {}, warn() {}, error() {}, fatal() {}, child() { return this; } };
@@ -29,7 +29,7 @@ export function applyReceipt({store,messageId,jid,state,level,personalJids=[],on
 }
 
 export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '',
-  onPersonalMessageAccepted = () => {}, personalInbox = null, logger = console, socketFactory = makeWASocket }) {
+  onPersonalMessageAccepted = () => {}, personalInbox = null, historyBootstrap = false, logger = console, socketFactory = makeWASocket }) {
   const auth = sqliteAuth(store);
   let socket, state = 'starting', stopped = false, timer, attempts = 0;
   let syncTimer, stableTimer, detachSocket = () => {};
@@ -47,10 +47,13 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
     pendingReceived = false;
     const current = socket = socketFactory({
       auth: auth.state, logger: silentLogger, markOnlineOnConnect: false,
-      // Keep the limited initial sync enabled: Baileys needs LID mappings and
-      // session metadata for a newly paired device. `shouldSyncHistoryMessage`
-      // returning false for every event can leave a fresh session unusable.
-      syncFullHistory: false,
+      // The persistent primary session must keep the identity it was paired with.
+      // A separate one-time bootstrap may pair as Desktop to hydrate old chats.
+      ...(historyBootstrap ? {
+        browser: Browsers.macOS('Desktop'),
+        syncFullHistory: true,
+        shouldSyncHistoryMessage: () => true,
+      } : { syncFullHistory: false }),
       getMessage: async key => {
         try {
           const bytes = store.wireMessage(key.id,key.remoteJid);
