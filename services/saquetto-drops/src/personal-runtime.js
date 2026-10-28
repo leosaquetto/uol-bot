@@ -30,3 +30,20 @@ export function personalStatus({ whatsapp, pairingRequired }) {
     sender: maskSenderJid(jid),
   };
 }
+
+
+export function personalManualConfig(whatsapp) {
+  const self = whatsapp?.isReady?.() === true ? whatsapp.ownDestination?.() : null;
+  const verified = self && self.type === 'contact' && typeof self.jid === 'string' && self.jid && self.verified === true;
+  return {
+    operation: { paused: false, dryRun: false, minDelayMs: 1000 },
+    destinations: verified ? { self: { type: 'contact', jid: self.jid, verified: true } } : {},
+  };
+}
+
+export function personalWhatsAppRouteAllowed(method, path) {
+  if (method === 'GET' && path === '/v1/whatsapp/destinations') return true;
+  if (method === 'GET' && /^\/v1\/whatsapp\/requests\/[a-f0-9-]{36}$/i.test(path)) return true;
+  if (method === 'POST' && path === '/v1/whatsapp/send') return true;
+  return false;
+}
