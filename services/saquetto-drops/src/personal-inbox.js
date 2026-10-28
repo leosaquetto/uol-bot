@@ -38,7 +38,7 @@ function content(message){
 }
 
 export function createPersonalInbox({store,now=Date.now}){
-  const {db}=store;
+  const {db,transaction}=store;
   db.exec(`
     CREATE TABLE IF NOT EXISTS personal_chats(
       chat_ref TEXT PRIMARY KEY,
@@ -119,6 +119,7 @@ export function createPersonalInbox({store,now=Date.now}){
     kind:row.kind,
     lastMessageAt:row.last_message_timestamp??null,
     indexedMessageCount:Number(row.indexed_message_count||0),
+    lastMessageRef:row.last_message_ref||null,
   });
   const publicMessage=row=>({
     messageRef:row.message_ref,
@@ -213,6 +214,8 @@ export function createPersonalInbox({store,now=Date.now}){
       return db.prepare(`SELECT * FROM personal_messages WHERE deleted=0 AND LOWER(COALESCE(text,'')) LIKE ?${filter} ORDER BY message_timestamp DESC LIMIT ?`).all(...args).map(publicMessage);
     },
     resolveChat(chatRef){const row=chatByRef(chatRef);return row?{chatRef:row.chat_ref,jid:row.jid,name:row.name,kind:row.kind}:null;},
+    resolveMessage(messageRef){return internalMessage(db.prepare('SELECT * FROM personal_messages WHERE message_ref=?').get(messageRef));},
+    removeChat(chatRef){return transaction(()=>{db.prepare('DELETE FROM personal_messages WHERE chat_ref=?').run(chatRef);return db.prepare('DELETE FROM personal_chats WHERE chat_ref=?').run(chatRef).changes===1;});},
     oldestMessage(chatRef){return internalMessage(db.prepare('SELECT * FROM personal_messages WHERE chat_ref=? AND deleted=0 ORDER BY message_timestamp ASC,rowid ASC LIMIT 1').get(chatRef));},
     lastMessage(chatRef){return internalMessage(db.prepare('SELECT * FROM personal_messages WHERE chat_ref=? AND deleted=0 ORDER BY message_timestamp DESC,rowid DESC LIMIT 1').get(chatRef));},
   };
