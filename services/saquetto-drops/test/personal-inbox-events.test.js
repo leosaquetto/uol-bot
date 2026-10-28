@@ -6,6 +6,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {openStore} from '../src/store.js';
 import {startWhatsApp} from '../src/whatsapp.js';
+import {proto} from '@whiskeysockets/baileys';
 
 test('startWhatsApp forwards inbox events while preserving message receipt handling',async()=>{
   const dir=mkdtempSync(join(tmpdir(),'personal-inbox-events-'));
@@ -29,5 +30,20 @@ test('startWhatsApp forwards inbox events while preserving message receipt handl
     socket.ev.emit('chats.upsert',[{id:'a'}]);
     socket.ev.emit('contacts.upsert',[{id:'a'}]);
     assert.deepEqual(calls.map(x=>x[0]),['history','messages','updates','deletes','chats','contacts']);
+  }finally{await whatsapp.stop();store.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+
+test('startWhatsApp requests desktop full history for personal inbox bootstrap',async()=>{
+  const dir=mkdtempSync(join(tmpdir(),'personal-inbox-full-history-'));
+  const store=openStore(join(dir,'state.sqlite'));
+  const socket={user:{id:'111:1@s.whatsapp.net'},ev:new EventEmitter(),ws:new EventEmitter(),end(){}};
+  let options;
+  const whatsapp=startWhatsApp({store,personalInbox:{},socketFactory:value=>{options=value;return socket;},logger:{log(){}}});
+  try{
+    assert.equal(options.syncFullHistory,true);
+    assert.equal(options.browser?.[0],'Mac OS');
+    assert.equal(options.browser?.[1],'Desktop');
+    assert.equal(options.shouldSyncHistoryMessage?.({syncType:proto.HistorySync.HistorySyncType.FULL}),true);
   }finally{await whatsapp.stop();store.close();rmSync(dir,{recursive:true,force:true});}
 });

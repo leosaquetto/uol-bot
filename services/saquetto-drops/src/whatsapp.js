@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
+import makeWASocket, { Browsers, DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
 import { sqliteAuth } from './auth.js';
 
 const silentLogger = { level: 'silent', trace() {}, debug() {}, info() {}, warn() {}, error() {}, fatal() {}, child() { return this; } };
@@ -47,10 +47,11 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
     pendingReceived = false;
     const current = socket = socketFactory({
       auth: auth.state, logger: silentLogger, markOnlineOnConnect: false,
-      // Keep the limited initial sync enabled: Baileys needs LID mappings and
-      // session metadata for a newly paired device. `shouldSyncHistoryMessage`
-      // returning false for every event can leave a fresh session unusable.
-      syncFullHistory: false,
+      // Personal inbox management needs an initial desktop-style history sync.
+      // We persist only text + bounded metadata, never media bytes.
+      browser: Browsers.macOS('Desktop'),
+      syncFullHistory: true,
+      shouldSyncHistoryMessage: () => true,
       getMessage: async key => {
         try {
           const bytes = store.wireMessage(key.id,key.remoteJid);
