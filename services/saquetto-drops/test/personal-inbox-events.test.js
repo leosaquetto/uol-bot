@@ -33,6 +33,26 @@ test('startWhatsApp forwards inbox events while preserving message receipt handl
 });
 
 
+test('contact LID is resolved to PN before forwarding to the personal inbox',async()=>{
+  const dir=mkdtempSync(join(tmpdir(),'personal-contact-lid-'));
+  const store=openStore(join(dir,'state.sqlite'));
+  const calls=[];
+  const socket={
+    user:{id:'111:1@s.whatsapp.net'},ev:new EventEmitter(),ws:new EventEmitter(),end(){},
+    signalRepository:{lidMapping:{async getPNForLID(id){
+      assert.equal(id,'12345@lid');
+      return '551199887766@s.whatsapp.net';
+    }}},
+  };
+  const personalInbox={ingestContacts:value=>calls.push(value)};
+  const whatsapp=startWhatsApp({store,personalInbox,socketFactory:()=>socket,logger:{log(){},warn(){}}});
+  try{
+    socket.ev.emit('contacts.upsert',[{id:'12345@lid',name:'Diego Acaki'}]);
+    await new Promise(resolve=>setImmediate(resolve));
+    assert.deepEqual(calls,[[{id:'551199887766@s.whatsapp.net',name:'Diego Acaki'}]]);
+  }finally{await whatsapp.stop();store.close();rmSync(dir,{recursive:true,force:true});}
+});
+
 test('primary socket keeps the existing paired identity and limited sync',async()=>{
   const dir=mkdtempSync(join(tmpdir(),'personal-primary-identity-'));
   const store=openStore(join(dir,'state.sqlite'));

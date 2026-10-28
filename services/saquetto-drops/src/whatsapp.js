@@ -152,11 +152,29 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
       try { personalInbox[method](value); }
       catch { logger.warn?.(JSON.stringify({event:'personal_inbox_event_failed',method})); }
     };
-    const onHistory = payload => forwardInbox('ingestHistory',payload);
+    const hasLidContacts = items => Array.isArray(items) && items.some(item => typeof item?.id === 'string' && item.id.endsWith('@lid'));
+    const resolveLidContacts = async items => Promise.all((items || []).map(async item => {
+      if (typeof item?.id !== 'string' || !item.id.endsWith('@lid')) return item;
+      try {
+        const pn = await current.signalRepository?.lidMapping?.getPNForLID?.(item.id);
+        return typeof pn === 'string' && pn ? {...item,id:pn} : item;
+      } catch { return item; }
+    }));
+    const onHistory = payload => {
+      if (!hasLidContacts(payload?.contacts)) return forwardInbox('ingestHistory',payload);
+      resolveLidContacts(payload.contacts).then(contacts => {
+        if (socket === current) forwardInbox('ingestHistory',{...payload,contacts});
+      }).catch(() => {});
+    };
     const onUpsert = payload => forwardInbox('ingestMessages',payload?.messages || []);
     const onDelete = payload => forwardInbox('ingestDeletes',payload);
     const onChats = payload => forwardInbox('ingestChats',payload || []);
-    const onContacts = payload => forwardInbox('ingestContacts',payload || []);
+    const onContacts = payload => {
+      if (!hasLidContacts(payload)) return forwardInbox('ingestContacts',payload || []);
+      resolveLidContacts(payload).then(contacts => {
+        if (socket === current) forwardInbox('ingestContacts',contacts);
+      }).catch(() => {});
+    };
     const onMessages = updates => {
       if (socket !== current) return;
       forwardInbox('ingestUpdates',updates);
