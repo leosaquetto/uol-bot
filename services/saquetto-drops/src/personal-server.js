@@ -7,6 +7,7 @@ import { acquireLock } from './process-lock.js';
 import { personalAuthorized, personalManualConfig, personalStatus, personalWhatsAppRouteAllowed, validatePersonalToken } from './personal-runtime.js';
 import { createPersonalTextApi, createPersonalTextSender } from './personal-text.js';
 import { createPersonalInbox } from './personal-inbox.js';
+import { createPersonalInboxApi } from './personal-inbox-api.js';
 
 process.umask(0o077);
 const data = process.env.BAILEYS_PERSONAL_DATA || '/var/lib/baileys-personal';
@@ -34,6 +35,7 @@ const whatsapp = startWhatsApp({
 const getConfig = () => personalManualConfig(whatsapp);
 const canSend = () => !closing && whatsapp.isReady() === true;
 const personalText = createPersonalTextApi({ store, getConfig, canSend });
+const personalInboxApi = createPersonalInboxApi({ inbox: personalInbox, whatsapp });
 const sendNext = createPersonalTextSender({ store, getConfig, whatsapp, canSend });
 const timers = [setInterval(() => sendNext().catch(() => {}), 1000)];
 
@@ -46,8 +48,13 @@ const server = createServer(async (req, res) => {
     return reply(403, { code: 'loopback_required' });
   }
   if (!personalAuthorized(req.headers.authorization, token)) return reply(401, { code: 'unauthorized' });
-  const path = new URL(req.url, 'http://localhost').pathname;
+  const url = new URL(req.url, 'http://localhost');
+  const path = url.pathname;
   if (req.method === 'GET' && path === '/v1/status') return reply(200, personalStatus({ whatsapp, pairingRequired: qrAvailable }));
+  if (personalInboxApi.matches(req.method, path)) {
+    const result = await personalInboxApi.route(req, url);
+    return reply(result.status, result.body);
+  }
   if (personalWhatsAppRouteAllowed(req.method, path)) {
     const result = await personalText.route(req, path);
     return reply(result.status, result.body);
