@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {customPairingCode,phoneFromCredentialsValue,waitForSocketOpen} from '../src/personal-history-bootstrap.js';
+import {mkdtempSync,rmSync,writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {customPairingCode,phoneFromCredentialsValue,requestedPairingCode,waitForSocketOpen} from '../src/personal-history-bootstrap.js';
 
 test('history bootstrap derives only the internal phone digits from primary credentials',()=>{
   assert.equal(phoneFromCredentialsValue(JSON.stringify({me:{id:'551199887766:12@s.whatsapp.net'}})),'551199887766');
@@ -26,4 +29,16 @@ test('history bootstrap accepts only an explicit eight digit pairing code',()=>{
   assert.equal(customPairingCode(undefined),undefined);
   assert.equal(customPairingCode(valid),valid);
   for(const value of ['1234567','123456789','abcd1234'])assert.throws(()=>customPairingCode(value),/invalid_pairing_code/);
+});
+
+
+test('history bootstrap reads an explicit pairing code from a private request file',()=>{
+  const dir=mkdtempSync(join(tmpdir(),'personal-history-code-'));
+  try{
+    const path=join(dir,'pairing-code.request.txt');
+    const valid='12'.repeat(4);
+    writeFileSync(path,valid,{mode:0o600});
+    assert.equal(requestedPairingCode(path),valid);
+    assert.equal(requestedPairingCode(join(dir,'missing')),undefined);
+  }finally{rmSync(dir,{recursive:true,force:true});}
 });

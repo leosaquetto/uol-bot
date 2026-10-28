@@ -1,6 +1,6 @@
 import {BufferJSON} from '@whiskeysockets/baileys';
 import {DatabaseSync} from 'node:sqlite';
-import {chmodSync,mkdirSync,unlinkSync,writeFileSync} from 'node:fs';
+import {chmodSync,mkdirSync,readFileSync,unlinkSync,writeFileSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {openStore} from './store.js';
@@ -34,6 +34,11 @@ export function customPairingCode(value){
   return value;
 }
 
+export function requestedPairingCode(path){
+  try{return customPairingCode(readFileSync(path,'utf8').trim());}
+  catch(error){if(error?.code==='ENOENT')return undefined;throw error;}
+}
+
 export function readPrimaryPhone(dbPath){
   const db=new DatabaseSync(dbPath,{readOnly:true});
   try{
@@ -53,6 +58,7 @@ export async function runHistoryBootstrap({
   const store=openStore(join(data,'baileys.sqlite'));
   const inbox=createPersonalInbox({store});
   const codePath=join(data,'pairing-code.private.txt');
+  const requestCodePath=join(data,'pairing-code.request.txt');
   const qrPath=join(data,'pairing-qr.private.txt');
   const existing=store.db.prepare("SELECT value FROM auth WHERE kind='credentials' AND id='current'").get();
   let registered=false;
@@ -67,7 +73,7 @@ export async function runHistoryBootstrap({
   let closed=false;
   const close=async()=>{
     if(closed)return;closed=true;clearInterval(timer);
-    unlinkQuiet(codePath);unlinkQuiet(qrPath);
+    unlinkQuiet(codePath);unlinkQuiet(requestCodePath);unlinkQuiet(qrPath);
     await whatsapp.stop().catch(()=>{});store.close();releaseLock();
   };
   if(!registered){
@@ -75,7 +81,8 @@ export async function runHistoryBootstrap({
     const socket=whatsapp.socket();
     if(!socket||typeof socket.requestPairingCode!=='function'){await close();throw new Error('pairing_code_unavailable');}
     await waitForSocketOpen(socket);
-    const code=await socket.requestPairingCode(phone,customPairingCode(process.env.BAILEYS_PERSONAL_PAIRING_CODE));
+    const code=await socket.requestPairingCode(phone,requestedPairingCode(requestCodePath));
+    unlinkQuiet(requestCodePath);
     if(typeof code!=='string'||!code.trim()){await close();throw new Error('pairing_code_unavailable');}
     writeFileSync(codePath,code.trim(),{mode:0o600});
     logger.log(JSON.stringify({event:'history_bootstrap_pairing_code_ready'}));
