@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {phoneFromCredentialsValue,waitForSocketOpen} from '../src/personal-history-bootstrap.js';
+import {customPairingCode,phoneFromCredentialsValue,waitForSocketOpen} from '../src/personal-history-bootstrap.js';
 
 test('history bootstrap derives only the internal phone digits from primary credentials',()=>{
   assert.equal(phoneFromCredentialsValue(JSON.stringify({me:{id:'551199887766:12@s.whatsapp.net'}})),'551199887766');
@@ -19,4 +19,11 @@ test('history bootstrap waits until websocket is open before requesting pairing 
   setTimeout(()=>{socket.ws.isOpen=true;},25);
   await waitForSocketOpen(socket,{timeoutMs:250,pollMs:5});
   assert.equal(socket.ws.isOpen,true);
+});
+
+test('history bootstrap accepts only an explicit eight digit pairing code',()=>{
+  const valid='12'.repeat(4);
+  assert.equal(customPairingCode(undefined),undefined);
+  assert.equal(customPairingCode(valid),valid);
+  for(const value of ['1234567','123456789','abcd1234'])assert.throws(()=>customPairingCode(value),/invalid_pairing_code/);
 });

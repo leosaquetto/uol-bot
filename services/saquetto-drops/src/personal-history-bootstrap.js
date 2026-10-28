@@ -28,6 +28,12 @@ export async function waitForSocketOpen(socket,{timeoutMs=15000,pollMs=50}={}){
   }
 }
 
+export function customPairingCode(value){
+  if(value===undefined||value==='')return undefined;
+  if(!/^\d{8}$/.test(value))throw new Error('invalid_pairing_code');
+  return value;
+}
+
 export function readPrimaryPhone(dbPath){
   const db=new DatabaseSync(dbPath,{readOnly:true});
   try{
@@ -69,7 +75,7 @@ export async function runHistoryBootstrap({
     const socket=whatsapp.socket();
     if(!socket||typeof socket.requestPairingCode!=='function'){await close();throw new Error('pairing_code_unavailable');}
     await waitForSocketOpen(socket);
-    const code=await socket.requestPairingCode(phone);
+    const code=await socket.requestPairingCode(phone,customPairingCode(process.env.BAILEYS_PERSONAL_PAIRING_CODE));
     if(typeof code!=='string'||!code.trim()){await close();throw new Error('pairing_code_unavailable');}
     writeFileSync(codePath,code.trim(),{mode:0o600});
     logger.log(JSON.stringify({event:'history_bootstrap_pairing_code_ready'}));
