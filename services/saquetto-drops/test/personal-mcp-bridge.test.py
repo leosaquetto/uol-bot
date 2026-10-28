@@ -34,12 +34,22 @@ class PersonalMCPBridgeTests(unittest.TestCase):
         self.assertNotIn("type", json.dumps(result))
 
     def test_send_accepts_alias_only_and_preserves_exact_text(self):
-        api = FakeAPI([(202, {"requestId": "123e4567-e89b-42d3-a456-426614174000", "jobs": [{"destination": "self", "state": "queued", "id": "ignored", "code": None, "confirmation": None}]})])
+        api = FakeAPI([(202, {"requestId": "123e4567-e89b-42d3-a456-426614174000", "jobs": [{"destination": "self", "state": "queued", "code": None, "confirmation": None}]})])
         envelope = {"action": "send", "recipient": "self", "message": "  oi\nleo  ", "requestId": "123e4567-e89b-42d3-a456-426614174000"}
         result = bridge.execute(envelope, "c" * 64, api)
-        self.assertEqual(result, {"ok": True, "requestId": envelope["requestId"], "state": "queued"})
+        self.assertEqual(result, {"ok": True, "requestId": envelope["requestId"], "recipient": "self", "state": "queued"})
         self.assertEqual(api.calls[0][0:3], ("POST", "/v1/whatsapp/send", "c" * 64))
         self.assertEqual(api.calls[0][3], {"requestId": envelope["requestId"], "destinations": ["self"], "text": "  oi\nleo  ", "mediaIds": []})
+
+    def test_request_status_reconciles_same_request_without_resending(self):
+        request_id = "123e4567-e89b-42d3-a456-426614174000"
+        api = FakeAPI([(200, {"requestId": request_id, "jobs": [{"destination": "self", "state": "accepted", "code": None, "confirmation": None}]})])
+        result = bridge.execute({"action": "request_status", "requestId": request_id}, "e" * 64, api)
+        self.assertEqual(result, {"ok": True, "requestId": request_id, "recipient": "self", "state": "accepted"})
+        self.assertEqual(api.calls, [("GET", f"/v1/whatsapp/requests/{request_id}", "e" * 64, None)])
+
+        uncertain = FakeAPI([(200, {"requestId": request_id, "jobs": [{"destination": "self", "state": "unknown", "code": "dispatch_unconfirmed", "confirmation": None}]})])
+        self.assertEqual(bridge.execute({"action": "request_status", "requestId": request_id}, "f" * 64, uncertain), {"ok": True, "requestId": request_id, "recipient": "self", "state": "unknown"})
 
     def test_send_rejects_numbers_jids_unknown_fields_and_controls(self):
         good = {"action": "send", "recipient": "self", "message": "oi", "requestId": "123e4567-e89b-42d3-a456-426614174000"}

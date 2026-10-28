@@ -63,16 +63,18 @@ def valid_request_id(value):
     try: uuid.UUID(value)
     except (ValueError,AttributeError): return False
     return bool(re.fullmatch(r'[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}',value))
-def send_response(code,value,recipient,request_id):
+def send_response(code,value,recipient,request_id,allow_uncertain=False):
     if code not in {200,202} or not exact(value,{'requestId','jobs'}) or value.get('requestId')!=request_id: raise RelayError('send_rejected')
     jobs=value.get('jobs')
     if not isinstance(jobs,list) or len(jobs)!=1: raise RelayError('send_state_invalid')
     job=jobs[0]
-    if not exact(job,{'id','destination','state','code','confirmation'}) or job.get('destination')!=recipient: raise RelayError('send_state_invalid')
+    if not exact(job,{'destination','state','code','confirmation'}): raise RelayError('send_state_invalid')
+    destination=job.get('destination')
+    if not isinstance(destination,str) or not ALIAS.fullmatch(destination) or (recipient is not None and destination!=recipient): raise RelayError('send_state_invalid')
     state=job.get('state')
-    if state in {'unknown','failed'}: raise RelayError('send_unconfirmed' if state=='unknown' else 'send_failed')
-    if state not in {'queued','dispatching','accepted','confirmed'}: raise RelayError('send_state_invalid')
-    return {'ok':True,'requestId':request_id,'state':state}
+    if state not in {'queued','dispatching','accepted','confirmed','unknown','failed'}: raise RelayError('send_state_invalid')
+    if state in {'unknown','failed'} and not allow_uncertain: raise RelayError('send_unconfirmed' if state=='unknown' else 'send_failed')
+    return {'ok':True,'requestId':request_id,'recipient':destination,'state':state}
 def execute(envelope,token,api_call=api):
     if not TOKEN.fullmatch(token or '') or not isinstance(envelope,dict): raise RelayError('invalid_request')
     action=envelope.get('action')
@@ -82,6 +84,10 @@ def execute(envelope,token,api_call=api):
     if action=='recipients':
         if set(envelope)!={'action'}: raise RelayError('invalid_request')
         return recipients_response(*api_call('GET','/v1/whatsapp/destinations',token,None))
+    if action=='request_status':
+        if set(envelope)!={'action','requestId'} or not valid_request_id(envelope.get('requestId')): raise RelayError('invalid_request')
+        request_id=envelope['requestId']
+        return send_response(*api_call('GET',f'/v1/whatsapp/requests/{request_id}',token,None),None,request_id,allow_uncertain=True)
     if action!='send' or set(envelope)!={'action','recipient','message','requestId'}: raise RelayError('invalid_request')
     recipient,message,request_id=envelope['recipient'],envelope['message'],envelope['requestId']
     if not isinstance(recipient,str) or not ALIAS.fullmatch(recipient): raise RelayError('recipient_denied')
