@@ -7,11 +7,16 @@ The operator requested renewal automation on 17 October 2026. Scope is only
 Instagram login/session, other secret, code rollout, migration, paid tier or
 ambiguous delivery retry is authorized by this maintenance task.
 
-Known expiry: `2026-10-23T04:04:28Z` (23 October 01:04:28 Sao Paulo).
-Issuance/refresh remains **unproven**. Previous bounded investigations exhausted
-related commits, legacy scripts, available original archives and the anonymous
-client; do not repeat them unchanged or ask the operator for the unknown procedure.
-A scheduled investigation is not evidence that automatic issuance works.
+Current credential expiry: `2027-01-26T10:05:29Z` (26 January 07:05:29 Sao Paulo).
+The previous credential expired on `2026-10-23T04:04:28Z`.
+Technical issuance was proven on 3 November 2026 through the native client's
+application OAuth flow. The issuer returned HTTP 200; the replacement passed
+the existing coupons parser and contract with 50 valid offers. See the
+[observed protocol and validation procedure](uol-technical-oauth.md).
+Exact technical inputs are stored privately in
+`~/.config/uol-ticket-research/uol-technical-issuer.json`, mode 0600.
+Earlier issuer investigations below are historical. Do not ask the operator for
+the procedure or repeat archive/client searches while this validated flow works.
 
 ## Each scheduled run
 
@@ -41,7 +46,8 @@ A scheduled investigation is not evidence that automatic issuance works.
 - Confirm the technical issuer, exact acquisition/refresh protocol and existing
   technical access. Obtain a candidate in memory; validate its later expiry and
   authenticated API response/contract. Decoding JWT `exp` alone is insufficient.
-- Serialize renewal with a private exclusive lock. Re-read the deployed version
+- Serialize renewal with the private exclusive lock
+  `~/.config/uol-ticket-research/uol-credential-renewal.lock`. Re-read the deployed version
   and latest uploaded version; they must equal the manifest version. If there is
   a concurrent/unpublished version, stop without building on unknown code.
 - Run the installed Wrangler with Node 22 from the Worker directory. Use
@@ -90,3 +96,23 @@ API contract valid, no authentication error. Natural primary success at
 512 gate. Projected writes 62,528 and headroom 37,472 remain within the guards.
 Expiry remains `2026-10-23T04:04:28Z`. No concrete new issuer lead or candidate;
 `blocked_issuer_unproven` is unchanged. No production mutation or repeated alert.
+
+## Recovery publication — 3 November 2026
+
+Published at 23:14 BRT (4 November 02:14 UTC), version
+`9b6d2973-5a53-48b0-a966-b3e224c79dcf`, with 100% traffic. Code source remains
+`2431cb17005ba47c052398e215aa72ed69c3203f`; script etag, runtime, handlers and all
+61 bindings matched the previous version. Only the technical authorization secret
+was replaced.
+
+Verification at 23:21 BRT: authenticated API HTTP 200, 50 valid offers, no API error,
+new expiry `2027-01-26T10:05:29Z`, and repeated natural primary successes on the
+exact published version. Last successful cycle read 32 rows; estimate 230/512,
+maximum cycle 1,732/4,096. Projected daily writes 61,568/80,000; headroom 38,432.
+
+The newly discovered queue drained. Two preexisting uncertain main deliveries
+remain; no actionable main work or new release debt was added. Liveness HTTP 200;
+readiness remains HTTP 503. Standard runtime verification still reports
+`critical_queue_pending:2`, and original-baseline regressions remain explicit.
+Five existing critical incident records were still active at this observation.
+The original debt baseline, uncertain delivery identities and receipts are preserved.
