@@ -174,6 +174,8 @@ agenda coleta. Estado de produção exige verificação própria.
   login UOL, senha e token pessoal não são necessários. A API é a fonte primária
   de publicação; se a credencial técnica falhar, as duas páginas HTML públicas
   entram no mesmo ciclo como fallback degradado e o incidente é alertado.
+  A renovação usa o [fluxo técnico já validado](../../docs/operations/uol-technical-oauth.md)
+  e os insumos privados preservados no [runbook](../../docs/operations/uol-credential-renewal.md).
 - **Latência:** o diagnóstico autenticado mede descoberta até Discord, Telegram,
   canal 2 e comentário para ofertas observadas após a ativação das métricas, com
   último valor, p50, p95 e máximo numa janela de 24 horas.

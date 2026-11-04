@@ -74,6 +74,57 @@ reserved for a confirmed early authorization failure.
 Report `published`, `runtimeVerified` and `ready` independently. Historical incidents
 or unverified deliveries can keep readiness degraded after authentication recovers.
 
+## Discovery and recovery references
+
+The browser's existing UOL session and normal SSO callback were verified during
+this recovery. They provided personal website access; the technical exchange was
+located by statically inspecting the Meu UOL 1.8.2 Android archive. The archive's
+SHA-1 matched two independent distributions:
+`54aea87ed8a6e5d5a57580b35b65895285f6da67`.
+This comparison alone is not a publisher-signature attestation. The decisive
+authorization proof was the live UOL issuer response and coupons contract check.
+
+For a changed client protocol, inspect `UserDataHttpApi.oAuthApi` and the
+401/403 interceptor (class `C1.a` in this archive). Preserve the exact header and
+form values privately. Do not modify JWT claims or guess authentication endpoints.
+The working flow calls the UOL issuer directly; routine renewal does not need
+another APK download, Firebase installation or personal password.
+
+The original archive, extracted protocol, issuance response, candidate validation,
+version equivalence, pre/post debt snapshots and publication receipts are retained
+privately under `~/.config/uol-ticket-research/auth-recovery-2026-11-03/`.
+Use current deployment state and the canonical publication manifest when resuming;
+individual files in this directory are historical snapshots.
+
+Operational incident recovery runs at the end of maintenance. Quota-deferred
+maintenance can leave earlier incidents active despite healthy primary API scans.
+`source-health` also requires fresh success of the complete source set. Do not
+clear those records or force the full maintenance pipeline merely to make
+readiness green. Inspect authenticated debt identities and receipts separately.
+
+## Preserved private recovery bundle
+
+The local encrypted bundle is
+`~/.config/uol-ticket-research/backups/uol-auth-recovery-2026-11-03.tar.gz.aesgcm`.
+It preserves the original APK, extracted protocol, private issuer inputs, helpers,
+publication manifest, unchanged debt baseline and verification evidence.
+Reproducible vendor runtimes and duplicate extracted DEX/APK files are excluded.
+
+The bundle uses authenticated AES-256-GCM. Its random encryption key is in the
+Mac's local Keychain, service `com.saquetto.uol-bot.renewal-backup`, account
+`2026-11-03-9b6d2973`. The key is not in Git or the archive. Keep access to that
+Keychain for recovery; the encrypted file alone cannot restore private inputs.
+
+The private helper `~/.config/uol-ticket-research/uol-auth-backup.mjs --check`
+authenticates decryption and checks the archive without displaying contents.
+`--restore` extracts into a new private directory and leaves production and the
+canonical files unchanged. Never invoke its internal Keychain reader directly.
+The format is a JSON header line with IV/tag and raw encrypted gzip-tar bytes;
+AES-GCM additional authenticated data is `uol-bot-ops-backup-v1`.
+
+This bundle and its key are local. The procedure is versioned separately in Git
+and indexed in agent memory. No private inputs are uploaded automatically.
+
 ## Recovery publication — 3 November 2026
 
 Published at 23:14 BRT (4 November 02:14 UTC), version
