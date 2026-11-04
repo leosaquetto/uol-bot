@@ -1,3 +1,4 @@
+import {createSaquettoOSPush} from '../../../services/saquetto-drops/src/saquettoos-push.mjs';
 import { DurableObject } from "cloudflare:workers";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagram-wake.js";
@@ -79,7 +80,7 @@ import {
   buildIncidentSignals,
   buildLatencyMetrics,
 } from "./operations.js";
-import { sendOperationalNotification } from "./operations-notify.js";
+import { buildOperationalNotification, sendOperationalNotification } from "./operations-notify.js";
 import { enqueueOperationsEvent, reserveNextOperationsEvent,
   completeOperationsEvent, normalizeOperationsOutbox } from "./operations-outbox.js";
 import {
@@ -3176,6 +3177,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async drainOperationalAlerts(now = new Date()) {
+    if(!this.saquettoosPush)this.saquettoosPush=createSaquettoOSPush({get:()=>this.metadataValue('saquettoos_push_outbox'),set:v=>this.setMetadataIfChanged('saquettoos_push_outbox',v),env:this.env,channel:'operations'});
     if (this.operationsDrainInFlight) return;
     this.operationsDrainInFlight = true;
     try {
@@ -3184,12 +3186,14 @@ export class UolTelegramShadow extends DurableObject {
       const reserved = reserveNextOperationsEvent(this.loadOperationsOutbox(now), now);
       if (reserved.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(reserved.state));
       if (!reserved.event) return;
+      try{const n=buildOperationalNotification(reserved.event);this.saquettoosPush.enqueue({id:reserved.event.id,title:n.title,body:n.body});}catch{this.setMetadataIfChanged('saquettoos_push_error','enqueue_failed');}
       const outcome = await sendOperationalNotification(reserved.event);
       const finished = completeOperationsEvent(
         this.loadOperationsOutbox(new Date()), reserved.event.id, outcome, new Date(),
       );
       if (finished.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(finished.state));
     } finally {
+      this.ctx.waitUntil(this.saquettoosPush.drain().catch(()=>{}));
       this.operationsDrainInFlight = false;
     }
   }

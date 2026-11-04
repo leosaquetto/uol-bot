@@ -1,3 +1,4 @@
+import {createSaquettoOSPush} from '../../../services/saquetto-drops/src/saquettoos-push.mjs';
 import { DurableObject } from 'cloudflare:workers';
 import campaigns from '../campaigns.json';
 import { Ledger } from './ledger.js';
@@ -43,6 +44,7 @@ export class RedemptionAccount extends DurableObject {
   constructor(ctx,env) {
     super(ctx,env);
     this.ledger=new Ledger(ctx.storage);
+    this.saquettoosPush=createSaquettoOSPush({get:()=>this.ledger.getState('saquettoos_push_outbox'),set:v=>this.ledger.setState('saquettoos_push_outbox',v),env,channel:'uol'});
     this.busy=false;
   }
   async exclusive(fn) {
@@ -244,6 +246,7 @@ export class RedemptionAccount extends DurableObject {
   }
   async drainNotifications(retryPending=false) {
     for(const entry of this.ledger.pendingNotifications(Date.now()+(retryPending?15*60_000:0),5)){
+      try{this.saquettoosPush.enqueue({id:entry.key,title:entry.payload.title,body:entry.payload.message});}catch{this.ledger.setState('saquettoos_push_error','enqueue_failed');}
       const delivered=await sendNtfy(entry.payload,{topicUrl:this.env.NTFY_TOPIC_URL});
       this.ledger.setState('notification-last-result',{at:Date.now(),ok:delivered.ok,
         ...(delivered.reason?{reason:delivered.reason}:{}),
@@ -253,6 +256,7 @@ export class RedemptionAccount extends DurableObject {
       if(delivered.ok)this.ledger.markNotificationSent(entry.key,Date.now());
       else this.ledger.failNotification(entry.key,Date.now());
     }
+    await this.saquettoosPush.drain().catch(()=>{this.ledger.setState('saquettoos_push_error','drain_failed');});
   }
   async retryNotifications() {
     return this.exclusive(async()=>{
@@ -306,6 +310,8 @@ export class RedemptionAccount extends DurableObject {
     }
     const notifyAt=this.ledger.nextNotificationAt();
     if(notifyAt!==null && campaign && now<Date.parse(campaign.expiresAt)+24*3600_000)next=next===null?notifyAt:Math.min(next,notifyAt);
+    const pushAt=this.saquettoosPush.nextAt();
+    if(pushAt!==null)next=next===null?pushAt:Math.min(next,pushAt);
     if(next===null)await this.ctx.storage.deleteAlarm();
     else await this.ctx.storage.setAlarm(Math.max(now+1000,next));
   }
