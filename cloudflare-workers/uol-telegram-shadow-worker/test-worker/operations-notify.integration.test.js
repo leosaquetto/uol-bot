@@ -189,6 +189,24 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     }
   });
 
+  it("outbox cheia não impede registrar a recuperação de um incidente", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-capacity-recovery");
+    await runInDurableObject(stub, async (instance) => {
+      const at = new Date().toISOString();
+      instance.setMetadata("ops_ntfy_outbox", JSON.stringify({
+        version: 1,
+        attempts: [],
+        events: Array.from({ length: 128 }, (_, index) => ({
+          id: `persisted-${index}`, kind: "monitor", severity: "warning", recovered: false,
+          createdAt: at, status: "pending", attempts: 0, nextAt: at,
+        })),
+      }));
+      instance.setMetadata("ops_ntfy_episode:delivery-slo", "episode-1");
+      expect(instance.enqueueOperationalAlert({ key: "delivery-slo", severity: "critical" }, true)).toBe(false);
+      expect(() => instance.enqueueOperationalAlert({ key: "delivery-slo", severity: "critical" })).toThrow("operations_outbox_capacity");
+    });
+  });
+
   it("retém terminais sem bloquear incidente novo nem alterar registros incertos", async () => {
     const requests = [];
     vi.stubGlobal("fetch", async (url) => {

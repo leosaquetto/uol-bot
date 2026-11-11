@@ -1,5 +1,10 @@
 const DAY_MS = 24 * 60 * 60_000;
 const RETENTION_MS = 7 * DAY_MS;
+// An operational alert that could not be sent within two days (the send
+// budget rolls every 24 h) is stale: the
+// incident it describes has moved on. Leaving it pending forever filled the
+// outbox (128) and blocked health processing and incident recovery.
+const PENDING_MAX_AGE_MS = 2 * DAY_MS;
 const MAX_PENDING_EVENTS = 128;
 const MAX_ATTEMPTS = 20;
 const MAX_ORDINARY_ATTEMPTS = 15;
@@ -12,7 +17,7 @@ const STATUSES = new Set(["pending", "reserved", "accepted", "uncertain", "perma
 const TERMINAL = new Set(["accepted", "uncertain", "permanent", "exhausted"]);
 const OUTCOMES = new Set(["accepted", "uncertain", "permanent", "retryable"]);
 const OUTCOME_REASONS = new Set([
-  "timeout", "http_accepted", "rate_limited", "server_error", "http_rejected", "network_error",
+  "timeout", "http_accepted", "rate_limited", "stale", "server_error", "http_rejected", "network_error",
   "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
 ]);
 
@@ -69,6 +74,11 @@ export function normalizeOperationsOutbox(original, now = new Date(), { recoverR
       event.lastOutcome = "uncertain";
       delete event.lastReason;
       delete event.lastHttpStatus;
+      event.finishedAt = nowIso;
+    }
+    if (event.status === "pending" && at - Date.parse(event.createdAt) > PENDING_MAX_AGE_MS) {
+      event.status = "exhausted";
+      event.lastReason = "stale";
       event.finishedAt = nowIso;
     }
     if (TERMINAL.has(event.status) && !event.finishedAt) event.finishedAt = nowIso;

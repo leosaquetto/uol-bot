@@ -123,7 +123,7 @@ test("recovery remains independent and pending after failed opening", () => {
   assert.equal(reserveNextOperationsEvent(state, start).event.id, "episode:recovered");
 });
 
-test("capacity preserves pending and seven-day terminal identities", () => {
+test("capacity keeps identities; pending expires after two days and terminals after seven", () => {
   let state;
   for (let index = 0; index < 128; index++) state = enqueue(state, `event_${index}`);
   assert.equal(enqueueOperationsEvent(state, input("overflow"), start).reason, "capacity");
@@ -134,7 +134,8 @@ test("capacity preserves pending and seven-day terminal identities", () => {
   const after = enqueueOperationsEvent(state, input("new"), later(7 * 24 * 60 * 60_000));
   assert.equal(after.enqueued, true);
   assert.equal(after.state.events.length, 128);
-  assert.equal(after.state.events.filter((event) => event.status === "pending").length, 128);
+  assert.equal(after.state.events.filter((event) => event.status === "pending").length, 1);
+  assert.equal(after.state.events.filter((event) => event.lastReason === "stale").length, 127);
 });
 
 test("retained terminals do not consume pending capacity or lose replay protection", () => {
@@ -231,4 +232,18 @@ test("legacy uncertainty stays unchanged and new completion never retains stale 
   assert.equal(recovered.events[0].status, "uncertain");
   assert.equal(recovered.events[0].lastReason, undefined);
   assert.equal(recovered.events[0].lastHttpStatus, undefined);
+});
+
+test("pending alerts older than two days become exhausted and free capacity", () => {
+  let state;
+  for (let index = 0; index < 128; index++) state = enqueue(state, `episode-${index}:opened`);
+  assert.equal(enqueueOperationsEvent(state, input("fresh:opened"), later(60_000)).reason, "capacity");
+  assert.equal(normalizeOperationsOutbox(state, later(2 * 24 * 60 * 60_000)).state.events.filter((event) => event.status === "pending").length, 128);
+  const aged = normalizeOperationsOutbox(state, later(2 * 24 * 60 * 60_000 + 1));
+  assert.equal(aged.state.events.filter((event) => event.status === "pending").length, 0);
+  assert.ok(aged.state.events.every((event) => event.status === "exhausted" && event.lastReason === "stale"));
+  const queued = enqueueOperationsEvent(state, input("fresh:opened"), later(2 * 24 * 60 * 60_000 + 1));
+  assert.equal(queued.enqueued, true);
+  // Stale identities are kept (terminal, 7-day retention) so an old alert never replays.
+  assert.equal(enqueueOperationsEvent(queued.state, input("episode-1:opened"), later(2 * 24 * 60 * 60_000 + 2)).reason, "duplicate");
 });
