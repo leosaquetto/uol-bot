@@ -62,7 +62,7 @@ concurrency:
 jobs:
   validate:
     name: Testes e bundle
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, box2]
     timeout-minutes: 15
     defaults:
       run:
@@ -86,7 +86,7 @@ jobs:
 
   discord-rollback:
     name: Validar rollback Discord
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, box2]
     timeout-minutes: 10
     defaults:
       run:
@@ -110,7 +110,7 @@ jobs:
 
   legacy-python:
     name: Testes do fallback Python
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, box2]
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -158,7 +158,7 @@ jobs:
 
   oracle-delivery:
     name: Testes offline Oracle e entregas
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, box2]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
