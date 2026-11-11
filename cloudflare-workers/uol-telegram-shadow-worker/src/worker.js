@@ -3164,6 +3164,9 @@ export class UolTelegramShadow extends DurableObject {
       recovered,
     }, now);
     if (!queued.enqueued && queued.reason !== "duplicate") {
+      // A full outbox may delay a recovery notice but must never keep a
+      // recovered incident open or abort the whole health pass.
+      if (recovered) return false;
       throw new Error("operations_outbox_capacity");
     }
     if (queued.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(queued.state));
