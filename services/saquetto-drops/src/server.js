@@ -1,3 +1,4 @@
+import {createSaquettoOSPush} from './saquettoos-push.mjs';
 import { createServer } from 'node:http';
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { readFileSync, writeFileSync, unlinkSync, mkdirSync } from 'node:fs';
@@ -23,6 +24,7 @@ if (!token || !/^[a-f0-9]{64}$/.test(token)) throw new Error('DROPS_TOKEN_requir
 mkdirSync(data,{recursive:true,mode:0o700});
 const releaseLock=acquireLock(join(data,'service.lock'));
 const store = openStore(join(data,'drops.sqlite'));
+const saquettoosPush=createSaquettoOSPush({get:()=>store.getSetting('saquettoos_push_outbox'),set:v=>store.setSetting('saquettoos_push_outbox',v),env:process.env,channel:'drops'});
 const pushTransport=process.env.DROPS_PUSH_TRANSPORT || 'webpush';
 if (!['cdp','webpush'].includes(pushTransport)) throw new Error('invalid_push_transport');
 const registration=pushTransport==='webpush' ? validateRegistration(JSON.parse(readFileSync(
@@ -35,7 +37,10 @@ const qrPath = join(data,'pairing-qr.private.txt');
 const whatsapp = process.env.DROPS_WHATSAPP === '1' ? startWhatsApp({
   store,
   getPersonalJid:()=>config.destinations['eu-mesmo']?.jid || '',
-  onPersonalMessageAccepted:(text,jid)=>sendPersonalNtfyNotification(text,{jid,senderJid:whatsapp.ownDestination().jid}),
+  onPersonalMessageAccepted:(text,jid,eventId)=>{
+    try{saquettoosPush.enqueue({id:eventId,title:'Saquetto Drops',body:'Um novo conteúdo está disponível.'});}catch{console.warn(JSON.stringify({event:'saquettoos_push_enqueue_failed'}));}
+    return sendPersonalNtfyNotification(text,{jid,senderJid:whatsapp.ownDestination().jid});
+  },
   onQr(qr) {
   qrAvailable = Boolean(qr);
   if (qr) writeFileSync(qrPath,qr,{mode:0o600});
@@ -77,7 +82,7 @@ const connectObserver = async () => {
   } catch { observer = null; }
   finally { observerStarting = false; }
 };
-const timers = [setInterval(()=>connectObserver(),10000),setInterval(()=>sendNext().catch(()=>{}),1000),
+const timers = [setInterval(()=>saquettoosPush.drain().catch(()=>{}),60000),setInterval(()=>connectObserver(),10000),setInterval(()=>sendNext().catch(()=>{}),1000),
   setInterval(()=>{try{manual.cleanup();gateway.cleanup();}catch{}},60000)];
 await connectObserver();
 const equal = value => timingSafeEqual(createHash('sha256').update(value).digest(),createHash('sha256').update(token).digest());

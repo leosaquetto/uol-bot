@@ -19,7 +19,7 @@ export function applyReceipt({store,messageId,jid,state,level,personalJids=[],on
   for (const job of accepted) {
     try {
       const payload = JSON.parse(job.payload);
-      const result = onPersonalMessageAccepted(payload.text || '', job.destination);
+      const result = onPersonalMessageAccepted(payload.text || '', job.destination, job.id);
       Promise.resolve(result).catch(() => reportPersonalNotificationFailure(logger));
     } catch {
       reportPersonalNotificationFailure(logger);
