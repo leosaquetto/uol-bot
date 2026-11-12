@@ -225,8 +225,8 @@ function resolveCi(repositoryRoot, workerRoot, headSha) {
       "gh",
       [
         "run", "list", "--workflow", "uol-worker-ci.yml", "--commit", headSha,
-        "--event", "push", "--limit", "20",
-        "--json", "databaseId,headSha,status,conclusion,workflowName,url",
+        "--limit", "20",
+        "--json", "databaseId,headSha,status,conclusion,workflowName,url,event",
       ],
       { cwd: repositoryRoot, capture: true, label: "github_ci_lookup" },
     ).stdout;
@@ -237,7 +237,10 @@ function resolveCi(repositoryRoot, workerRoot, headSha) {
       throw new Error("github_ci_json_invalid");
     }
     const exactRuns = Array.isArray(runs)
-      ? runs.filter((entry) => entry?.headSha === headSha && entry?.workflowName === CI_WORKFLOW_NAME)
+      // Docs-only merges skip the push trigger (path filter); a manual
+      // workflow_dispatch on the same commit is an equally exact gate.
+      ? runs.filter((entry) => entry?.headSha === headSha && entry?.workflowName === CI_WORKFLOW_NAME &&
+        ["push", "workflow_dispatch"].includes(entry?.event))
       : [];
     if (exactRuns.length === 0) {
       // A run can take a few seconds to appear after push. Missing is not a
