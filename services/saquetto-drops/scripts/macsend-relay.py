@@ -167,9 +167,15 @@ def execute(source, token, envelope=None):
             ledger = {"fingerprint": fingerprint, "payload": {
                 "requestId": request_id, "destinations": [ALIAS], "text": text, "mediaIds": []}}
             if has_file:
+                is_print = filename.lower() == "print.png" or (envelope.get("type") == "image" and filename.lower().startswith("print."))
+                send_as_image = is_print and mime in ("image/png", "image/jpeg") and size <= 8 * 1024 * 1024
+                if send_as_image:
+                    media_headers = {"Content-Type": mime}
+                else:
+                    media_headers = {"Content-Type": "application/octet-stream",
+                                     "X-Macsend-Filename": quote(filename, safe=""), "X-Macsend-Mime": mime}
                 code, body = api("POST", "/v1/whatsapp/media", token, stream=stream, size=size,
-                    headers={"Content-Type": "application/octet-stream",
-                             "X-Macsend-Filename": quote(filename, safe=""), "X-Macsend-Mime": mime})
+                    headers=media_headers)
                 if code != 201 or not isinstance(body.get("mediaId"), str):
                     return {"requestId": request_id, "state": "blocked", "code": safe_code(body)}
                 ledger["payload"]["mediaIds"] = [body["mediaId"]]
