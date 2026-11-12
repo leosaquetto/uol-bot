@@ -109,7 +109,7 @@ test('OTA first opening shows UI without collection; next opening and explicit n
   const access = { status: 'approved', role: 'owner', accounts: ['leosaquetto', 'gaoriel'] };
   const context = vm.createContext({
     SCRIPT_VERSION: 'test-1', STARTUP_HTML: '__STARTUP_TITLE__ __STARTUP_DESCRIPTION__', console: { log() {} },
-    Timer: { schedule: (milliseconds, repeats, callback) => { assert.equal(milliseconds, 800); assert.equal(repeats, false); callback(); } },
+    Timer: { schedule: (milliseconds, repeats, callback) => { assert.ok([800, 2500].includes(milliseconds)); assert.equal(repeats, false); callback(); } },
     FileManager: { local: () => ({ documentsDirectory: () => '/local', joinPath: path.join, fileExists: p => files.has(p),
       readString: p => files.get(p), writeString: (p, v) => files.set(p, v) }) },
     hunterAction: () => action,
@@ -144,6 +144,7 @@ test('closing the loading window never reopens it after delayed native data comp
   const context = vm.createContext({
     console: { log() {} }, STARTUP_HTML: '__STARTUP_TITLE__ __STARTUP_DESCRIPTION__',
     hunterAction: () => 'open', hunterCollectionPausedForUpdate: () => false,
+    createHunterDiagnostics: () => () => {},
     runNativeHunterCollector: async () => ({ status: 'complete', received: 1 }),
     Timer: { schedule: (_, __, callback) => callback() },
     preparePrivateFiles: async () => prepared, persistPrivateBootstrap() {},

@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const A = require('./access.js');
 const C = require('./collector.js');
 const source = require("./test-support/build-source.cjs")();
-const nativeCode = source.slice(source.indexOf('let nativeInstagramBrowser = null;'), source.indexOf('async function main()'));
+const nativeCode = source.slice(source.indexOf('function createNativeInstagramBrowser()'), source.indexOf('async function main()'));
 const browserCode = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
 
 test('native host activates without an iCloud file and collects only after approval without a shared Instagram session', async () => {
