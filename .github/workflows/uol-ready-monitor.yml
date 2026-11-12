@@ -32,4 +32,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_API_URL: ${{ github.api_url }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # Box II only reaches the internet through its local proxy; Node's
+          # fetch honours https_proxy only with this flag.
+          NODE_USE_ENV_PROXY: "1"
         run: node scripts/monitor-ready.mjs
