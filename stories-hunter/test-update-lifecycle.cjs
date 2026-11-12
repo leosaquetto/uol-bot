@@ -4,6 +4,7 @@ const main=source.slice(source.indexOf('async function main()'),source.indexOf('
 function harness(action='open',paused=false){
   const calls=[],output=[],state={relaunch:false,complete:0};let close;
   const context=vm.createContext({console:{log(){}},hunterAction:()=>action,hunterCollectionPausedForUpdate:()=>{calls.push('marker');return paused;},
+    createHunterDiagnostics:()=>()=>{},
     autoUpdateHunterOnOpen:async()=>{calls.push('auto');return state.relaunch;},
     showHunterStartupUpdateNotice:()=>{calls.push('notice');return new Promise(()=>{});},
     installHunterBrowser(){},buildHunterStartupHTML:()=> 'loading',buildDashboardHTML:()=> 'dashboard',

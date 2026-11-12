@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.9.8";
+const SCRIPT_VERSION = "5.9.9";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -214,13 +214,38 @@ function hunterCollectionPausedForUpdate(action) {
   }
 }
 
-let nativeInstagramBrowser = null;
+// A private iCloud marker enables short, content-free launch diagnostics on
+// this Apple account only. The public script does not transmit telemetry.
+function createHunterDiagnostics() {
+  const disabled = () => {};
+  disabled.enabled = false;
+  try {
+    const fm = FileManager.iCloud();
+    const root = fm.documentsDirectory();
+    if (!fm.fileExists(fm.joinPath(root, "uol_hunter_diagnostics.enabled"))) return disabled;
+    const startedAt = new Date().toISOString();
+    const file = fm.joinPath(root, "uol_hunter_diagnostic_" + startedAt.replace(/[:.]/g, "-") + "_" + UUID.string() + ".json");
+    const events = [];
+    const allowed = new Set(["launch", "startup_loaded", "home_loaded", "startup_error", "view_dismissed", "complete",
+      "collector_queued", "collector_started", "collector_finished", "links_requested", "links_waiting_collector",
+      "links_started", "links_finished", "catalog_started", "catalog_finished", "catalog_failed"]);
+    const record = stage => {
+      if (!allowed.has(stage)) return;
+      events.push({ at: new Date().toISOString(), stage });
+      if (events.length > 32) events.shift();
+      try { fm.writeString(file, JSON.stringify({ schema: 1, version: SCRIPT_VERSION, startedAt, events })); }
+      catch (_) { /* iCloud diagnostics must never block the app. */ }
+    };
+    record.enabled = true;
+    return record;
+  } catch (_) { return disabled; }
+}
+
 function createNativeInstagramBrowser() {
-  if (!nativeInstagramBrowser) nativeInstagramBrowser = HunterInstagramBrowser.create({
+  return HunterInstagramBrowser.create({
     webView: () => new WebView(), losslessJSON: HunterCollector.losslessJSON,
     timer: (milliseconds, callback) => Timer.schedule(milliseconds, false, callback)
   });
-  return nativeInstagramBrowser;
 }
 
 async function runNativeHunterCollector() {
@@ -396,11 +421,17 @@ async function main() {
     Script.complete();
     return;
   }
+  const diagnostic = createHunterDiagnostics();
+  diagnostic("launch");
   const uiView = new WebView();
+  uiView.hunterDiagnostic = diagnostic;
   installHunterBrowser(uiView);
   await uiView.loadHTML(buildHunterStartupHTML(), "https://clube.uol.com.br");
+  diagnostic("startup_loaded");
   let dismissed = false;
-  const presentation = uiView.present(true).then(() => { dismissed = true; uiView.hunterDismissed = true; });
+  const presentation = uiView.present(true).then(() => {
+    dismissed = true; uiView.hunterDismissed = true; diagnostic("view_dismissed");
+  });
   // A readable loading state also lets native presentation settle before the
   // one document replacement. No evaluateJavaScript is used during startup.
   const readable = new Promise(resolve => Timer.schedule(800, false, resolve));
@@ -419,24 +450,32 @@ async function main() {
       ? { status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {}, access: await createHunterAccess().status() }
       : { status: "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} };
     const html = buildDashboardHTML(historyData, settings, credentials, [], realRedemptions,
-      collectionPausedForUpdate, collectionResult);
+      collectionPausedForUpdate, collectionResult, diagnostic.enabled);
     await readable;
     if (!dismissed) {
       await uiView.loadHTML(html, "https://clube.uol.com.br");
+      diagnostic("home_loaded");
       if (!dismissed && typeof showHunterStartupUpdateNotice === "function")
         showHunterStartupUpdateNotice(uiView).catch(() => {});
       if (!dismissed && !collectionPausedForUpdate) {
-        collection = Promise.resolve().then(() => runNativeHunterCollector()).then(async result => {
+        diagnostic("collector_queued");
+        collection = new Promise(resolve => Timer.schedule(2500, false, resolve)).then(() => {
+          if (dismissed) return null;
+          diagnostic("collector_started");
+          return runNativeHunterCollector();
+        }).then(async result => {
           if (!dismissed && typeof uiView.evaluateJavaScript === "function") {
             const safeResult = JSON.stringify(result).replace(/</g, "\\u003c");
             const safeHistory = JSON.stringify(loadHistory()).replace(/</g, "\\u003c");
             await uiView.evaluateJavaScript("handleNativeCollectionResult(" + safeResult + "," + safeHistory + ");").catch(() => {});
           }
           return result;
-        });
+        }).catch(() => null).finally(() => { diagnostic("collector_finished"); uiView.hunterCollectionTask = null; });
+        uiView.hunterCollectionTask = collection;
       }
     }
   } catch (_) {
+    diagnostic("startup_error");
     await readable;
     if (!dismissed) await uiView.loadHTML(buildHunterStartupHTML(true), "https://clube.uol.com.br");
   }
@@ -444,6 +483,7 @@ async function main() {
   if (collection) await collection;
   if (uiView.hunterActionTask) await uiView.hunterActionTask;
   if (uiView.hunterLegacyMigrationTask) await uiView.hunterLegacyMigrationTask;
+  diagnostic("complete");
   Script.complete();
 }
 
@@ -784,6 +824,14 @@ async function hunterLinkCheckNotify(view, results, progress) {
 }
 
 async function runNativeLinkChecks(view) {
+  const diagnostic = typeof view.hunterDiagnostic === "function" ? view.hunterDiagnostic : () => {};
+  if (view.hunterCollectionTask) {
+    diagnostic("links_waiting_collector");
+    await view.hunterCollectionTask.catch(() => {});
+    if (view.hunterDismissed) return;
+  }
+  diagnostic("links_started");
+  try {
   const checkedThisSession = new Set();
   const cache = readHunterLinkCheckCache();
   do {
@@ -829,7 +877,7 @@ async function runNativeLinkChecks(view) {
           results.push({ ...item, ...cache.records[key] });
         }
       };
-      await Promise.all([worker(), worker()]);
+      await worker();
       if (results.length) {
         writeHunterLinkCheckCache(cache);
         await hunterLinkCheckNotify(view, results,
@@ -837,6 +885,7 @@ async function runNativeLinkChecks(view) {
       }
     }
   } while (view.hunterLinkRefreshRequested && !view.hunterDismissed);
+  } finally { diagnostic("links_finished"); }
 }
 
 function installHunterBrowser(view) {
@@ -856,7 +905,15 @@ function installHunterBrowser(view) {
       return false;
     }
     if (/^hunter-legacy:/i.test(raw)) return false;
+    const diagnosticRoute = /^hunter-diagnostic:\/\/(catalog-start|catalog-finished|catalog-failed)$/.exec(raw);
+    if (diagnosticRoute) {
+      const stages = { "catalog-start": "catalog_started", "catalog-finished": "catalog_finished", "catalog-failed": "catalog_failed" };
+      if (typeof view.hunterDiagnostic === "function") view.hunterDiagnostic(stages[diagnosticRoute[1]]);
+      return false;
+    }
+    if (/^hunter-diagnostic:/i.test(raw)) return false;
     if (raw === "hunter-links://start") {
+      if (typeof view.hunterDiagnostic === "function") view.hunterDiagnostic("links_requested");
       if (view.hunterLinkCheckTask) view.hunterLinkRefreshRequested = true;
       else view.hunterLinkCheckTask = Promise.resolve().then(() => runNativeLinkChecks(view))
         .catch(() => {}).finally(() => { view.hunterLinkCheckTask = null; });
@@ -1392,7 +1449,7 @@ function publicHunterRedemptions(items) {
   }).filter(Boolean);
 }
 
-function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false, collectionResult = null) {
+function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false, collectionResult = null, nativeDiagnostics = false) {
   const activeUser = settings.currentUser || "leosaquetto";
   const privateRedemptions = (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS;
   const displaySettings = {
@@ -1417,6 +1474,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     nativeBrowser: true,
     nativeAccounts: true,
     nativeLinkChecks: true,
+    nativeDiagnostics: nativeDiagnostics === true,
     scriptVersion: SCRIPT_VERSION,
     scriptName: typeof hunterInstalledScriptName === "function" ? hunterInstalledScriptName() : ((typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL Premium")
   };

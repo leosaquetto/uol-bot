@@ -617,7 +617,7 @@
     let linkCheckRenderTimer = null;
     let lastCatalogRenderAt = 0;
     let lastNativeLinkRequestAt = 0;
-    const linkChecksNotBefore = Date.now() + 1500;
+    const linkChecksNotBefore = Date.now() + 6000;
     let lastNativeLinkSignature = '';
     let lastAvailabilityEventsFetchAt = 0;
 
@@ -782,6 +782,10 @@
           renderCatalogStatus();
         }, Math.max(180, 750 - (Date.now() - lastCatalogRenderAt)));
       }
+    }
+
+    function hunterDiagnostic(stage) {
+      if (INITIAL.nativeDiagnostics === true) window.location.href = 'hunter-diagnostic://' + stage;
     }
 
     function hunterRequestLinkChecks() {
@@ -1376,6 +1380,7 @@
       catalogRefreshInFlight = true;
       catalogRefreshSettled = false;
       catalogRefreshStarted = true;
+      hunterDiagnostic('catalog-start');
       const cache = readCatalogCache();
       try {
         let snapshot = cache && cache.snapshot;
@@ -1403,7 +1408,9 @@
           const age = Date.now() - catalogTime(snapshot.sources[key].lastSuccessAt);
           return snapshot.sources[key].healthy && age >= 0 && age <= 600000;
         }));
+        hunterDiagnostic('catalog-finished');
       } catch (e) {
+        hunterDiagnostic('catalog-failed');
         catalogFetchSucceeded = false;
         catalogRefreshSettled = true;
         if (cache) {
