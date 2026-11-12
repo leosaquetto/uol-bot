@@ -2,7 +2,7 @@
 export function createSaquettoOSPush({get,set,env={},channel,fetchImpl=fetch}) {
  let running=false;
  const configured=()=>env.SAQUETTOOS_PUSH_ENABLED==='1'&&!!env.SAQUETTOOS_PUSH_TOKEN&&!!env.SAQUETTOOS_PUSH_ORIGIN;
- function read(){const raw=get();const value=typeof raw==='string'?JSON.parse(raw):raw;return Array.isArray(value)?value:[];}
+ function read(){const raw=get();const value=raw===''?null:typeof raw==='string'?JSON.parse(raw):raw;return Array.isArray(value)?value:[];}
  function write(rows){set(JSON.stringify(rows));}
  function enqueue(event){
   if(!configured())return {status:'disabled'};
