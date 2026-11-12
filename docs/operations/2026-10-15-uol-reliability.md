@@ -1632,3 +1632,33 @@ GitHub Raw e MacSend servem o mesmo artefato do Git, SHA-256
 Os cinco arquivos privados permanecem íntegros; permissões e Worker não foram
 alterados. Conexão UOL tem prova do usuário na 5.7.7; o rótulo da 5.7.8 tem
 testes e distribuição comprovados, ainda sem confirmação visual no aparelho.
+
+
+## Hunter 5.7.9 — personalização da barra, 18 de outubro
+
+Modelo Padrão preservado integralmente e registrado em
+`stories-hunter/NAVIGATION_BAR_BASELINE.md`, com CSS, marcação, commit e hash.
+Ajustes ganhou as abas Geral e Personalização. Barra oferece Padrão, Roxo
+(ativo laranja), Laranja (ativo leitoso) e Branco (ativo roxo). Geometria e
+ícones originais permanecem; os temas alteram somente aparência.
+
+Preferência salva por aparelho em arquivo local isolado do Scriptable, com
+enum estrito. A escolha nativa prevalece sobre cache antigo da WebView;
+falha de gravação restaura o último tema confirmado. Gravações serializadas
+impedem confirmação antiga de desfazer escolha mais nova.
+
+Validação: 49 testes locais relacionados passaram; sintaxe do template e
+artefato, bundles públicos vazios e diff-check aprovados. Primeiro CI
+identificou um mock de hidratação sem o novo inicializador; teste isolado
+ajustado, sem mudança do comportamento de cache. CI final com quatro jobs
+aprovados: https://github.com/leosaquetto/uol-bot/actions/runs/39137681393.
+Prévia isolada no navegador integrado, 390×844, confirmou quatro modelos,
+cores, seleção, restauração do Padrão, persistência após reload, acesso
+à aba Geral e ausência de erros de console. Não equivale a prova no iPhone.
+
+Código validado/publicado: `f6e8f1676e186e866c7e0b4032e6b3f9f0df3bf5`.
+Distribuição `--code-only` aceita pelo ntfy, recibo `7cXKv6SscMUM`.
+GitHub Raw e MacSend servem bytes idênticos ao Git, SHA-256
+`08a114ad9e0ffa6753ad6271a4111b38048ee4f2601a85f45c58d84d05d079e8`. Seis caminhos privados verificados mantiveram
+o conteúdo anterior. Worker não alterado. `published=true`; verificação
+física dos temas/persistência no iPhone permanece pendente.

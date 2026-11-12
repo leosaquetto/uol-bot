@@ -97,6 +97,27 @@ API contract valid, no authentication error. Natural primary success at
 Expiry remains `2026-10-23T04:04:28Z`. No concrete new issuer lead or candidate;
 `blocked_issuer_unproven` is unchanged. No production mutation or repeated alert.
 
+## Verification — 18 October 2026, 18:54 UTC
+
+Authenticated `/livez`, `/dashboard.json` and `/readyz` returned HTTP 200 on
+version `21e1f465-c842-4806-87f6-cfbb88bd4f3f`; the runtime source tag matched
+`091e3fcb77e636be8d0a67c529a46152f8dc1750`. API contract valid, no authentication
+error; API success at `2026-10-18T18:54:38.825Z` and natural primary success at
+`2026-10-18T18:54:38.827Z`, after publication on the exact version. Primary reads
+24/4,096; estimate 250/512. Global guard fresh; projected writes 62,336/80,000
+and headroom 37,664, above the 20,000 minimum.
+
+Expiry remains `2026-10-23T04:04:28Z`. No new concrete issuer lead, no issuer
+sources consulted and no candidate; `blocked_issuer_unproven` remains deduplicated.
+No expiry milestone is due. Current publication is published/runtimeVerified/ready;
+credential renewal is none of those. Production and the current secret are unchanged.
+Private evidence, renewal state and publication manifest are stored with mode 0600.
+
+The existing `renovar-credencial-t-cnica-uol` heartbeat was transferred to the
+continuation conversation, preserving its ID, prompt and active six-hour schedule.
+No duplicate automation was created. The unrelated pending reliability document
+remains untouched.
+
 ## Recovery publication — 3 November 2026
 
 Published at 23:14 BRT (4 November 02:14 UTC), version
