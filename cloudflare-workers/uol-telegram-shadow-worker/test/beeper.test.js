@@ -29,7 +29,8 @@ test("exclui os nove trechos em qualquer parte do link, com a mesma regra em JS 
   const database = new DatabaseSync(":memory:");
   const sql = database.prepare(`SELECT ${beeperLinkExcludedSql("link")} AS excluded FROM (SELECT ? AS link)`);
   const patterns = ["teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
-    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj"];
+    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj",
+    "teatro-claro-sp", "teatro-youtube-sp", "teatro-uol-sp", "teatro-totalenergies"];
   try {
     for (const pattern of patterns) {
       for (const link of [pattern, `https://clube.uol.com.br/campanhasdeingresso/pABC-2-ingressos-${pattern}-extra`,

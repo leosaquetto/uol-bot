@@ -143,7 +143,8 @@ agenda coleta. Estado de produção exige verificação própria.
   As exclusões fixas de links em `src/beeper.js` valem para ofertas e Stories:
   `teatro-tuca`, `morumbi-park-sp`, `ecovilla`, `teatro-liberdade`,
   `teatro-multiplan`, `teatro-das-artes`, `museu-da-imaginacao-sp`,
-  `teatro-vanucci-rj` e `teatro-riachuelo-rj`, sem distinguir maiúsculas.
+  `teatro-vanucci-rj`, `teatro-riachuelo-rj`, `teatro-claro-sp`,
+  `teatro-youtube-sp`, `teatro-uol-sp` e `teatro-totalenergies`, sem distinguir maiúsculas.
   Elas pulam somente o WhatsApp, inclusive nas pendências anteriores, sem
   consumir tentativas. Stories registram `skipped` / `whatsapp_link_excluded`;
   os demais destinos seguem e recibos ou resultados incertos são preservados.

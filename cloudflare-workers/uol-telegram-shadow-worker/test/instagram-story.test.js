@@ -140,7 +140,8 @@ test("all four targets confirm once; repeated ingestion and status never expose 
 
 test("each WhatsApp exclusion keeps the other three destinations and settles across restart", async () => {
   for (const pattern of ["teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
-    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj"]) {
+    "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj",
+    "teatro-claro-sp", "teatro-youtube-sp", "teatro-uol-sp", "teatro-totalenergies"]) {
     const sample = fixture({ readiness: () => ({ main: true, canal2: true, discord: true, beeper: false }) });
     const story = { ...STORY, link: `${STORY.link}-${pattern.toUpperCase()}-extra` };
     const result = await sample.inbox.ingest(story);

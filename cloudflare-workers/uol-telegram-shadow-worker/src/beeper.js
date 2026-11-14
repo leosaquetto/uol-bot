@@ -13,7 +13,8 @@ const BEEPER_DELIVERY_FILTER_MAX_IDS = 32;
 const BEEPER_EXCLUDED_LINK_PATTERNS = [
   "teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
   "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp",
-  "teatro-vanucci-rj", "teatro-riachuelo-rj",
+  "teatro-vanucci-rj", "teatro-riachuelo-rj", "teatro-claro-sp",
+  "teatro-youtube-sp", "teatro-uol-sp", "teatro-totalenergies",
 ];
 const BEEPER_EXCLUDED_LINK = new RegExp(BEEPER_EXCLUDED_LINK_PATTERNS.join("|"), "i");
 

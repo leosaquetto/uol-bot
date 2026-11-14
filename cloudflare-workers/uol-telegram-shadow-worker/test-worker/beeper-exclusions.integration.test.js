@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 const now = new Date("2026-10-26T13:00:00.000Z");
 const seenAt = "2026-10-26T12:00:00.000Z";
 const patterns = ["teatro-tuca", "morumbi-park-sp", "ecovilla", "teatro-liberdade",
-  "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj"];
+  "teatro-multiplan", "teatro-das-artes", "museu-da-imaginacao-sp", "teatro-vanucci-rj", "teatro-riachuelo-rj", "teatro-claro-sp",
+  "teatro-youtube-sp", "teatro-uol-sp", "teatro-totalenergies"];
 
 function insert(state, id, slug = id, at = seenAt) {
   state.storage.sql.exec(`INSERT INTO offers(id, link, preview_title, title, category,
