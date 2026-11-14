@@ -88,6 +88,7 @@ function fixture(t, target, { fault, failLedger = false, imageFailure = false } 
   queue.telegramOfferWithImageState = (offer) => ({ offer, imageKey: "" });
   queue.recordImageDelivery = () => { if (imageFailure) throw new Error("synthetic_image_sql_failure"); };
   queue.enqueueBeeperOffer = () => false;
+  queue.resolveTicketDiscordProxies = async () => {};
   queue.sqlExec = (sql, ...params) => {
     if (accepted && failLedger && sql.includes("INSERT OR IGNORE INTO delivery_events")) {
       throw new Error("synthetic_ledger_sql_failure");
@@ -277,6 +278,7 @@ test("workerd SQLite preserves the receipt and quarantine with rowsWritten-only 
           telegramOfferWithImageState(offer) { return { offer, imageKey: "" }; }
           recordImageDelivery() {}
           enqueueBeeperOffer() { return false; }
+          async resolveTicketDiscordProxies() {}
           sqlExec(sql, ...params) {
             if (this.rejectReceipt && sql.startsWith("UPDATE offers SET main_message_id = ?")) {
               this.rejectReceipt = false;
