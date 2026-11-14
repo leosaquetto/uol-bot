@@ -906,13 +906,18 @@ export function formatOfferDuration(startValue, endValue) {
 }
 
 export function buildTelegramCaption(offer, options = {}) {
-  const title = cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 280);
+  const grouped = offer?.groupedOffers?.items?.length > 1 ? offer.groupedOffers : null;
+  const title = cleanText(
+    (grouped && grouped.title) || offer?.title || offer?.previewTitle || "Oferta",
+  ).slice(0, 280);
   const link = normalizePublicLink(offer?.link);
   const tags = buildSmartHashtags(offer);
   const validity = cleanText(offer?.validity).replace(/\s+\./g, ".").slice(0, 360);
   const location = extractLocationSummary(offer?.description);
   const capturedAt = offer?.firstSeenAt || offer?.first_seen_at || "";
-  const soldOutAt = options.soldOutAt || offer?.soldOutAt || offer?.sold_out_at || "";
+  const soldOutAt = grouped
+    ? ""
+    : options.soldOutAt || offer?.soldOutAt || offer?.sold_out_at || "";
   const ticketTitle = isTicketCampaign(offer) ? `‼️ ${title} ‼️` : title;
   const decoratedTitle = soldOutAt ? `[ESGOTADO] ${ticketTitle}` : ticketTitle;
   const titleHtml = soldOutAt
@@ -932,7 +937,11 @@ export function buildTelegramCaption(offer, options = {}) {
     );
     if (duration) lines.push(`⏱️ Ficou no ar por ${escapeHtml(duration)}.`);
   }
-  if (link) lines.push(`🔗 ${escapeHtml(link)}`);
+  if (grouped) {
+    lines.push(grouped.items.map((item) => `🔗 ${escapeHtml(
+      [item.label, item.link].filter(Boolean).join(" ➜ "),
+    )}`).join("\n"));
+  } else if (link) lines.push(`🔗 ${escapeHtml(link)}`);
   if (options.commentsEnabled && !soldOutAt) {
     lines.push("💬 Veja os detalhes completos nos comentários.");
   }

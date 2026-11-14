@@ -147,6 +147,16 @@ agenda coleta. Estado de produção exige verificação própria.
   Elas pulam somente o WhatsApp, inclusive nas pendências anteriores, sem
   consumir tentativas. Stories registram `skipped` / `whatsapp_link_excluded`;
   os demais destinos seguem e recibos ou resultados incertos são preservados.
+- **Agrupamento de teatro:** ofertas cujo slug contém `teatro` ficam retidas por
+  `THEATER_GROUP_HOLD_SECONDS` (padrão 90, `0` desliga, máximo 300) em todos os
+  destinos (Telegram, Canal 2, Discord e WhatsApp). Ao sair da retenção, as da
+  mesma peça (título sem a data + mesma imagem; sem imagem, slug sem data e sem
+  código) viram uma única mensagem em lista `data ➜ link`. A mais antiga lidera;
+  as demais ficam `delivered` sem mensagem própria (`group_items_json` com
+  `mergedInto`, evento `merged_into_group` no ledger) e não vão ao WhatsApp.
+  Shows (sem `teatro` no slug) nunca são retidos. Mensagens agrupadas não são
+  editadas por esgotamento/reabertura, pois um único aviso não vale para todas
+  as datas. Ofertas que chegam depois do envio abrem um novo grupo.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
   edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
   adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por
