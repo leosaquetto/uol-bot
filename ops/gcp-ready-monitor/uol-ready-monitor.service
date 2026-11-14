@@ -1,0 +1,10 @@
+[Unit]
+Description=UOL Worker readiness monitor (saquettoOS via ntfy on change)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/uol-ready-monitor/ready-alert.py
+StateDirectory=uol-ready-monitor
+MemoryMax=200M
+Nice=10
