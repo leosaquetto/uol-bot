@@ -100,7 +100,6 @@ export function buildDiscordPayload(
   { soldOutAt = "", publishedAt = "" } = {},
 ) {
   const groupLines = groupedLines(offer);
-  if (groupLines) soldOutAt = "";
   const title = boundedDiscordText(
     (groupLines && offer.groupedOffers.title) || offer?.title || offer?.previewTitle ||
       "Novo benefício do Clube UOL",

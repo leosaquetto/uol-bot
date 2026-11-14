@@ -61,9 +61,8 @@ test("mensagens agrupadas listam todas as datas nos três destinos", () => {
   assert.match(telegram, /15\/11 ➜ https/);
   const beeper = buildBeeperOfferText(offer);
   assert.equal(beeper.split("\n").length, 3);
-  const discord = buildDiscordPayload(offer, { soldOutAt: "2026-11-13T14:00:00Z" });
+  const discord = buildDiscordPayload(offer);
   assert.match(discord.content, /15\/11 ➜ https/);
-  assert.doesNotMatch(discord.content, /ESGOTADO/);
 });
 
 test("oferta isolada mantém o formato original", () => {

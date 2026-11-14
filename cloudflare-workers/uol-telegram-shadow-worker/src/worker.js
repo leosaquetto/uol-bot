@@ -6550,7 +6550,7 @@ export class UolTelegramShadow extends DurableObject {
            main_sold_out_error = '', canal2_sold_out_error = '',
            main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = ''
         WHERE id = ? AND status IN ('delivered', 'partial_delivery')
-           AND sold_out_at = '' AND group_items_json = ''`,
+           AND sold_out_at = ''`,
         soldOutAt,
         soldOutAt,
         row.id,
@@ -6674,7 +6674,7 @@ export class UolTelegramShadow extends DurableObject {
              main_sold_out_attempts = 0, canal2_sold_out_attempts = 0,
              main_sold_out_error = '', canal2_sold_out_error = '',
              main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = ''
-           WHERE id = ? AND group_items_json = ''`,
+           WHERE id = ?`,
           now.toISOString(),
           candidate.status,
           soldOutStatus,

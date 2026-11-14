@@ -915,9 +915,7 @@ export function buildTelegramCaption(offer, options = {}) {
   const validity = cleanText(offer?.validity).replace(/\s+\./g, ".").slice(0, 360);
   const location = extractLocationSummary(offer?.description);
   const capturedAt = offer?.firstSeenAt || offer?.first_seen_at || "";
-  const soldOutAt = grouped
-    ? ""
-    : options.soldOutAt || offer?.soldOutAt || offer?.sold_out_at || "";
+  const soldOutAt = options.soldOutAt || offer?.soldOutAt || offer?.sold_out_at || "";
   const ticketTitle = isTicketCampaign(offer) ? `‼️ ${title} ‼️` : title;
   const decoratedTitle = soldOutAt ? `[ESGOTADO] ${ticketTitle}` : ticketTitle;
   const titleHtml = soldOutAt
