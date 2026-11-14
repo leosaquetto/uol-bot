@@ -4279,6 +4279,32 @@ export class UolTelegramShadow extends DurableObject {
     return this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", current.id).toArray()[0];
   }
 
+  // O Discord processa o embed de forma assíncrona: a resposta do envio quase
+  // sempre vem sem proxy_url. Sem ele o Telegram (que não alcança a imagem da UOL
+  // por URL nem por upload) espera 60s e cai para texto. Buscar a mensagem já
+  // publicada traz o proxy a tempo da próxima tentativa do canal principal.
+  async resolveTicketDiscordProxies(rows) {
+    const pending = rows.filter((row) => !row.main_sent_at &&
+      String(row.discord_message_id || "").trim() &&
+      !String(row.discord_image_proxy_url || "").trim() &&
+      isTicketCampaign(rowToOffer(row)));
+    await Promise.all(pending.map(async (row) => {
+      try {
+        const proxyUrl = await getDiscordMessageImageProxy(this.env, row.discord_message_id);
+        if (!proxyUrl) return;
+        this.sqlExec(
+          "UPDATE offers SET discord_image_proxy_url = ? WHERE id = ? AND discord_image_proxy_url = ''",
+          proxyUrl, row.id,
+        );
+        row.discord_image_proxy_url = proxyUrl;
+      } catch (error) {
+        logEvent("warn", "uol_discord_image_proxy_unavailable", {
+          offerId: row.id, error: sanitizeError(error),
+        });
+      }
+    }));
+  }
+
   async processDeliveryQueue(
     now,
     {
@@ -4602,7 +4628,9 @@ export class UolTelegramShadow extends DurableObject {
       String(left.row.first_seen_at).localeCompare(String(right.row.first_seen_at))
     ));
     const concurrency = budget.concurrency;
-    const selected = actionable.slice(0, batchSize).map(({ row, classification, targetNames }) => {
+    const batch = actionable.slice(0, batchSize);
+    await this.resolveTicketDiscordProxies(batch.map((entry) => entry.row));
+    const selected = batch.map(({ row, classification, targetNames }) => {
       const offer = rowToOffer(row);
       const imageProxyUrl = String(row.discord_image_proxy_url || "").trim();
       return {
