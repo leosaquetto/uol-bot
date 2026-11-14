@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 27);
+  assert.equal(blocks.length, 28);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,9 +24,10 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 27);
+  assert.equal(Number(version), 28);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
+  assert.ok(columns.has("group_items_json"));
   for (const column of [
     "delivery_generation",
     "main_delivery_unknown_at",
@@ -159,7 +160,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    27,
+    28,
   );
   database.close();
 });

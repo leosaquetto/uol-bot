@@ -93,6 +93,9 @@ import {
   mergeDiscordOfferDetail,
 } from "./discord-detail.js";
 import { renderDashboard } from "./dashboard.js";
+import {
+  buildGroupedOffers, isTheaterHeld, isTheaterLink, parseGroupedOffers, theaterGroupKey,
+} from "./theater-group.js";
 import { nextImageCircuitState } from "./image-strategy.js";
 import {
   classifyDeliveryRow,
@@ -584,6 +587,7 @@ function rowToOffer(row) {
     validity: row.validity,
     description: row.description,
     firstSeenAt: row.first_seen_at,
+    groupedOffers: parseGroupedOffers(row.group_items_json),
   };
 }
 
@@ -1955,6 +1959,12 @@ export class UolTelegramShadow extends DurableObject {
               VALUES (NEW.id, 'restocked', NEW.restocked_at);
           END;
         INSERT INTO _sql_schema_migrations (id) VALUES (27);
+      `);
+    }
+    if (currentVersion < 28) {
+      this.sqlExec(`
+        ALTER TABLE offers ADD COLUMN group_items_json TEXT NOT NULL DEFAULT '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (28);
       `);
     }
   }
@@ -4203,6 +4213,72 @@ export class UolTelegramShadow extends DurableObject {
     });
   }
 
+  // Retorna a linha (já atualizada) a entregar, ou null quando a oferta foi
+  // absorvida por outra mais antiga da mesma peça e não deve ser enviada.
+  mergeTheaterGroup(candidate, now, generation) {
+    const current = this.sqlExec(
+      "SELECT * FROM offers WHERE id = ? LIMIT 1", candidate.id,
+    ).toArray()[0];
+    if (!current) return null;
+    if (current.group_items_json) {
+      return parseGroupedOffers(current.group_items_json) ? current : null;
+    }
+    if (current.main_sent_at || current.discord_sent_at || current.canal2_sent_at ||
+        Number(current.main_delivery_attempts || 0) > 0 ||
+        Number(current.discord_delivery_attempts || 0) > 0) {
+      return current;
+    }
+    const key = theaterGroupKey(current);
+    if (!key) return current;
+    const horizon = new Date(
+      Date.parse(current.first_seen_at) - 15 * 60_000,
+    ).toISOString();
+    const siblings = this.sqlExec(
+      `SELECT * FROM offers
+       WHERE id <> ? AND delivery_generation = ? AND delivery_mode = 'live'
+         AND status = 'delivery_pending' AND group_items_json = ''
+         AND main_sent_at = '' AND canal2_sent_at = '' AND discord_sent_at = ''
+         AND main_delivery_attempts = 0 AND discord_delivery_attempts = 0
+         AND main_delivery_in_flight_at = '' AND discord_delivery_in_flight_at = ''
+         AND lower(link) LIKE '%/campanhasdeingresso/%teatro%'
+         AND first_seen_at >= ?`,
+      current.id, generation, horizon,
+    ).toArray().filter(row => isTheaterLink(row.link) && theaterGroupKey(row) === key);
+    if (!siblings.length) return current;
+    const members = [current, ...siblings];
+    const ordered = members.sort((left, right) => (
+      String(left.first_seen_at).localeCompare(String(right.first_seen_at)) ||
+      String(left.id).localeCompare(String(right.id))
+    ));
+    // A mais antiga lidera; as demais aguardam que ela as absorva.
+    if (ordered[0].id !== current.id) return null;
+    const group = buildGroupedOffers(ordered);
+    const nowIso = now.toISOString();
+    this.sqlExec(
+      "UPDATE offers SET group_items_json = ? WHERE id = ? AND group_items_json = ''",
+      JSON.stringify(group), current.id,
+    );
+    for (const follower of ordered.slice(1)) {
+      this.sqlExec(
+        `UPDATE offers SET group_items_json = ?, main_sent_at = ?,
+           canal2_sent_at = CASE WHEN would_send_canal2 = 1 THEN ? ELSE canal2_sent_at END,
+           discord_sent_at = CASE WHEN link LIKE '%/campanhasdeingresso/%' THEN ? ELSE discord_sent_at END
+         WHERE id = ? AND group_items_json = '' AND main_sent_at = ''`,
+        JSON.stringify({ mergedInto: current.id }), nowIso, nowIso, nowIso, follower.id,
+      );
+      this.refreshDeliveryStatus(follower.id, now);
+      this.recordDeliveryLedgerEvent({
+        offerId: follower.id, target: "aggregate", operation: "delivery",
+        state: "merged_into_group", attempt: 0, generation, occurredAt: nowIso,
+        dedupeKey: `${follower.id}|group|${current.id}|${generation}`,
+      });
+    }
+    logEvent("info", "uol_theater_group_merged", {
+      leaderId: current.id, members: ordered.length,
+    });
+    return this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", current.id).toArray()[0];
+  }
+
   async processDeliveryQueue(
     now,
     {
@@ -4346,7 +4422,15 @@ export class UolTelegramShadow extends DurableObject {
     }
     const actionable = [];
 
-    for (const row of candidates) {
+    for (let candidate of candidates) {
+      // Ofertas de teatro ficam retidas e, ao sair, as da mesma peça viram uma
+      // única mensagem em lista. Shows nunca passam por aqui.
+      if (isTheaterLink(candidate.link)) {
+        if (isTheaterHeld(candidate, now, this.env)) continue;
+        candidate = this.mergeTheaterGroup(candidate, now, generation);
+        if (!candidate) continue;
+      }
+      const row = candidate;
       const rowIsPriority = priority.has(row.id);
       const rowIsRecentPriority = budget.reason === "quota_reserve" &&
         isRecentDeliveryDecision(row, now);
@@ -4832,6 +4916,7 @@ export class UolTelegramShadow extends DurableObject {
        SELECT id FROM offers
        WHERE first_seen_at >= ?
          AND discord_sent_at <> ''
+         AND group_items_json NOT LIKE '%mergedInto%'
          AND NOT ${beeperLinkExcludedSql("link")}
          AND (
            lower(link) LIKE '%/campanhasdeingresso/%' OR
@@ -4846,6 +4931,7 @@ export class UolTelegramShadow extends DurableObject {
   enqueueBeeperOffer(row) {
     const configuration = beeperGatewayConfiguration(this.env);
     if (!configuration.enabled || !row?.id || isBeeperLinkExcluded(row.link) ||
+        String(row.group_items_json || "").includes("mergedInto") ||
         !isTicketCampaign(rowToOffer(row))) {
       return false;
     }

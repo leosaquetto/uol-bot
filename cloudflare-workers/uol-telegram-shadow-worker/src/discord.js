@@ -64,6 +64,13 @@ function boundedDiscordDescription(value, maxLength) {
   return `${text.slice(0, prefixLength).trimEnd()}${DISCORD_TRUNCATION_SUFFIX}`;
 }
 
+function groupedLines(offer) {
+  const grouped = offer?.groupedOffers?.items?.length > 1 ? offer.groupedOffers : null;
+  return grouped
+    ? grouped.items.map((item) => [item.label, item.link].filter(Boolean).join(" ➜ "))
+    : null;
+}
+
 function discordOfferFields(offer, link) {
   const fields = [];
   const addField = (name, value, maxLength, inline = false) => {
@@ -73,7 +80,9 @@ function discordOfferFields(offer, link) {
   addField("Validade", offer?.validity, DISCORD_EMBED_LIMITS.validity);
   addField("Parceiro", offer?.partnerName, DISCORD_EMBED_LIMITS.partner, true);
   addField("Categoria", offer?.category, DISCORD_EMBED_LIMITS.category, true);
-  addField("URL da oferta", link, DISCORD_EMBED_LIMITS.url);
+  const lines = groupedLines(offer);
+  if (lines) addField("Datas e links", lines.join("\n"), 1024);
+  else addField("URL da oferta", link, DISCORD_EMBED_LIMITS.url);
   return fields;
 }
 
@@ -90,8 +99,10 @@ export function buildDiscordPayload(
   offer,
   { soldOutAt = "", publishedAt = "" } = {},
 ) {
+  const groupLines = groupedLines(offer);
   const title = boundedDiscordText(
-    offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL",
+    (groupLines && offer.groupedOffers.title) || offer?.title || offer?.previewTitle ||
+      "Novo benefício do Clube UOL",
     DISCORD_EMBED_LIMITS.title,
   );
   const link = String(offer?.link || "").trim();
@@ -133,7 +144,9 @@ export function buildDiscordPayload(
   if (imageUrl) embed.image = { url: imageUrl };
   return {
     username: "Clube UOL",
-    content: `${soldOut ? "❌" : "🚨"} **${decoratedTitle}**${link ? `\n${link}` : ""}`,
+    content: `${soldOut ? "❌" : "🚨"} **${decoratedTitle}**${
+      groupLines ? `\n${groupLines.join("\n")}` : link ? `\n${link}` : ""
+    }`,
     embeds: [embed],
     allowed_mentions: { parse: [] },
   };

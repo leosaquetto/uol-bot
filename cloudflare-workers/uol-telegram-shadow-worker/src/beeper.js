@@ -222,6 +222,14 @@ export function buildBeeperOfferText(offer) {
   const title = cleanText(
     offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL",
   );
+  const grouped = offer?.groupedOffers?.items?.length > 1 ? offer.groupedOffers : null;
+  if (grouped) {
+    const groupTitle = cleanText(grouped.title || title);
+    return [
+      `🚨 ${groupTitle}`,
+      ...grouped.items.map((item) => [item.label, item.link].filter(Boolean).join(" ➜ ")),
+    ].join("\n");
+  }
   const link = String(offer?.link || "").trim();
   return [`🚨 ${title}`, link].filter(Boolean).join("\n");
 }

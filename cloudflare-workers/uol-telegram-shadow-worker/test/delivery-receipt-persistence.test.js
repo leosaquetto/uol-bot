@@ -6,6 +6,7 @@ import test from "node:test";
 import { build } from "esbuild";
 import { Log, LogLevel, Miniflare, Response as MiniflareResponse } from "miniflare";
 import { cleanText, isTicketCampaign } from "../src/core.js";
+import { isTheaterHeld, isTheaterLink, parseGroupedOffers } from "../src/theater-group.js";
 import { classifyDeliveryRow, deliveryConfiguration, deliveryRetryAt,
   isAmbiguousDeliveryError } from "../src/delivery-state.js";
 import { recordDeliveryEvent, trimDeliveryEvents } from "../src/delivery-ledger.js";
@@ -62,7 +63,7 @@ function fixture(t, target, { fault, failLedger = false, imageFailure = false } 
   const dependencies = {
     cleanText, isTicketCampaign, classifyDeliveryRow, deliveryConfiguration,
     deliveryRetryAt, isAmbiguousDeliveryError, chooseDeliveryBudget,
-    isRecentDeliveryDecision, RECENT_DELIVERY_PRIORITY_MS,
+    isRecentDeliveryDecision, RECENT_DELIVERY_PRIORITY_MS, isTheaterLink, isTheaterHeld, parseGroupedOffers,
     deferredMainDeliveryState, mainImageDeliveryOffer, telegramConfiguration,
     TELEGRAM_MUTATION_TIMEOUT_SECONDS, discordConfiguration,
     writeDeliveryEvent: recordDeliveryEvent, trimDeliveryEvents,
@@ -250,6 +251,7 @@ test("workerd SQLite preserves the receipt and quarantine with rowsWritten-only 
       contents: `
         import { DurableObject } from "cloudflare:workers";
         import { cleanText, isTicketCampaign } from "./core.js";
+        import { isTheaterHeld, isTheaterLink, parseGroupedOffers } from "./theater-group.js";
         import { classifyDeliveryRow, deliveryConfiguration, deliveryRetryAt,
           isAmbiguousDeliveryError } from "./delivery-state.js";
         import { recordDeliveryEvent as writeDeliveryEvent, trimDeliveryEvents } from "./delivery-ledger.js";
