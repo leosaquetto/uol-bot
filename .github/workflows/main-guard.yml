@@ -24,6 +24,7 @@ jobs:
           SHA: ${{ github.sha }}
           NTFY_SERVER: ${{ secrets.SAQUETTOOS_NTFY_SERVER }}
           NTFY_TOPIC: ${{ secrets.SAQUETTOOS_NTFY_TOPIC }}
+          NTFY_TOKEN: ${{ secrets.SAQUETTOOS_NTFY_TOKEN }}
         run: |
           python3 - <<'PY'
           import json, os, subprocess, urllib.request
@@ -52,8 +53,10 @@ jobs:
               payload = {'topic': os.environ['NTFY_TOPIC'], 'title': title, 'priority': 4,
                          'message': json.dumps(envelope, ensure_ascii=False, separators=(',', ':'))}
               server = (os.environ.get('NTFY_SERVER') or 'https://ntfy.sh').rstrip('/') + '/'
-              req = urllib.request.Request(server, data=json.dumps(payload).encode(), method='POST',
-                                           headers={'Content-Type': 'application/json'})
+              headers = {'Content-Type': 'application/json'}
+              if os.environ.get('NTFY_TOKEN'):
+                  headers['Authorization'] = 'Bearer ' + os.environ['NTFY_TOKEN']
+              req = urllib.request.Request(server, data=json.dumps(payload).encode(), method='POST', headers=headers)
               urllib.request.urlopen(req, timeout=20).read()
           if problems:
               raise SystemExit(1)

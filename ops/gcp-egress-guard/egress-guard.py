@@ -27,8 +27,11 @@ def notify(identifier, title, body):
     envelope = {'id': identifier, 'source': 'saquettoos', 'title': title, 'body': body[:3800], 'route': 'saquettoOS://home'}
     payload = {'topic': config['topic'], 'title': title, 'priority': 4,
                'message': json.dumps(envelope, ensure_ascii=False, separators=(',', ':'))}
+    headers = {'Content-Type': 'application/json'}
+    if config.get('token'):
+        headers['Authorization'] = 'Bearer ' + config['token']
     request = urllib.request.Request(config['server'].rstrip('/') + '/', data=json.dumps(payload).encode(), method='POST',
-                                     headers={'Content-Type': 'application/json'})
+                                     headers=headers)
     urllib.request.urlopen(request, timeout=20).read()
 
 
