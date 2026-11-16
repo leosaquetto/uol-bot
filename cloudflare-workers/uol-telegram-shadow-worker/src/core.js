@@ -1,6 +1,8 @@
 const BASE_URL = "https://clube.uol.com.br";
 const DAY_SECONDS = 86_400;
 const FREE_TIER_ROW_WRITES_PER_DAY = 100_000;
+// How long a previous-day account sample may stand in after 00:00 UTC.
+const ROLLOVER_GRACE_MS = 45 * 60_000;
 const FREE_TIER_ROW_READS_PER_DAY = 5_000_000;
 
 export function parseRuntimeSnapshot(value) {
@@ -174,17 +176,34 @@ export function storageWriteBudget({ localRowsWritten = 0, sample = {}, now = ne
   limit = FREE_TIER_ROW_WRITES_PER_DAY, ceiling = 80_000 } = {}) {
   const instant = now instanceof Date ? now : new Date(now);
   const day = instant.toISOString().slice(0, 10);
-  const age = instant.getTime() - Date.parse(String(sample.observedAt || ""));
-  const globalFresh = sample.day === day && Number.isFinite(age) && age >= -60_000 && age <= 30 * 60_000;
+  const observed = Date.parse(String(sample.observedAt || ""));
+  const age = instant.getTime() - observed;
+  const sameDayFresh = sample.day === day && Number.isFinite(age) && age >= -60_000 && age <= 30 * 60_000;
+  // UTC rollover grace: Cloudflare's daily counter restarts at 00:00 UTC, but the
+  // first sample of the new day only arrives after the next collection (15 min)
+  // plus Analytics lag. A previous-day sample that was fresh at midnight and
+  // below the maintenance ceiling bounds the first minutes of the new day:
+  // assume the others write twice yesterday's average rate since midnight.
+  const midnight = Date.parse(`${day}T00:00:00.000Z`);
+  const sinceMidnight = instant.getTime() - midnight;
+  const previousDay = new Date(midnight - 1).toISOString().slice(0, 10);
+  const previousTotal = Number(sample.accountRowsWritten);
+  const rolloverGrace = sample.day === previousDay && sinceMidnight >= 0 &&
+    sinceMidnight <= ROLLOVER_GRACE_MS && Number.isFinite(observed) &&
+    observed <= midnight && midnight - observed <= 30 * 60_000 &&
+    Number.isFinite(previousTotal) && previousTotal >= 0 && previousTotal < ceiling;
+  const globalFresh = sameDayFresh || rolloverGrace;
   // Add all locally measured writes since receipt. This is conservative: the
   // next account sample may already include part of that increment.
   const localIncrement = sample.day === day
     ? Math.max(0, localRowsWritten - Number(sample.localRowsWrittenAtReceipt || 0)) : 0;
-  const accountRowsWritten = Math.max(localRowsWritten,
+  const rolloverEstimate = rolloverGrace
+    ? localRowsWritten + Math.ceil(previousTotal * 2 * sinceMidnight / 86_400_000) : 0;
+  const accountRowsWritten = Math.max(localRowsWritten, rolloverEstimate,
     sample.day === day ? Number(sample.accountRowsWritten || 0) + localIncrement : 0);
   const maintenanceAllowed = globalFresh && accountRowsWritten < ceiling;
   return { accountRowsWritten, accountRowsRead: sample.day === day ? sample.accountRowsRead : null,
-    globalFresh, observedAt: sample.observedAt || "", writeLimit: limit,
+    globalFresh, rolloverGrace, observedAt: sample.observedAt || "", writeLimit: limit,
     writeMaintenanceCeiling: ceiling, writeMaintenanceAllowed: maintenanceAllowed,
     writeWithinFreeTier: accountRowsWritten < limit,
     writeGuardReason: !globalFresh ? "storage_global_metrics_stale" :

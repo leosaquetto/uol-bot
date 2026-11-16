@@ -16,10 +16,56 @@ test("global write reserve counts local increments and never treats stale/absent
 });
 
 test("UTC rollover discards prior-day aggregate and waits for fresh evidence", () => {
+  // `sample` was observed at noon: not fresh at midnight, so no grace.
   const budget = storageWriteBudget({ sample, localRowsWritten: 30, now: new Date("2026-10-11T00:00:01Z") });
   assert.equal(budget.accountRowsWritten, 30);
   assert.equal(budget.globalFresh, false);
+  assert.equal(budget.rolloverGrace, false);
   assert.equal(budget.writeMaintenanceAllowed, false);
+});
+
+test("UTC rollover grace bridges the first minutes of the day with a bounded estimate", () => {
+  // Last sample of the day, 10 min before midnight, well below the ceiling (16/11/2026 incident shape).
+  const lastOfDay = { ...sample, observedAt: "2026-10-10T23:50:00.000Z", accountRowsWritten: 43_200,
+    localRowsWrittenAtReceipt: 9_000 };
+  const at = iso => storageWriteBudget({ sample: lastOfDay, localRowsWritten: 100, now: new Date(iso) });
+  const early = at("2026-10-11T00:05:00Z");
+  assert.equal(early.globalFresh, true);
+  assert.equal(early.rolloverGrace, true);
+  assert.equal(early.writeMaintenanceAllowed, true);
+  assert.equal(early.writeGuardReason, "");
+  // 100 local + twice yesterday's average rate for 5 minutes (43,200 × 2 × 5/1440 = 300).
+  assert.equal(early.accountRowsWritten, 400);
+  assert.equal(at("2026-10-11T00:45:00Z").rolloverGrace, true);
+  // Past the window the old fail-closed rule applies.
+  const late = at("2026-10-11T00:45:01Z");
+  assert.equal(late.globalFresh, false);
+  assert.equal(late.writeGuardReason, "storage_global_metrics_stale");
+  // Before midnight the same sample is simply fresh same-day evidence.
+  assert.equal(storageWriteBudget({ sample: lastOfDay, localRowsWritten: 9_000, now: new Date("2026-10-10T23:59:00Z") }).rolloverGrace, false);
+});
+
+test("UTC rollover grace never applies to stale, near-ceiling, older or future samples", () => {
+  const base = { ...sample, observedAt: "2026-10-10T23:50:00.000Z", accountRowsWritten: 43_200 };
+  const now = new Date("2026-10-11T00:05:00Z");
+  for (const bad of [
+    { ...base, observedAt: "2026-10-10T23:29:59.000Z" },            // already stale at midnight
+    { ...base, accountRowsWritten: 80_000 },                         // yesterday reached the ceiling
+    { ...base, day: "2026-10-09", observedAt: "2026-10-09T23:50:00.000Z" }, // two days old
+    { ...base, observedAt: "2026-10-11T00:01:00.000Z" },             // claims yesterday, observed today
+    { ...base, accountRowsWritten: undefined },
+    {},
+  ]) {
+    const budget = storageWriteBudget({ sample: bad, localRowsWritten: 10, now });
+    assert.equal(budget.rolloverGrace, false, JSON.stringify(bad));
+    assert.equal(budget.writeMaintenanceAllowed, false, JSON.stringify(bad));
+  }
+  // Grace estimate that crosses the ceiling still blocks maintenance.
+  // 79,500 local + 549 estimated (79,000 × 2 × 5/1440) = 80,049 ≥ 80,000.
+  const busy = storageWriteBudget({ sample: { ...base, accountRowsWritten: 79_000 }, localRowsWritten: 79_500, now });
+  assert.equal(busy.rolloverGrace, true);
+  assert.equal(busy.writeMaintenanceAllowed, false);
+  assert.equal(busy.writeGuardReason, "storage_write_budget_guard");
 });
 
 test("usage samples are bounded nonnegative integer UTC evidence", () => {
