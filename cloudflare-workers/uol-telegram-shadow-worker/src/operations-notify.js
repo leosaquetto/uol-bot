@@ -1,5 +1,11 @@
-const OPERATIONS_TOPIC = "https://ntfy.sh/macXntfy-8130";
-const REQUEST_TIMEOUT_MS = 5_000;
+// Operational alerts travel through the owner's private ntfy -> saquettoOS
+// bridge (same NotificationEnvelope contract as claude-notify and the gcp-box
+// ready monitor). The public ntfy.sh topic timed out from Cloudflare egress and
+// is not read by saquettoOS, so it is no longer used.
+const REQUEST_TIMEOUT_MS = 8_000;
+const DEFAULT_TOPIC = "saquettoos";
+const ENVELOPE_SOURCE = "saquettoos";
+const ENVELOPE_ROUTE = "saquettoOS://home";
 const DEFAULT_RETRY_AFTER_MS = 60_000;
 
 const KIND_LABELS = Object.freeze({
@@ -49,14 +55,49 @@ function retryAfterMs(response) {
   return delay;
 }
 
+// Returns null when the private bridge is not configured. Never returns the token
+// to callers that persist or display state.
+export function operationsTransport(env = {}) {
+  const token = String(env?.OPS_NTFY_TOKEN || "").trim();
+  const topic = String(env?.OPS_NTFY_TOPIC || DEFAULT_TOPIC).trim();
+  let server;
+  try {
+    server = new URL(String(env?.OPS_NTFY_SERVER || "").trim());
+  } catch {
+    return null;
+  }
+  if (server.protocol !== "https:" || server.username || server.password || server.search ||
+    server.hash || server.pathname !== "/" || !token || /[\u0000-\u001f\u007f]/.test(token) ||
+    !/^[A-Za-z0-9_-]{1,64}$/.test(topic)) return null;
+  return { url: server.origin + "/", topic, token };
+}
+
+export function buildOperationalEnvelope(event = {}) {
+  const notification = buildOperationalNotification(event);
+  const rawId = typeof event?.id === "string" && /^[A-Za-z0-9:_-]{1,110}$/.test(event.id)
+    ? event.id : "";
+  return {
+    notification,
+    envelope: {
+      id: `uol-ops-${rawId || (event?.test === true ? `test-${Date.now()}` : "unknown")}`,
+      source: ENVELOPE_SOURCE,
+      title: notification.title,
+      body: notification.body,
+      route: ENVELOPE_ROUTE,
+    },
+  };
+}
+
 // The caller reserves and persists each attempt. Network ambiguity must not be
 // retried as a confirmed rejection, and HTTP acceptance is not a read receipt.
-export async function sendOperationalNotification(event, fetchImpl = fetch) {
+export async function sendOperationalNotification(event, env = {}, fetchImpl = fetch) {
   let timedOut = false;
   let timer;
   let phase = "request";
   try {
-    const notification = buildOperationalNotification(event);
+    const transport = operationsTransport(env);
+    if (!transport) return { status: "permanent", reason: "transport_unconfigured" };
+    const { notification, envelope } = buildOperationalEnvelope(event);
     const controller = new AbortController();
     const init = {
       method: "POST",
@@ -64,16 +105,21 @@ export async function sendOperationalNotification(event, fetchImpl = fetch) {
       // forwarding the private notification to any redirected destination.
       redirect: "manual",
       headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        Title: notification.title,
-        Priority: notification.priority,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${transport.token}`,
       },
-      body: notification.body,
+      body: JSON.stringify({
+        topic: transport.topic,
+        title: notification.title,
+        priority: Number(notification.priority),
+        message: JSON.stringify(envelope),
+      }),
       signal: controller.signal,
     };
     // Validate in the native runtime before invoking transport. A local request
     // error is a proven non-send; fetch rejection remains ambiguous.
-    new Request(OPERATIONS_TOPIC, init);
+    new Request(transport.url, init);
     const deadline = new Promise((resolve) => {
       timer = setTimeout(() => {
         timedOut = true;
@@ -82,7 +128,7 @@ export async function sendOperationalNotification(event, fetchImpl = fetch) {
       }, REQUEST_TIMEOUT_MS);
     });
     phase = "invocation";
-    const request = fetchImpl(OPERATIONS_TOPIC, init);
+    const request = fetchImpl(transport.url, init);
     phase = "fetch";
     const response = await Promise.race([
       request,
@@ -95,14 +141,27 @@ export async function sendOperationalNotification(event, fetchImpl = fetch) {
     if (!Number.isInteger(httpStatus) || httpStatus < 100 || httpStatus > 599) {
       return { status: "uncertain", reason: "response_invalid" };
     }
-    // Do not parse or expose the notification response, including its ID.
+    if (httpStatus >= 200 && httpStatus < 300) {
+      // ntfy confirms with the stored message. Only the event type and topic are
+      // checked; the response (including its ID) is never persisted or exposed.
+      let receipt = null;
+      try {
+        const text = await Promise.race([response.text(), deadline]);
+        if (timedOut) return { status: "uncertain", reason: "timeout" };
+        receipt = text && text.length <= 65_536 ? JSON.parse(text) : null;
+      } catch {
+        receipt = null;
+      }
+      if (receipt?.event === "message" && receipt?.topic === transport.topic) {
+        return { status: "accepted", reason: "http_accepted", httpStatus };
+      }
+      return { status: "uncertain", reason: "response_invalid", httpStatus };
+    }
+    // Do not parse or expose rejection bodies.
     try {
       response.body?.cancel()?.catch(() => {});
     } catch {
-      // A response-body cleanup failure cannot change an HTTP acknowledgement.
-    }
-    if (httpStatus >= 200 && httpStatus < 300) {
-      return { status: "accepted", reason: "http_accepted", httpStatus };
+      // A response-body cleanup failure cannot change the HTTP outcome.
     }
     if (httpStatus === 429 || httpStatus >= 500 && httpStatus < 600) {
       return {

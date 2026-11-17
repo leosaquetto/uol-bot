@@ -4,9 +4,20 @@ import assert from "node:assert/strict";
 import {
   buildOperationalNotification,
   sendOperationalNotification,
+  operationsTransport,
 } from "../src/operations-notify.js";
 
-test("alerta técnico usa somente o tópico fixo e campos enumerados", async () => {
+const ENV = Object.freeze({
+  OPS_NTFY_SERVER: "https://ntfy.example.test",
+  OPS_NTFY_TOKEN: "tk_private_token",
+  OPS_NTFY_TOPIC: "saquettoos",
+});
+
+function receipt(status = 200, topic = "saquettoos") {
+  return new Response(JSON.stringify({ id: "private-id", event: "message", topic }), { status });
+}
+
+test("alerta técnico vai à ponte privada com envelope saquettoOS e campos enumerados", async () => {
   let request;
   const result = await sendOperationalNotification({
     kind: "delivery-queue",
@@ -18,21 +29,52 @@ test("alerta técnico usa somente o tópico fixo e campos enumerados", async () 
     details: "secret-details",
     summary: "secret-summary",
     error: "secret-error",
-    id: "secret-id",
-  }, async (url, init) => {
+    id: "episode-1:opened",
+  }, ENV, async (url, init) => {
     request = { url, init };
-    return new Response("private notification ID", { status: 200 });
+    return receipt();
   });
-  assert.equal(request.url, "https://ntfy.sh/macXntfy-8130");
+  assert.equal(request.url, "https://ntfy.example.test/");
   assert.equal(request.init.method, "POST");
   assert.equal(request.init.redirect, "manual");
-  assert.equal(request.init.headers.Title, "UOL bot - aviso tecnico");
-  assert.equal(request.init.headers.Priority, "5");
-  assert.equal(request.init.headers["Content-Type"], "text/plain; charset=utf-8");
-  assert.match(request.init.body, /Fila de entrega/);
-  assert.doesNotMatch(JSON.stringify(request), /secret|private\.invalid/);
+  assert.equal(request.init.headers.Authorization, "Bearer tk_private_token");
+  assert.equal(request.init.headers["Content-Type"], "application/json");
+  const payload = JSON.parse(request.init.body);
+  assert.equal(payload.topic, "saquettoos");
+  assert.equal(payload.title, "UOL bot - aviso tecnico");
+  assert.equal(payload.priority, 5);
+  const envelope = JSON.parse(payload.message);
+  assert.deepEqual(Object.keys(envelope), ["id", "source", "title", "body", "route"]);
+  assert.equal(envelope.id, "uol-ops-episode-1:opened");
+  assert.equal(envelope.source, "saquettoos");
+  assert.equal(envelope.route, "saquettoOS://home");
+  assert.match(envelope.body, /Fila de entrega/);
+  assert.doesNotMatch(request.init.body, /secret|private\.invalid/);
   assert.deepEqual(result, { status: "accepted", reason: "http_accepted", httpStatus: 200 });
   assert.doesNotMatch(JSON.stringify(result), /private/);
+});
+
+test("sem ponte configurada não há envio nem ntfy.sh público", async () => {
+  for (const env of [{}, { ...ENV, OPS_NTFY_TOKEN: "" }, { ...ENV, OPS_NTFY_SERVER: "http://ntfy.example.test" },
+    { ...ENV, OPS_NTFY_SERVER: "https://user:pw@ntfy.example.test" },
+    { ...ENV, OPS_NTFY_SERVER: "https://ntfy.example.test/topic" }, { ...ENV, OPS_NTFY_TOPIC: "bad topic" }]) {
+    assert.equal(operationsTransport(env), null);
+    let calls = 0;
+    const result = await sendOperationalNotification({}, env, async () => { calls += 1; });
+    assert.equal(calls, 0);
+    assert.deepEqual(result, { status: "permanent", reason: "transport_unconfigured" });
+  }
+  assert.equal(operationsTransport({ OPS_NTFY_SERVER: "https://ntfy.example.test", OPS_NTFY_TOKEN: "t" }).topic,
+    "saquettoos");
+});
+
+test("2xx sem recibo ntfy do tópico certo é incerto", async () => {
+  for (const response of [new Response(null, { status: 204 }), new Response("not json", { status: 200 }),
+    receipt(200, "other"), new Response(JSON.stringify({ event: "open", topic: "saquettoos" }), { status: 200 })]) {
+    assert.deepEqual(await sendOperationalNotification({}, ENV, async () => response), {
+      status: "uncertain", reason: "response_invalid", httpStatus: response.status,
+    });
+  }
 });
 
 test("tipo e severidade desconhecidos não passam texto livre", () => {
@@ -52,23 +94,23 @@ test("tipo e severidade desconhecidos não passam texto livre", () => {
   assert.equal(recovered.priority, "3");
 });
 
-test("todos os HTTP 2xx significam aceitação, sem recibo de leitura", async () => {
-  for (const status of [200, 201, 202, 204, 299]) {
-    const result = await sendOperationalNotification({}, async () => new Response(null, { status }));
+test("todo HTTP 2xx com recibo ntfy é aceitação, sem recibo de leitura", async () => {
+  for (const status of [200, 201, 202, 299]) {
+    const result = await sendOperationalNotification({}, ENV, async () => receipt(status));
     assert.deepEqual(result, { status: "accepted", reason: "http_accepted", httpStatus: status });
     assert.equal(Object.hasOwn(result, "delivered"), false);
   }
 });
 
 test("rejeição de fetch é incerta e não expõe a mensagem original", async () => {
-  const result = await sendOperationalNotification({}, async () => {
+  const result = await sendOperationalNotification({}, ENV, async () => {
     throw new Error("secret network URL and token");
   });
   assert.deepEqual(result, { status: "uncertain", reason: "fetch_rejected" });
 });
 
 test("falha síncrona de invocação é separada de rejeição assíncrona", async () => {
-  const result = await sendOperationalNotification({}, () => {
+  const result = await sendOperationalNotification({}, ENV, () => {
     throw new TypeError("private transport detail");
   });
   assert.deepEqual(result, { status: "uncertain", reason: "fetch_invocation_error" });
@@ -78,7 +120,7 @@ test("falha de validação local não chama transporte nem vira erro de rede", a
   const NativeRequest = globalThis.Request;
   t.mock.method(globalThis, "Request", function () { throw new TypeError("private request detail"); });
   let calls = 0;
-  const result = await sendOperationalNotification({}, () => { calls += 1; });
+  const result = await sendOperationalNotification({}, ENV, () => { calls += 1; });
   assert.equal(calls, 0);
   assert.deepEqual(result, { status: "permanent", reason: "request_invalid" });
   t.mock.restoreAll();
@@ -88,7 +130,7 @@ test("falha de validação local não chama transporte nem vira erro de rede", a
 test("resposta inválida é incerta e não inventa HTTP", async () => {
   for (const response of [null, {}, { status: NaN }, { status: 600 },
     { get status() { throw new Error("private response detail"); } }]) {
-    assert.deepEqual(await sendOperationalNotification({}, async () => response), {
+    assert.deepEqual(await sendOperationalNotification({}, ENV, async () => response), {
       status: "uncertain", reason: "response_invalid",
     });
   }
@@ -104,13 +146,13 @@ test("teste autorizado tem identificação fixa, sem aceitar texto livre", () =>
 test("timeout é limitado, aborta e permanece incerto mesmo se fetch não rejeitar", async (t) => {
   t.mock.timers.enable({ apis: ["setTimeout"] });
   let signal;
-  const resultPromise = sendOperationalNotification({}, async (_url, init) => {
+  const resultPromise = sendOperationalNotification({}, ENV, async (_url, init) => {
     signal = init.signal;
     return new Promise(() => {});
   });
   await Promise.resolve();
   assert.equal(signal.aborted, false);
-  t.mock.timers.tick(5_000);
+  t.mock.timers.tick(8_000);
   assert.deepEqual(await resultPromise, { status: "uncertain", reason: "timeout" });
   assert.equal(signal.aborted, true);
 });
@@ -126,7 +168,7 @@ test("429 e 5xx preservam Retry-After representável, inclusive acima de uma hor
     [503, "8640000000000", 60_000],
     [504, "", 60_000],
   ]) {
-    const result = await sendOperationalNotification({}, async () => new Response("private-error", {
+    const result = await sendOperationalNotification({}, ENV, async () => new Response("private-error", {
       status,
       headers: { "Retry-After": header },
     }));
@@ -140,7 +182,7 @@ test("429 e 5xx preservam Retry-After representável, inclusive acima de uma hor
 });
 
 test("Retry-After HTTP-date acima de uma hora é respeitado", async () => {
-  const result = await sendOperationalNotification({}, async () => new Response(null, {
+  const result = await sendOperationalNotification({}, ENV, async () => new Response(null, {
     status: 503,
     headers: { "Retry-After": new Date(Date.now() + 86_400_000).toUTCString() },
   }));
@@ -150,7 +192,7 @@ test("Retry-After HTTP-date acima de uma hora é respeitado", async () => {
 
 test("demais HTTP são rejeições permanentes sem expor o corpo", async () => {
   for (const status of [301, 400, 401, 403, 404, 408, 422]) {
-    const result = await sendOperationalNotification({}, async () => new Response("private-error", { status }));
+    const result = await sendOperationalNotification({}, ENV, async () => new Response("private-error", { status }));
     assert.deepEqual(result, { status: "permanent", reason: "http_rejected", httpStatus: status });
   }
 });

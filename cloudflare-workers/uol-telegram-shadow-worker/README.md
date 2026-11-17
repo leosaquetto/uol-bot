@@ -78,8 +78,20 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
-- **Alertas operacionais:** exclusivamente no ntfy particular
-  `https://ntfy.sh/macXntfy-8130`, sem fallback Telegram/Discord. Abertura e
+- **Alertas operacionais:** exclusivamente na ponte ntfy próprio → saquettoOS
+  (desde 17/11/2026), com o mesmo envelope JSON (`id`, `source`, `title`, `body`,
+  `route`) do `claude-notify` e do monitor de readiness da gcp-box. Servidor e
+  token ficam nos secrets `OPS_NTFY_SERVER`/`OPS_NTFY_TOKEN` (exigidos no deploy;
+  enviados pelo `UOL_RELEASE_SECRETS_FILE`), tópico em `OPS_NTFY_TOPIC`. Só é
+  aceito o recibo ntfy do próprio tópico; 2xx sem recibo fica incerto. Sem a
+  ponte configurada nada é reservado. Com `OPS_NTFY_SKIP_CRITICAL=true`
+  (produção) incidentes críticos não são enviados daqui: eles deixam o readiness
+  vermelho e o monitor da gcp-box já avisa a abertura e a recuperação. A troca de
+  transporte aposenta uma vez a fila antiga (`transport_retired`) e os episódios
+  abertos, sem rajada de avisos velhos. `POST /ops-notify-test` (admin) manda um
+  aviso de teste sem tocar na fila. O tópico público antigo
+  `ntfy.sh/macXntfy-8130` estourava tempo a partir do Cloudflare e não chega ao
+  saquettoOS. Sem fallback Telegram/Discord. Abertura e
   recuperação têm eventos duráveis separados; situação inalterada fica silenciosa.
   Até 20 tentativas em 24 horas, cinco reservadas para críticos/recuperações,
   três por evento. Rejeição explícita 429/5xx usa backoff mínimo de um/cinco

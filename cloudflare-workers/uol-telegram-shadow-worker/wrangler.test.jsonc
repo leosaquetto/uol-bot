@@ -22,7 +22,10 @@
     "ADMIN_TOKEN": "vitest-admin-token-not-a-secret",
     "TELEGRAM_WEBHOOK_SECRET": "vitest-webhook-token-not-a-secret",
     "TELEGRAM_CHAT_ID": "-100111",
-    "GRUPO_COMENTARIO_ID": "-100222"
+    "GRUPO_COMENTARIO_ID": "-100222",
+    "OPS_NTFY_SERVER": "https://ntfy.example.test",
+    "OPS_NTFY_TOKEN": "vitest-ntfy-token-not-a-secret",
+    "OPS_NTFY_TOPIC": "saquettoos"
   },
   "durable_objects": {
     "bindings": [

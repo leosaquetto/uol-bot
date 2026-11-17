@@ -5,8 +5,8 @@ import { Log, LogLevel, Miniflare, Response as MiniflareResponse } from "minifla
 
 test("transporte operacional usa fetch nativo do workerd com saída interceptada", async (t) => {
   const source = await readFile(new URL("../src/operations-notify.js", import.meta.url), "utf8");
-  const topic = source.match(/const OPERATIONS_TOPIC = "([^"]+)";/)?.[1];
-  assert.ok(topic, "o destino fixo deve estar declarado no módulo real");
+  assert.doesNotMatch(source, /https:\/\/ntfy\.sh/, "o tópico público antigo não pode voltar");
+  const topic = "https://ntfy.example.test/";
   const requests = [];
   let responseStatus = 200;
   let responseDelayMs = 0;
@@ -21,7 +21,7 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
           const path = new URL(request.url).pathname;
           if (path === "/legacy") {
             try {
-              await fetch(OPERATIONS_TOPIC, { method: "POST", redirect: "error", body: "native regression" });
+              await fetch("https://ntfy.example.test/", { method: "POST", redirect: "error", body: "native regression" });
               return Response.json({ rejected: false });
             } catch (error) {
               return Response.json({
@@ -32,7 +32,8 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
           }
           let aborted = false;
           const result = await sendOperationalNotification(
-            { kind: "delivery-queue", severity: "critical", details: "excluded-private-detail" },
+            { kind: "delivery-queue", severity: "critical", details: "excluded-private-detail", id: "ep:opened" },
+            { OPS_NTFY_SERVER: "https://ntfy.example.test", OPS_NTFY_TOKEN: "tk_native", OPS_NTFY_TOPIC: "saquettoos" },
             (url, init) => {
               init.signal.addEventListener("abort", () => { aborted = true; });
               return fetch(url, init);
@@ -49,7 +50,8 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
         body: await request.text(),
       });
       if (responseDelayMs) await new Promise((resolve) => setTimeout(resolve, responseDelayMs));
-      return new MiniflareResponse(null, {
+      const ok = responseStatus >= 200 && responseStatus < 300;
+      return new MiniflareResponse(ok ? JSON.stringify({ id: "x", event: "message", topic: "saquettoos" }) : null, {
         status: responseStatus,
         headers: { Location: "https://redirect.invalid/blocked" },
       });
@@ -68,7 +70,7 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
   });
 
   await t.test("POST nativo mantém destino, cabeçalhos, corpo e aceitação 2xx", async () => {
-    for (const status of [200, 201, 202, 204, 299]) {
+    for (const status of [200, 201, 202, 299]) {
       responseStatus = status;
       const before = requests.length;
       assert.deepEqual(await dispatch(), {
@@ -79,10 +81,16 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
       const request = requests.at(-1);
       assert.ok(request.url === topic, "o fetch nativo deve usar exatamente o destino fixo");
       assert.equal(request.method, "POST");
-      assert.equal(request.headers["content-type"], "text/plain; charset=utf-8");
-      assert.equal(request.headers.title, "UOL bot - aviso tecnico");
-      assert.equal(request.headers.priority, "5");
-      assert.equal(request.body, "UOL bot: atenção necessária.\nTipo: Fila de entrega.\nNível: critical.");
+      assert.equal(request.headers["content-type"], "application/json");
+      assert.equal(request.headers.authorization, "Bearer tk_native");
+      const payload = JSON.parse(request.body);
+      assert.equal(payload.topic, "saquettoos");
+      assert.equal(payload.title, "UOL bot - aviso tecnico");
+      assert.equal(payload.priority, 5);
+      assert.deepEqual(JSON.parse(payload.message), {
+        id: "uol-ops-ep:opened", source: "saquettoos", title: "UOL bot - aviso tecnico",
+        body: "UOL bot: atenção necessária.\nTipo: Fila de entrega.\nNível: critical.", route: "saquettoOS://home",
+      });
       assert.doesNotMatch(request.body, /excluded-private-detail/);
     }
   });
@@ -100,9 +108,9 @@ test("transporte operacional usa fetch nativo do workerd com saída interceptada
     }
   });
 
-  await t.test("timeout de cinco segundos aborta o sinal do fetch nativo", async () => {
+  await t.test("timeout de oito segundos aborta o sinal do fetch nativo", async () => {
     responseStatus = 200;
-    responseDelayMs = 5_250;
+    responseDelayMs = 8_250;
     const before = requests.length;
     assert.deepEqual(await dispatch(), {
       result: { status: "uncertain", reason: "timeout" },

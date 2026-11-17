@@ -19,6 +19,7 @@ const OUTCOMES = new Set(["accepted", "uncertain", "permanent", "retryable"]);
 const OUTCOME_REASONS = new Set([
   "timeout", "http_accepted", "rate_limited", "stale", "server_error", "http_rejected", "network_error",
   "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
+  "transport_unconfigured", "transport_retired",
 ]);
 
 function timestamp(now) {
@@ -92,6 +93,23 @@ export function normalizeOperationsOutbox(original, now = new Date(), { recoverR
   const retryAt = Date.parse(original?.retryAt);
   if (Number.isFinite(retryAt) && retryAt > at) state.retryAt = iso(retryAt);
   return result(original, state);
+}
+
+// A transport change retires queued work: alerts written for the previous
+// transport describe incidents that have moved on and must not arrive as a burst.
+// Terminal records are kept as deduplication evidence.
+export function retireOperationsBacklog(original, now = new Date()) {
+  const normalized = normalizeOperationsOutbox(original, now);
+  const nowIso = iso(timestamp(now));
+  let retired = 0;
+  const events = normalized.state.events.map((event) => {
+    if (event.status !== "pending" && event.status !== "reserved") return event;
+    retired += 1;
+    return { ...event, status: "exhausted", lastReason: "transport_retired", finishedAt: nowIso };
+  });
+  const state = { ...normalized.state, events };
+  delete state.retryAt;
+  return result(original, state, { retired });
 }
 
 export function enqueueOperationsEvent(original, input, now = new Date()) {
