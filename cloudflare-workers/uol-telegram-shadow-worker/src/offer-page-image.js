@@ -4,6 +4,8 @@
 // Nada aqui grava no Durable Object: a URL é resolvida em memória a cada tentativa.
 
 const PAGE_ORIGIN = "https://clube.uol.com.br";
+// Sem User-Agent o Clube responde 405 (o fetch do Worker não manda nenhum por padrão).
+export const OFFER_PAGE_USER_AGENT = "UOLTelegramCloudflare/1.0";
 const MAX_PAGE_BYTES = 1024 * 1024;
 const BENEFIT_IMAGE_PATTERN =
   /https:\/\/[a-z0-9-]+\.cloudfront\.net\/beneficios\/[A-Za-z0-9_-]+\.(?:png|jpe?g|webp|gif)(?![A-Za-z0-9_./-])/gi;
@@ -86,7 +88,7 @@ export async function resolveOfferPageImage(
   const pageUrl = offerPageUrl(link);
   if (!pageUrl) throw new Error("offer_page_link_invalid");
   const response = await fetchImpl(pageUrl, {
-    headers: { Accept: "text/html" },
+    headers: { Accept: "text/html", "User-Agent": OFFER_PAGE_USER_AGENT },
     signal: AbortSignal.timeout(Math.max(1, timeoutMs)),
   });
   const finalUrl = String(response.url || "");
