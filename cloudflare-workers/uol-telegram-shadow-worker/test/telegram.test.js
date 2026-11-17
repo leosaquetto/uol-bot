@@ -791,6 +791,8 @@ function blockedImageFetch(calls, { pageStatus = 200, apiStatus = 403 } = {}) {
       return new Response(ticketPageHtml, { status: pageStatus, headers: { "Content-Type": "text/html" } });
     }
     if (url === pageImage) {
+      // Como o CloudFront do Clube: sem User-Agent responde 403.
+      if (!init.headers?.["User-Agent"]) return new Response("<Error/>", { status: 403 });
       return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
         status: 200,
         headers: { "Content-Type": "image/png" },
@@ -874,4 +876,19 @@ test("status diferente de 403 não busca a página da oferta", async () => {
     /^Error: offer_image_http_404$/,
   );
   assert.equal(calls.includes(ticketPageLink), false);
+});
+
+test("download de imagem para upload manda User-Agent (CloudFront responde 403 sem ele)", async () => {
+  const seen = [];
+  await editMainOfferMedia(env, { messageId: 49, offer }, async (url, init = {}) => {
+    if (url === offer.imageUrl) {
+      seen.push(init.headers?.["User-Agent"]);
+      return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), { headers: { "Content-Type": "image/png" } });
+    }
+    if (typeof init.body === "string") {
+      return new Response(JSON.stringify({ ok: false, description: "bad photo URL" }), { status: 400 });
+    }
+    return jsonResponse({ message_id: 49, photo: [{ file_id: "x", file_unique_id: "y" }] });
+  });
+  assert.deepEqual(seen, ["UOLTelegramCloudflare/1.0"]);
 });
