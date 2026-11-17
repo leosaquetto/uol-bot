@@ -4,7 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 import { reserveNextOperationsEvent } from "../src/operations-outbox.js";
 import { chooseDeliveryBudget } from "../src/queue-policy.js";
 
-const TOPIC = "https://ntfy.sh/macXntfy-8130";
+const TOPIC = "https://ntfy.example.test/";
+
+const ntfyReceipt = (status = 200) => Response.json({ id: "x", event: "message", topic: "saquettoos" }, { status });
 
 function isolateHealth(instance) {
   instance.env = { ...instance.env, UOL_API_AUTHORIZATION: "" };
@@ -31,7 +33,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     const requests = [];
     vi.stubGlobal("fetch", async (url, init) => {
       requests.push({ url: String(url), init });
-      return new Response(null, { status: 202 });
+      return ntfyReceipt(202);
     });
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-new-incident-private-ntfy");
@@ -48,7 +50,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
       expect(requests).toHaveLength(1);
       expect(requests[0].url).toBe(TOPIC);
       expect(requests[0].init.method).toBe("POST");
-      expect(requests[0].init.headers["Content-Type"]).toBe("text/plain; charset=utf-8");
+      expect(requests[0].init.headers["Content-Type"]).toBe("application/json");
       expect(requests[0].init.body).toContain("API de ofertas");
       expect(JSON.stringify(requests)).not.toMatch(/private-detail|secret-token|api\.telegram|discord\.com/);
     } finally {
@@ -57,7 +59,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
   });
 
   it("não reenvia incidente histórico ativo nem sua recuperação sem episódio ntfy", async () => {
-    const fetchSpy = vi.fn(async () => new Response(null, { status: 200 }));
+    const fetchSpy = vi.fn(async () => ntfyReceipt(200));
     vi.stubGlobal("fetch", fetchSpy);
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-historical-baseline");
@@ -89,7 +91,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     const requests = [];
     vi.stubGlobal("fetch", async (url, init) => {
       requests.push({ url: String(url), body: init.body });
-      return new Response(null, { status: requests.length === 2 ? 503 : 200 });
+      return requests.length === 2 ? new Response(null, { status: 503 }) : ntfyReceipt();
     });
     vi.useFakeTimers({ toFake: ["Date"] });
     try {
@@ -126,7 +128,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
   });
 
   it("recupera reserva de uma instância anterior como incerta sem repetir POST", async () => {
-    const fetchSpy = vi.fn(async () => new Response(null, { status: 200 }));
+    const fetchSpy = vi.fn(async () => ntfyReceipt(200));
     vi.stubGlobal("fetch", fetchSpy);
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-crash-reservation");
@@ -153,7 +155,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     const requests = [];
     vi.stubGlobal("fetch", async (url, init) => {
       requests.push({ url: String(url), method: init.method });
-      return new Response(null, { status: 200 });
+      return ntfyReceipt(200);
     });
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-capacity-still-drains");
@@ -211,7 +213,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     const requests = [];
     vi.stubGlobal("fetch", async (url) => {
       requests.push(String(url));
-      return new Response(null, { status: 202 });
+      return ntfyReceipt(202);
     });
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-terminal-capacity-regression");
@@ -362,6 +364,108 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
       expect(requests).toEqual([{
         chat_id: "-100333", from_chat_id: "-100111", message_id: 901, disable_notification: false,
       }]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("críticos ficam com o monitor da gcp-box quando OPS_NTFY_SKIP_CRITICAL está ligado", async () => {
+    const fetchSpy = vi.fn(async () => ntfyReceipt());
+    vi.stubGlobal("fetch", fetchSpy);
+    try {
+      const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-skip-critical");
+      await runInDurableObject(stub, async (instance) => {
+        isolateHealth(instance);
+        instance.env = { ...instance.env, OPS_NTFY_SKIP_CRITICAL: "true" };
+        failApi(instance);
+        expect(await instance.processOperationalHealth()).toEqual({ active: 1, alerted: 0, recovered: 0 });
+        expect(instance.loadOperationsOutbox().events).toEqual([]);
+        expect(instance.metadataValue("ops_ntfy_episode:ticket-api")).toBeFalsy();
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("sem ponte configurada não reserva nem gasta orçamento", async () => {
+    const fetchSpy = vi.fn(async () => ntfyReceipt());
+    vi.stubGlobal("fetch", fetchSpy);
+    try {
+      const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-unconfigured");
+      await runInDurableObject(stub, async (instance) => {
+        isolateHealth(instance);
+        instance.env = { ...instance.env, OPS_NTFY_TOKEN: "" };
+        failApi(instance);
+        expect((await instance.processOperationalHealth()).alerted).toBe(1);
+        const outbox = instance.loadOperationsOutbox();
+        expect(outbox.events.map(event => event.status)).toEqual(["pending"]);
+        expect(outbox.attempts).toEqual([]);
+        expect((await instance.getHealth()).operations.notificationTransport).toBe("unconfigured");
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("troca de transporte aposenta a fila antiga e episódios, sem rajada", async () => {
+    const fetchSpy = vi.fn(async () => ntfyReceipt());
+    vi.stubGlobal("fetch", fetchSpy);
+    try {
+      const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-transport-migration");
+      await runInDurableObject(stub, async (instance) => {
+        isolateHealth(instance);
+        const now = new Date();
+        const old = (id, status) => ({ id, kind: "ticket-api", severity: "warning", recovered: false,
+          createdAt: now.toISOString(), status, attempts: 0, nextAt: now.toISOString() });
+        instance.setMetadata("ops_notify_transport", "");
+        instance.setMetadata("ops_ntfy_outbox", JSON.stringify({ version: 1, attempts: [],
+          events: [old("a:opened", "pending"), old("b:opened", "pending"), old("c:opened", "accepted")] }));
+        instance.setMetadata("ops_ntfy_episode:ticket-api", "a");
+        instance.setMetadata("ops_ntfy_critical:delivery-slo", "z");
+        instance.migrateOperationsTransport(now);
+        const events = instance.loadOperationsOutbox(now).events;
+        expect(events.map(event => [event.id, event.status, event.lastReason ?? ""])).toEqual([
+          ["a:opened", "exhausted", "transport_retired"],
+          ["b:opened", "exhausted", "transport_retired"],
+          ["c:opened", "accepted", ""],
+        ]);
+        expect(instance.metadataValue("ops_ntfy_episode:ticket-api")).toBeFalsy();
+        expect(instance.metadataValue("ops_ntfy_critical:delivery-slo")).toBeFalsy();
+        expect(instance.metadataValue("ops_notify_transport")).toBe("saquettoos-ntfy-v1");
+        await instance.drainOperationalAlerts(now);
+        // Runs once: later queued work is untouched by a second call.
+        instance.setMetadata("ops_ntfy_outbox", JSON.stringify({ version: 1, attempts: [],
+          events: [old("d:opened", "pending")] }));
+        instance.migrateOperationsTransport(now);
+        expect(instance.loadOperationsOutbox(now).events[0].status).toBe("pending");
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("teste do operador manda envelope de teste sem tocar na outbox", async () => {
+    const requests = [];
+    vi.stubGlobal("fetch", async (url, init) => {
+      requests.push({ url: String(url), payload: JSON.parse(init.body) });
+      return ntfyReceipt();
+    });
+    try {
+      const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-operator-test");
+      await runInDurableObject(stub, async (instance) => {
+        expect(await instance.sendOperationalTest(new Date(0))).toEqual({
+          ok: true, status: "accepted", reason: "http_accepted", httpStatus: 200,
+        });
+        expect(instance.loadOperationsOutbox().events).toEqual([]);
+      });
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(TOPIC);
+      const envelope = JSON.parse(requests[0].payload.message);
+      expect(envelope.id).toBe("uol-ops-test-0");
+      expect(envelope.title).toBe("UOL bot - teste tecnico");
     } finally {
       vi.unstubAllGlobals();
     }

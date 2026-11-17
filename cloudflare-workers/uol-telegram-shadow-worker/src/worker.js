@@ -80,9 +80,9 @@ import {
   buildIncidentSignals,
   buildLatencyMetrics,
 } from "./operations.js";
-import { buildOperationalNotification, sendOperationalNotification } from "./operations-notify.js";
+import { buildOperationalNotification, operationsTransport, sendOperationalNotification } from "./operations-notify.js";
 import { enqueueOperationsEvent, reserveNextOperationsEvent,
-  completeOperationsEvent, normalizeOperationsOutbox } from "./operations-outbox.js";
+  completeOperationsEvent, normalizeOperationsOutbox, retireOperationsBacklog } from "./operations-outbox.js";
 import {
   compareOfferSources,
   sourceSnapshotSignature,
@@ -174,6 +174,7 @@ function emptyStorageStages() {
 }
 
 const PUBLIC_READINESS_CACHE_TTL_MS = 15_000;
+const OPERATIONS_TRANSPORT_VERSION = "saquettoos-ntfy-v1";
 let publicReadinessCache = {
   versionId: "",
   expiresAt: 0,
@@ -649,6 +650,12 @@ export class UolTelegramShadow extends DurableObject {
       this.migrate();
       initializeInstagramStorySchema(this.sqlExec.bind(this));
       this.loadStorageUsage();
+      try {
+        this.migrateOperationsTransport();
+      } catch {
+        // A malformed legacy outbox is normalized on its next load; startup must not fail.
+        this.setMetadataIfChanged("ops_health_error", "operations_transport_migration_failed");
+      }
     });
   }
 
@@ -3122,6 +3129,7 @@ export class UolTelegramShadow extends DurableObject {
       "http_accepted", "timeout", "network_error", "rate_limited",
       "server_error", "http_rejected",
       "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
+      "transport_unconfigured", "transport_retired",
     ]);
     const outcomes = (state.events || []).filter(event => event.lastAttemptAt)
       .sort((left, right) => String(right.lastAttemptAt).localeCompare(String(left.lastAttemptAt)))
@@ -3155,6 +3163,22 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  // One-time switch from the public ntfy.sh topic to the private saquettoOS
+  // bridge. Queued alerts and open episodes belong to the old transport: retire
+  // them so the first healthy send is a new fact, never a burst of stale ones.
+  migrateOperationsTransport(now = new Date()) {
+    if (this.metadataValue("ops_notify_transport") === OPERATIONS_TRANSPORT_VERSION) return;
+    const raw = this.metadataValue("ops_ntfy_outbox");
+    const retired = retireOperationsBacklog(raw ? JSON.parse(raw) : undefined, now);
+    if (retired.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(retired.state));
+    const keys = this.sqlExec(
+      `SELECT key FROM metadata
+       WHERE key LIKE 'ops_ntfy_episode:%' OR key LIKE 'ops_ntfy_critical:%'`,
+    ).toArray().map((row) => row.key);
+    for (const key of keys) this.setMetadataIfChanged(key, "");
+    this.setMetadata("ops_notify_transport", OPERATIONS_TRANSPORT_VERSION);
+  }
+
   loadOperationsOutbox(now = new Date()) {
     const raw = this.metadataValue("ops_ntfy_outbox");
     const parsed = raw ? JSON.parse(raw) : undefined;
@@ -3167,6 +3191,10 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   enqueueOperationalAlert(signal, recovered = false, now = new Date(), escalated = false) {
+    // Critical incidents turn readiness red, and the gcp-box ready monitor
+    // already announces that state and its recovery through the same bridge.
+    // Sending them here too would duplicate the alert on the phone.
+    if (signal.severity === "critical" && this.env?.OPS_NTFY_SKIP_CRITICAL === "true") return false;
     const episodeKey = `ops_ntfy_episode:${signal.key}`;
     let episode = this.metadataValue(episodeKey);
     if (!recovered && !escalated) {
@@ -3199,6 +3227,9 @@ export class UolTelegramShadow extends DurableObject {
   async drainOperationalAlerts(now = new Date()) {
     if(!this.saquettoosPush)this.saquettoosPush=createSaquettoOSPush({get:()=>this.metadataValue('saquettoos_push_outbox'),set:v=>this.setMetadataIfChanged('saquettoos_push_outbox',v),env:this.env,channel:'operations'});
     if (this.operationsDrainInFlight) return;
+    // Without the private bridge there is nowhere to send: leave the queue
+    // intact (stale entries expire) instead of burning the attempt budget.
+    if (!operationsTransport(this.env)) return;
     this.operationsDrainInFlight = true;
     try {
       // One bounded request per operational tick. Reservation is durable before
@@ -3207,7 +3238,7 @@ export class UolTelegramShadow extends DurableObject {
       if (reserved.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(reserved.state));
       if (!reserved.event) return;
       try{const n=buildOperationalNotification(reserved.event);this.saquettoosPush.enqueue({id:reserved.event.id,title:n.title,body:n.body});}catch{this.setMetadataIfChanged('saquettoos_push_error','enqueue_failed');}
-      const outcome = await sendOperationalNotification(reserved.event);
+      const outcome = await sendOperationalNotification(reserved.event, this.env);
       const finished = completeOperationsEvent(
         this.loadOperationsOutbox(new Date()), reserved.event.id, outcome, new Date(),
       );
@@ -3216,6 +3247,18 @@ export class UolTelegramShadow extends DurableObject {
       this.ctx.waitUntil(this.saquettoosPush.drain().catch(()=>{}));
       this.operationsDrainInFlight = false;
     }
+  }
+
+  // Operator-triggered end-to-end check of the alert bridge. It bypasses the
+  // outbox (no incident, no budget use) and returns only fixed outcome labels.
+  async sendOperationalTest(now = new Date()) {
+    const outcome = await sendOperationalNotification({
+      id: `test-${now.getTime()}`,
+      kind: "monitor",
+      severity: "info",
+      test: true,
+    }, this.env);
+    return { ok: outcome.status === "accepted", ...outcome };
   }
 
   resolveIncidentWithoutAlert(key, now = new Date()) {
@@ -8856,7 +8899,7 @@ export class UolTelegramShadow extends DurableObject {
         failedRunStreak: this.failedRunStreak(),
         activeIncidents: incidents.filter((incident) => incident.status === "active").length,
         alertUsesMainFallback: false,
-        notificationTransport: "ntfy",
+        notificationTransport: operationsTransport(this.env) ? "saquettoos-ntfy" : "unconfigured",
         notificationOutbox: this.operationsNotificationSummary(),
         notificationDiagnostics: this.operationsNotificationDiagnostics(),
         incidents,
@@ -9834,6 +9877,13 @@ export default {
         }
         await readRequestJson(request, 16 * 1024, true);
         return jsonResponse(await stub.runNow());
+      }
+      if (request.method === "POST" && url.pathname === "/ops-notify-test") {
+        if (!(await isAuthorized(request, env))) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        await readRequestJson(request, 16 * 1024, true);
+        return jsonResponse(await stub.sendOperationalTest());
       }
       if (request.method === "POST" && url.pathname === "/maintenance") {
         if (!(await isAuthorized(request, env))) {

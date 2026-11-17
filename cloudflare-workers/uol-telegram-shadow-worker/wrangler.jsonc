@@ -50,6 +50,8 @@
     "TICKET_SOLD_OUT_PROBES_PER_SCAN": "1",
     "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS": "2",
     "TICKET_CODE_DISCOVERY_ENABLED": "true",
+    "OPS_NTFY_TOPIC": "saquettoos",
+    "OPS_NTFY_SKIP_CRITICAL": "true",
     "PUBLIC_BASE_URL": "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev"
   },
   "secrets": {
@@ -71,7 +73,9 @@
       "INSTAGRAM_WAKE_RELAY_TOKEN",
       "HUNTER_INTAKE_CLIENTS",
       "HUNTER_INSTAGRAM_SESSION",
-      "HUNTER_UOL_ACCOUNTS"
+      "HUNTER_UOL_ACCOUNTS",
+      "OPS_NTFY_SERVER",
+      "OPS_NTFY_TOKEN"
     ]
   },
   "durable_objects": {

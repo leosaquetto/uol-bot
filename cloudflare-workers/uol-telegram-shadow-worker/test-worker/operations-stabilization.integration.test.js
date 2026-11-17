@@ -2,6 +2,8 @@ import { env } from "cloudflare:workers";
 import { evictDurableObject, runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const ntfyReceipt = (status = 200) => Response.json({ id: "x", event: "message", topic: "saquettoos" }, { status });
+
 const START = Date.parse("2026-10-15T10:00:00.000Z");
 const MINUTE = 60_000;
 
@@ -33,7 +35,7 @@ describe("estabilização durável dos alertas técnicos", () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(START);
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 202 })));
+    vi.stubGlobal("fetch", vi.fn(async () => ntfyReceipt(202)));
   });
 
   afterEach(() => {
@@ -141,7 +143,7 @@ describe("estabilização durável dos alertas técnicos", () => {
 
   it("escala warning a crítico uma vez sem repetir abertura incerta", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValueOnce(new TypeError("intercepted"))
-      .mockResolvedValue(new Response(null, { status: 202 })));
+      .mockImplementation(async () => ntfyReceipt(202)));
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-critical-escalation-once-uncertain");
     await runInDurableObject(stub, async instance => {
       isolateHealth(instance);
