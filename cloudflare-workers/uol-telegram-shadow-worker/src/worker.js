@@ -8531,6 +8531,28 @@ export class UolTelegramShadow extends DurableObject {
       return { ok: true, id: row.id, target: normalizedTarget, status: row.status };
     }
 
+    // Reabre só a troca tardia de texto por foto (editMessageMedia na mesma mensagem):
+    // nunca reenvia a oferta. Dá uma única tentativa nova, como o requeue de esgotado.
+    if (normalizedTarget === "main_image") {
+      const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+      if (this.mainImageUpgradeInFlight) throw new Error("delivery_in_flight_requires_resolution");
+      const hasImage = Boolean(String(
+        row.telegram_photo_file_id || row.image_url || row.card_image_url || row.partner_image_url || "",
+      ).trim());
+      if (row.telegram_image_strategy !== "text_timeout" || row.main_message_kind !== "text" ||
+          !(Number(row.main_message_id) > 0) || !hasImage ||
+          Number(row.main_image_upgrade_attempts || 0) < maxAttempts) {
+        throw new Error("delivery_main_image_not_requeueable");
+      }
+      this.sqlExec(`UPDATE offers SET main_image_upgrade_attempts = ?,
+        main_image_upgrade_error = '', main_image_upgrade_next_attempt_at = '' WHERE id = ?`,
+        maxAttempts - 1, row.id);
+      this.recordDeliveryLedgerEvent({ dedupeKey: crypto.randomUUID(), offerId: row.id, target: "main", operation: "image_upgrade",
+        state: "requeued", attempt: Number(row.main_image_upgrade_attempts || 0), generation: row.delivery_generation,
+        externalId: String(row.main_message_id) });
+      return { ok: true, id: row.id, target: normalizedTarget, status: row.status };
+    }
+
     if (normalizedTarget === "comment") {
       if (!row.discussion_message_id || row.comment_sent_at) {
         throw new Error("delivery_comment_not_requeueable");
