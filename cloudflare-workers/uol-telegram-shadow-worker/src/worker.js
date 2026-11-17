@@ -95,6 +95,7 @@ import {
 import { renderDashboard } from "./dashboard.js";
 import {
   buildGroupedOffers, isTheaterHeld, isTheaterLink, parseGroupedOffers, theaterGroupKey,
+  theaterHoldUntil,
 } from "./theater-group.js";
 import { nextImageCircuitState } from "./image-strategy.js";
 import {
@@ -2962,6 +2963,7 @@ export class UolTelegramShadow extends DurableObject {
     ).toISOString();
     const queueIssues = this.sqlExec(
       `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title, status,
+              link, first_seen_at,
               delivery_unknown_target, delivery_dead_letter_reason,
               main_delivery_error, main_delivery_unknown_at,
               canal2_delivery_error, discord_delivery_error,
@@ -2998,6 +3000,14 @@ export class UolTelegramShadow extends DurableObject {
       const slowMain = !commentUnknown && ![
         "delivery_dead_letter", "delivery_unknown", "delivery_blocked_configuration",
       ].includes(row.status);
+      // Theatre offers are held on purpose (theater-group.js) so dates of the same
+      // show go out as one message; the grace only starts when that hold ends.
+      // Without this, a check during the hold opened a false critical incident
+      // (17/11, "não chegou ao canal principal no prazo", resolved by itself).
+      const theaterHold = slowMain ? theaterHoldUntil(row, this.env) : 0;
+      if (theaterHold > 0 && now.getTime() < theaterHold + mainGraceSeconds * 1_000) {
+        return null;
+      }
       return {
         id: row.id,
         title: row.title,
