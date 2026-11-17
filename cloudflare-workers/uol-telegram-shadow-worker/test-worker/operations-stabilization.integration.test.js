@@ -239,3 +239,36 @@ describe("estabilização durável dos alertas técnicos", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("SLO de entrega com retenção de teatro", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(START);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("não acusa entrega lenta de teatro enquanto a retenção de agrupamento está ativa", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-theater-hold-not-slow");
+    await runInDurableObject(stub, async (instance, state) => {
+      isolateHealth(instance);
+      delete instance.deliveryQueueIssues;
+      // 17/11: first seen 11:15:14, checked 63 s later, inside the 90 s hold.
+      const seen = new Date(START - 63_000).toISOString();
+      state.storage.sql.exec(
+        `INSERT INTO offers(id, link, preview_title, category, first_seen_at, last_seen_at,
+           decision_at, status, would_send_main, would_send_canal2)
+         VALUES ('theater-held', 'https://clube.uol.com.br/campanhasdeingresso/pyy-2-ingressos-22-11-teatro-uol-sp',
+           '', 'campanhasdeingresso', ?, ?, ?, 'delivery_pending', 1, 1)`, seen, seen, seen,
+      );
+      expect(instance.deliveryQueueIssues(at(0))).toEqual([]);
+      // Hold (90 s) + grace (45 s) after first seen: still pending is really slow.
+      vi.setSystemTime(Date.parse(seen) + 135_000);
+      expect(instance.deliveryQueueIssues(new Date())).toMatchObject([
+        { id: "theater-held", state: "main_delivery_slow" },
+      ]);
+    });
+  });
+});

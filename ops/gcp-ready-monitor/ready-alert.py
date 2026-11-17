@@ -5,11 +5,16 @@ Runs the repository's monitor-ready.mjs without a GitHub token (no issue updates
 change, sends one notice through the ntfy -> saquettoOS bridge (NotificationEnvelope JSON). A healthy first run is
 silent; a later return to healthy sends a recovery notice. Light by design: one node process every 5 minutes.
 """
-import hashlib, json, os, subprocess, sys, urllib.request
+import hashlib, json, os, subprocess, sys, time, urllib.request
 
 APP = os.environ.get('APP_DIR', '/opt/uol-ready-monitor')
 NTFY_CONFIG = os.environ.get('NTFY_CONFIG', '/etc/uol-ready-monitor/ntfy.json')
 STATE_FILE = os.environ.get('STATE_FILE', '/var/lib/uol-ready-monitor/state.json')
+# Reasons that are the Worker protecting the free tier on purpose, with readyz still 200: the
+# Oracle quota observer defers optional maintenance when the day's forecast passes 85%
+# (17/11 09:30-10:50 BRT). Alone they only alert if they last longer than SOFT_GRACE_SECONDS.
+SOFT_REASONS = {'maintenance_deferred'}
+SOFT_GRACE_SECONDS = int(os.environ.get('SOFT_GRACE_SECONDS', str(2 * 3600)))
 
 
 def notify(identifier, title, body):
@@ -44,19 +49,37 @@ def main():
             previous = json.load(handle)
     except (FileNotFoundError, ValueError):
         previous = None
+    soft = state != 'healthy' and bool(reasons) and set(reasons) <= SOFT_REASONS
     if (previous or {}).get('signature') == signature:
+        if (previous or {}).get('softSince'):
+            save({'state': previous.get('state'), 'signature': signature})
         return
+    if soft:
+        now = time.time()
+        since = previous.get('softSince') if (previous or {}).get('softSignature') == signature else None
+        since = since or now
+        if now - since < SOFT_GRACE_SECONDS:
+            save({**{k: v for k, v in (previous or {}).items() if k in ('state', 'signature')},
+                  'softSignature': signature, 'softSince': since})
+            return
+        reasons_note = f"\nHá {int((now - since) // 60)} min (proteção de cota que não liberou)."
+    else:
+        reasons_note = ''
     if state == 'healthy':
         if previous is not None:
             notify(f'uol-ready-{signature}-{os.urandom(4).hex()}', 'UOL normalizado', 'O Worker e o gateway UOL voltaram ao normal.')
     else:
         snap = result.get('snapshot') or {}
         body = (f"Estado: {state}\nMotivos: {', '.join(reasons) or '-'}\n"
-                f"Worker readyz HTTP {snap.get('readinessStatus')}, livez HTTP {snap.get('livenessStatus')}.")
+                f"Worker readyz HTTP {snap.get('readinessStatus')}, livez HTTP {snap.get('livenessStatus')}." + reasons_note)
         notify(f'uol-ready-{signature}-{os.urandom(4).hex()}', f'UOL: {state}', body)
+    save({'state': state, 'signature': signature})
+
+
+def save(data):
     os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
     with open(STATE_FILE + '.tmp', 'w') as handle:
-        json.dump({'state': state, 'signature': signature}, handle)
+        json.dump(data, handle)
     os.replace(STATE_FILE + '.tmp', STATE_FILE)
 
 
