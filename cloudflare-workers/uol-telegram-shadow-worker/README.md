@@ -247,7 +247,10 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
   autenticada; corpo JSON `{"mode":"shadow"}`.
 - `POST /requeue-delivery`: reprocessa `offer`, `main`, `canal2`, `discord` ou
   `comment` em dead letter/quarentena. Requeue manual de `unknown` exige
-  `/resolve-delivery`; nenhum `unknown` é liberado por prazo.
+  `/resolve-delivery`; nenhum `unknown` é liberado por prazo. O alvo
+  `main_image` reabre uma única tentativa de trocar por foto (edição da mesma
+  mensagem, sem reenvio) uma oferta que ficou só em texto (`text_timeout`) com
+  as tentativas de upgrade esgotadas.
 - `POST /resolve-delivery`: registra a confirmação humana de um resultado
   `unknown` como `sent` (com o ID externo) ou `not_sent` (retry seguro), sem
   duplicar silenciosamente. Para `beeper`, `sent` exige uma referência de
