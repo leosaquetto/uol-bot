@@ -12,6 +12,7 @@ import {
   isTelegramMessageNotModifiedError,
   shouldDeferTransportFallback,
 } from "./transport-error.js";
+import { resolveOfferPageImage } from "./offer-page-image.js";
 
 export const TELEGRAM_MUTATION_TIMEOUT_SECONDS = 8;
 const TELEGRAM_TIMEOUT_MS = TELEGRAM_MUTATION_TIMEOUT_SECONDS * 1_000;
@@ -204,17 +205,46 @@ export async function telegramCall(
   return data.result;
 }
 
+async function fetchOfferImage(imageUrl, { offerLink = "", timeoutMs }, fetchImpl) {
+  const response = await fetchImpl(imageUrl, {
+    headers: { Accept: "image/*" },
+    signal: AbortSignal.timeout(timeoutMs()),
+  });
+  if (response.ok) return response;
+  const primaryError = `offer_image_http_${response.status}`;
+  // Só o 403 indica arte retirada do CloudFront; outros status seguem o retry normal.
+  if (response.status !== 403 || !offerLink) throw new Error(primaryError);
+  await response.body?.cancel().catch(() => {});
+  let pageImageUrl;
+  try {
+    pageImageUrl = await resolveOfferPageImage(offerLink, {
+      excludeUrl: imageUrl,
+      timeoutMs: timeoutMs(),
+    }, fetchImpl);
+  } catch (error) {
+    throw new Error(`${primaryError}|${cleanText(error?.message || error).slice(0, 80)}`);
+  }
+  const fallback = await fetchImpl(pageImageUrl, {
+    headers: { Accept: "image/*" },
+    signal: AbortSignal.timeout(timeoutMs()),
+  });
+  if (!fallback.ok) {
+    await fallback.body?.cancel().catch(() => {});
+    throw new Error(`${primaryError}|offer_page_image_http_${fallback.status}`);
+  }
+  return fallback;
+}
+
 async function uploadTelegramPhoto(
   env,
-  { chatId, imageUrl, caption, disableNotification, imageDeadlineAt = "" },
+  { chatId, imageUrl, offerLink = "", caption, disableNotification, imageDeadlineAt = "" },
   fetchImpl,
 ) {
   const { token } = telegramConfig(env);
-  const imageResponse = await fetchImpl(imageUrl, {
-    headers: { Accept: "image/*" },
-    signal: AbortSignal.timeout(deadlineTimeoutMs(imageDeadlineAt, IMAGE_FETCH_TIMEOUT_MS)),
-  });
-  if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
+  const imageResponse = await fetchOfferImage(imageUrl, {
+    offerLink,
+    timeoutMs: () => deadlineTimeoutMs(imageDeadlineAt, IMAGE_FETCH_TIMEOUT_MS),
+  }, fetchImpl);
   const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
   const bytes = await readImageBytes(imageResponse);
@@ -257,15 +287,14 @@ async function uploadTelegramPhoto(
 
 async function uploadTelegramPhotoEdit(
   env,
-  { chatId, messageId, imageUrl, caption },
+  { chatId, messageId, imageUrl, offerLink = "", caption },
   fetchImpl,
 ) {
   const { token } = telegramConfig(env);
-  const imageResponse = await fetchImpl(imageUrl, {
-    headers: { Accept: "image/*" },
-    signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
-  });
-  if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
+  const imageResponse = await fetchOfferImage(imageUrl, {
+    offerLink,
+    timeoutMs: () => IMAGE_FETCH_TIMEOUT_MS,
+  }, fetchImpl);
   const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
   const bytes = await readImageBytes(imageResponse);
@@ -394,6 +423,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
           imageUrl,
+          offerLink: offer?.link,
           caption,
           disableNotification,
           imageDeadlineAt: imageMutationDeadlineAt,
@@ -500,6 +530,7 @@ export async function editMainOfferMedia(
     chatId: mainChatId,
     messageId: Number(messageId || 0),
     imageUrl,
+    offerLink: offer?.link,
     caption,
   }, fetchImpl);
   imageAttempts.push({ strategy: "upload", ok: true, error: "" });

@@ -775,3 +775,103 @@ test('sold-out edit repairs a proven text/caption mismatch on the same message',
     assert.deepEqual(methods,['editMessageText','editMessageCaption']);assert.equal(result.messageKind,'photo');assert.equal(result.ok,true);
   }
 });
+
+const ticketPageLink = "https://clube.uol.com.br/campanhasdeingresso/pYy-2-ingressos-22-11-teatro-uol-sp";
+const blockedApiImage = "https://ddrxgn8ucibei.cloudfront.net/beneficios/6afc371703617_268d9b63116b15afe2ddd2618ca702f9.png";
+const pageImage = "https://ddrxgn8ucibei.cloudfront.net/beneficios/cb91a74333d3abf77a4f67291087f16f.png";
+const ticketPageHtml = `<meta property="og:image" content="${pageImage}">
+<img src="https://d310rdc9v8uuq.cloudfront.net/beneficios_categorias/0b31e54ad4def1df288c491e48ab0ce7.png">
+<div id="ilustracoes"><img src="${pageImage}"></div>`;
+
+function blockedImageFetch(calls, { pageStatus = 200, apiStatus = 403 } = {}) {
+  return async (url, init = {}) => {
+    calls.push(url);
+    if (url === blockedApiImage) return new Response("<Error/>", { status: apiStatus });
+    if (url === ticketPageLink) {
+      return new Response(ticketPageHtml, { status: pageStatus, headers: { "Content-Type": "text/html" } });
+    }
+    if (url === pageImage) {
+      return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+        status: 200,
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    if (typeof init.body === "string") {
+      return new Response(JSON.stringify({ ok: false, description: "Bad Request: wrong type of the web page content" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    assert.ok(init.body instanceof FormData);
+    assert.equal(init.body.get("photo").name, "oferta.png");
+    return jsonResponse({
+      message_id: 77,
+      photo: [{ file_id: "page-photo", file_unique_id: "page-unique" }],
+    });
+  };
+}
+
+test("imageUrl com 403 sobe a arte da página da oferta no envio principal", async () => {
+  const calls = [];
+  const result = await sendMainOffer(env, {
+    ...offer,
+    link: ticketPageLink,
+    imageUrl: blockedApiImage,
+  }, blockedImageFetch(calls));
+
+  assert.equal(result.messageKind, "photo");
+  assert.equal(result.imageStrategy, "upload");
+  assert.equal(result.photoFileId, "page-photo");
+  assert.deepEqual(result.imageAttempts.map((attempt) => [attempt.strategy, attempt.ok]), [
+    ["remote_url", false],
+    ["upload", true],
+  ]);
+  assert.deepEqual(calls.filter((url) => !url.includes("api.telegram.org")), [
+    blockedApiImage,
+    ticketPageLink,
+    pageImage,
+  ]);
+});
+
+test("upgrade tardio usa a arte da página quando imageUrl responde 403", async () => {
+  const calls = [];
+  const result = await editMainOfferMedia(env, {
+    messageId: 77,
+    offer: { ...offer, link: ticketPageLink, imageUrl: blockedApiImage },
+  }, blockedImageFetch(calls));
+
+  assert.equal(result.imageStrategy, "upload_edit");
+  assert.equal(result.photoFileId, "page-photo");
+  assert.ok(calls.includes(pageImage));
+});
+
+test("página indisponível mantém o erro original e cai para texto", async () => {
+  const calls = [];
+  const result = await sendMainOffer(env, {
+    ...offer,
+    link: ticketPageLink,
+    imageUrl: blockedApiImage,
+  }, async (url, init) => {
+    if (url.endsWith("/sendMessage")) {
+      calls.push(url);
+      return jsonResponse({ message_id: 78 });
+    }
+    return blockedImageFetch(calls, { pageStatus: 503 })(url, init);
+  });
+
+  assert.equal(result.messageKind, "text");
+  assert.match(result.imageError, /offer_image_http_403\|offer_page_http_503/);
+  assert.equal(calls.includes(pageImage), false);
+});
+
+test("status diferente de 403 não busca a página da oferta", async () => {
+  const calls = [];
+  await assert.rejects(
+    editMainOfferMedia(env, {
+      messageId: 77,
+      offer: { ...offer, link: ticketPageLink, imageUrl: blockedApiImage },
+    }, blockedImageFetch(calls, { apiStatus: 404 })),
+    /^Error: offer_image_http_404$/,
+  );
+  assert.equal(calls.includes(ticketPageLink), false);
+});
