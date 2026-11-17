@@ -21,7 +21,11 @@ function stubFetch(calls) {
     // Discord também não conseguiu baixar a arte: o embed volta sem proxy_url.
     if (href.includes("discord.invalid/api/webhooks/1/token/messages/555")) return Response.json({ id: "555", embeds: [] });
     if (href === apiImage) return new Response("<Error/>", { status: 403 });
-    if (href === link) return new Response(pageHtml, { headers: { "Content-Type": "text/html" } });
+    if (href === link) {
+      // Como o Clube em produção: sem User-Agent responde 405.
+      if (!new Headers(init.headers).get("User-Agent")) return new Response("", { status: 405 });
+      return new Response(pageHtml, { headers: { "Content-Type": "text/html" } });
+    }
     if (href === pageImage || href === okImage) return png();
     if (href.includes("api.telegram.org")) {
       // Telegram não consegue baixar a URL sozinho; só o upload multipart passa.

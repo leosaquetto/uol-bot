@@ -81,11 +81,12 @@ test("ignora prefixos parecidos e extensões que não são imagem", () => {
 test("busca a página da oferta e devolve a arte", async () => {
   const calls = [];
   const imageUrl = await resolveOfferPageImage(LINK, { excludeUrl: API_IMAGE }, async (url, init) => {
-    calls.push({ url, accept: init.headers.Accept });
+    calls.push({ url, accept: init.headers.Accept, userAgent: init.headers["User-Agent"] });
     return latin1Response(PAGE_HTML);
   });
   assert.equal(imageUrl, PAGE_IMAGE);
-  assert.deepEqual(calls, [{ url: LINK, accept: "text/html" }]);
+  // Sem User-Agent o Clube responde 405 ao Worker (falha real de 17/11 após o #154).
+  assert.deepEqual(calls, [{ url: LINK, accept: "text/html", userAgent: "UOLTelegramCloudflare/1.0" }]);
 });
 
 test("falhas da página viram códigos offer_page_*", async () => {
