@@ -26,7 +26,11 @@ function stubFetch(calls) {
       if (!new Headers(init.headers).get("User-Agent")) return new Response("", { status: 405 });
       return new Response(pageHtml, { headers: { "Content-Type": "text/html" } });
     }
-    if (href === pageImage || href === okImage) return png();
+    if (href === pageImage || href === okImage) {
+      // Como o CloudFront do Clube: sem User-Agent responde 403.
+      if (!new Headers(init.headers).get("User-Agent")) return new Response("<Error/>", { status: 403 });
+      return png();
+    }
     if (href.includes("api.telegram.org")) {
       // Telegram não consegue baixar a URL sozinho; só o upload multipart passa.
       if (typeof init.body === "string") {

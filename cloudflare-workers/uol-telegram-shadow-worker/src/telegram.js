@@ -12,7 +12,7 @@ import {
   isTelegramMessageNotModifiedError,
   shouldDeferTransportFallback,
 } from "./transport-error.js";
-import { resolveOfferPageImage } from "./offer-page-image.js";
+import { OFFER_PAGE_USER_AGENT, resolveOfferPageImage } from "./offer-page-image.js";
 
 export const TELEGRAM_MUTATION_TIMEOUT_SECONDS = 8;
 const TELEGRAM_TIMEOUT_MS = TELEGRAM_MUTATION_TIMEOUT_SECONDS * 1_000;
@@ -205,9 +205,12 @@ export async function telegramCall(
   return data.result;
 }
 
+// O CloudFront do Clube responde 403 a downloads sem User-Agent (o fetch do Worker não manda nenhum).
+const IMAGE_FETCH_HEADERS = { Accept: "image/*", "User-Agent": OFFER_PAGE_USER_AGENT };
+
 async function fetchOfferImage(imageUrl, { offerLink = "", timeoutMs }, fetchImpl) {
   const response = await fetchImpl(imageUrl, {
-    headers: { Accept: "image/*" },
+    headers: IMAGE_FETCH_HEADERS,
     signal: AbortSignal.timeout(timeoutMs()),
   });
   if (response.ok) return response;
@@ -225,7 +228,7 @@ async function fetchOfferImage(imageUrl, { offerLink = "", timeoutMs }, fetchImp
     throw new Error(`${primaryError}|${cleanText(error?.message || error).slice(0, 80)}`);
   }
   const fallback = await fetchImpl(pageImageUrl, {
-    headers: { Accept: "image/*" },
+    headers: IMAGE_FETCH_HEADERS,
     signal: AbortSignal.timeout(timeoutMs()),
   });
   if (!fallback.ok) {
