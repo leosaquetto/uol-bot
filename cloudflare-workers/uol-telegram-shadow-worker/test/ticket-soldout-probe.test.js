@@ -146,6 +146,19 @@ test("consulta URL sem cache e classifica redirect para a home", async () => {
   assert.equal(request.url, "https://clube.uol.com.br/campanhasdeingresso/pbx-show");
   assert.equal(request.init.redirect, "follow");
   assert.equal(request.init.headers["Cache-Control"], "no-cache");
+  assert.equal(request.init.headers["User-Agent"], "UOLTelegramCloudflare/1.0");
+});
+
+test("página presente é reconhecida mesmo com o Clube recusando pedidos sem User-Agent", async () => {
+  // Comportamento real do clube.uol.com.br (17/11): sem User-Agent responde 405,
+  // o que deixava toda sonda como indeterminate:http_405.
+  const result = await probeTicketOfferUrl(
+    "https://clube.uol.com.br/campanhasdeingresso/pYy-2-ingressos-22-11-teatro-uol-sp",
+    async (url, init) => init.headers?.["User-Agent"]
+      ? new Response("<html><div id=beneficio>2 INGRESSOS</div></html>", { status: 200 })
+      : new Response("", { status: 405 }),
+  );
+  assert.deepEqual(result, { result: "available", reason: "offer_page" });
 });
 
 test("não marca como esgotado um timeout ou página vazia", async () => {

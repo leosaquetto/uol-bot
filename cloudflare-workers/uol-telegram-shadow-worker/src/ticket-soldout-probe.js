@@ -1,6 +1,8 @@
 const DEFAULT_CONFIRM_GONE_COUNT = 2;
 const DEFAULT_CONFIRM_DELAY_SECONDS = 5;
 const UOL_HOST = "clube.uol.com.br";
+// Sem User-Agent o Clube responde 405 (o fetch do Worker não manda nenhum por padrão).
+const PROBE_USER_AGENT = "UOLTelegramCloudflare/1.0";
 
 function normalizedNumber(value, fallback = 0) {
   const parsed = Number(value);
@@ -135,6 +137,7 @@ export async function probeTicketOfferUrl(
       headers: {
         Accept: "text/html",
         "Cache-Control": "no-cache",
+        "User-Agent": PROBE_USER_AGENT,
       },
       signal: AbortSignal.timeout(Math.max(1_000, Number(timeoutMs) || 5_000)),
     });
