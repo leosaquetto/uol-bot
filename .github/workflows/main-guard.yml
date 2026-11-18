@@ -27,12 +27,19 @@ jobs:
           NTFY_TOKEN: ${{ secrets.SAQUETTOOS_NTFY_TOKEN }}
         run: |
           python3 - <<'PY'
-          import json, os, subprocess, urllib.request
+          import json, os, subprocess, time, urllib.request
           repo, sha = os.environ['REPO'], os.environ['SHA']
           def api(path):
               out = subprocess.run(['gh', 'api', '-H', 'Accept: application/vnd.github+json', path], capture_output=True, text=True, check=True).stdout
               return json.loads(out)
-          prs = [p for p in api(f'repos/{repo}/commits/{sha}/pulls') if p.get('merged_at')]
+          # Logo após o squash a API ainda pode não ligar o commit ao PR (17/11, #154:
+          # merge 15:32:08Z, guard 15:32:14Z, alarme falso). Tenta por ~60 s antes de concluir.
+          for attempt in range(7):
+              prs = [p for p in api(f'repos/{repo}/commits/{sha}/pulls') if p.get('merged_at')]
+              if prs:
+                  break
+              if attempt < 6:
+                  time.sleep(10)
           problems = []
           if not prs:
               problems.append(f'commit {sha[:7]} entrou no main sem PR mesclado')

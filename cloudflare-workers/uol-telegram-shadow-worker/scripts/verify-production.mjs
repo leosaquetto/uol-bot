@@ -38,7 +38,8 @@ const baseUrl = String(process.env.UOL_WORKER_URL || DEFAULT_BASE_URL).replace(/
 const expectedMode = String(process.env.EXPECTED_DELIVERY_MODE || "").trim().toLowerCase();
 const expectedVersionId = String(process.env.EXPECTED_VERSION_ID || "").trim();
 const maxScanAgeMs = positiveInteger(process.env.UOL_MAX_SCAN_AGE_SECONDS, 180) * 1_000;
-const attempts = positiveInteger(process.env.UOL_VERIFY_ATTEMPTS, 12);
+// 12 × 5 s não bastou para a versão nova propagar no release do #156 (17/11): 30 × 5 s = 150 s.
+const attempts = positiveInteger(process.env.UOL_VERIFY_ATTEMPTS, 30);
 const intervalMs = positiveInteger(process.env.UOL_VERIFY_INTERVAL_MS, 5_000);
 
 if (expectedMode && expectedMode !== "live" && expectedMode !== "shadow") {
