@@ -247,3 +247,31 @@ test("pending alerts older than two days become exhausted and free capacity", ()
   // Stale identities are kept (terminal, 7-day retention) so an old alert never replays.
   assert.equal(enqueueOperationsEvent(queued.state, input("episode-1:opened"), later(2 * 24 * 60 * 60_000 + 2)).reason, "duplicate");
 });
+
+test("an incident that recovers before its opening alert is sent drops the pair", () => {
+  let state = enqueue(undefined, "episode:opened", { kind: "ticket-delivery" });
+  state = enqueue(state, "other:opened");
+  state = enqueue(state, "episode:recovered", { kind: "ticket-delivery", recovered: true }, later(1));
+  const byId = Object.fromEntries(state.events.map((event) => [event.id, event]));
+  assert.equal(byId["episode:opened"].status, "exhausted");
+  assert.equal(byId["episode:opened"].lastReason, "superseded");
+  assert.equal(byId["episode:recovered"].status, "exhausted");
+  assert.equal(byId["episode:recovered"].lastReason, "superseded");
+  assert.equal(byId["other:opened"].status, "pending");
+  const reserved = reserveNextOperationsEvent(state, later(2));
+  assert.equal(reserved.event.id, "other:opened");
+  assert.equal(normalizeOperationsOutbox(state, later(3)).changed, false);
+  // The terminal identities still deduplicate a replay of the same episode.
+  assert.equal(enqueueOperationsEvent(state, input("episode:recovered", { recovered: true }), later(4)).reason, "duplicate");
+});
+
+test("a recovery still goes out when the opening alert was already attempted", () => {
+  for (const status of ["accepted", "uncertain", "retryable"]) {
+    let state = enqueue(undefined, "episode:opened");
+    state = reserveNextOperationsEvent(state, start).state;
+    state = completeOperationsEvent(state, "episode:opened", { status }, start).state;
+    state = enqueue(state, "episode:recovered", { recovered: true }, later(1));
+    const recovered = state.events.find((event) => event.id === "episode:recovered");
+    assert.equal(recovered.status, "pending", status);
+  }
+});

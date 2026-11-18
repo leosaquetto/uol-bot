@@ -19,8 +19,10 @@ const OUTCOMES = new Set(["accepted", "uncertain", "permanent", "retryable"]);
 const OUTCOME_REASONS = new Set([
   "timeout", "http_accepted", "rate_limited", "stale", "server_error", "http_rejected", "network_error",
   "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
-  "transport_unconfigured", "transport_retired",
+  "transport_unconfigured", "transport_retired", "superseded",
 ]);
+const RECOVERED_SUFFIX = ":recovered";
+const OPENED_SUFFIX = ":opened";
 
 function timestamp(now) {
   const value = now instanceof Date ? now.getTime() : Date.parse(now);
@@ -86,6 +88,22 @@ export function normalizeOperationsOutbox(original, now = new Date(), { recoverR
     if (TERMINAL.has(event.status) && at - Date.parse(event.finishedAt) >= RETENTION_MS) continue;
     events.push(event);
   }
+  // An incident that recovered before its opening alert left the queue is not
+  // news: the daily budget delayed such pairs by hours (18/11) and the phone got
+  // "atenção" and "recuperado" for something that had healed long before.
+  // Drop both while neither has been attempted; an opening that may have been
+  // delivered (accepted/uncertain) keeps its recovery.
+  const byId = new Map(events.map((event) => [event.id, event]));
+  for (const event of events) {
+    if (!event.id.endsWith(RECOVERED_SUFFIX) || event.status !== "pending") continue;
+    const opened = byId.get(event.id.slice(0, -RECOVERED_SUFFIX.length) + OPENED_SUFFIX);
+    if (!opened || opened.status !== "pending" || opened.attempts > 0) continue;
+    for (const value of [opened, event]) {
+      value.status = "exhausted";
+      value.lastReason = "superseded";
+      value.finishedAt = nowIso;
+    }
+  }
   const attempts = (Array.isArray(original?.attempts) ? original.attempts : [])
     .filter((attempt) => Number.isFinite(Date.parse(attempt?.at)) && Date.parse(attempt.at) > at - DAY_MS)
     .map((attempt) => ({ at: validTime(attempt.at, nowIso), privileged: attempt.privileged === true }));
@@ -138,7 +156,9 @@ export function enqueueOperationsEvent(original, input, now = new Date()) {
     attempts: 0,
     nextAt: nowIso,
   };
-  return result(original, { ...state, events: [...state.events, event] }, { enqueued: true, event });
+  // Normalize again so a recovery supersedes its unsent opening right away.
+  const next = normalizeOperationsOutbox({ ...state, events: [...state.events, event] }, now).state;
+  return result(original, next, { enqueued: true, event });
 }
 
 export function reserveNextOperationsEvent(original, now = new Date()) {
