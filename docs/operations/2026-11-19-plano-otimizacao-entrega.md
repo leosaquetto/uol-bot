@@ -33,6 +33,20 @@ Tempo entre a oferta aparecer e a mensagem sair no canal principal do Telegram:
 - Causa provável (hipótese, não confirmada): nessas ofertas a primeira tentativa de foto não acontece ou não tem URL utilizável (o Telegram não baixa o CDN do Clube; a imagem só chega pelo proxy do Discord), e o Worker espera até o prazo antes de mandar texto. A saúde das estratégias não mostra falhas recentes de `upload`/`discord_proxy`, o que reforça que a espera vem de não haver tentativa, e não de tentativa falhando.
 - Próximo passo (Parte 2b): descobrir **por que** a primeira tentativa foi adiada, sem gravar nada extra (log do Worker por oferta: `imageUrl` vazio? proxy pronto? estratégia desligada?). Só então encurtar a espera para ingresso, por exemplo tentar o `upload` na hora quando o proxy ainda não existe, ou reduzir o prazo de 60 s só para ingresso. Qualquer mudança precisa de teste que prove que não aumenta escrita nem duplica mensagem.
 
+### Resultado da Parte 2b — por que a foto é adiada (causa confirmada no código e nos dados)
+
+- Os "ingressos outros" lentos são ofertas comuns de "Promoções do Mês" com "ingresso" no link (Beto Carrero, SeaWorld), não campanhas de ingresso. O mecanismo é o mesmo para qualquer oferta.
+- A mensagem principal só tenta a foto se `agora ≤ visto + 60 s − 38 s − 8 s = visto + 14 s` (`photoMutationBudgetOpen` com `imageMutationDeadlineAt`; os 38 s são `MAIN_AMBIGUOUS_RETRY_SECONDS` (30) + o timeout de 8 s do Telegram, definidos no commit `491126da2`, para uma foto ambígua se resolver antes do texto de fallback e não duplicar).
+- O Worker roda a cada 30 s. A primeira tentativa cai entre +0 e +30 s depois da oferta ser vista. Se cair depois de +14 s (cerca de 53% das vezes), a foto é pulada: aparece `main image deferred` na linha do tempo, o Worker espera o prazo de 60 s, manda texto e depois edita a foto (`discord_proxy_edit`). Isso dá as latências de 60/90/120 s.
+- Confere com os números: 22 de 49 (45%) saíram em até 20 s, perto dos 14/30 = 47% esperados.
+- Evidência da linha do tempo de `pyu-black-ate-50-off-no-beto-carrero-world`: visto 02:06:10, `main image deferred` 02:06:40 (+30 s), texto às 02:07:41 (+90 s).
+- Não entendi ainda por que parte das ofertas não é entregue no mesmo ciclo em que é vista (pode ser o lote de `DELIVERY_BATCH_SIZE=4` em rajadas). Fica como pergunta aberta.
+
+Proposta (Parte 2c, precisa de aprovação por mexer na proteção contra duplicata):
+1. Separar a janela da foto do prazo do alerta: nova variável `MAIN_PHOTO_WINDOW_SECONDS` em vez de reaproveitar `MAIN_AMBIGUOUS_RETRY_SECONDS` (mínimo hoje 15 s, o que ainda deixa a janela em +29 s, menor que um ciclo de 30 s).
+2. Com janela de +45 s, toda primeira tentativa de foto cabe no primeiro ciclo. O pior caso (foto ambígua perto do limite) continua virando "incerta", sem texto duplicado.
+3. Teste de integração: oferta vista em t0, primeira tentativa em t0+30 s com `sendPhoto` ok deve sair como foto, sem `deferred`; e com `sendPhoto` em timeout, não pode sair texto depois.
+
 ## Parte 3 — origem das escritas da conta (investigação)
 
 - Evidência: o Worker UOL escreveu 29,8 mil linhas em 19/11 até 16:44 BRT, mas a conta já estava em 62,8 mil de 100 mil. Inferência: ~33 mil vêm de outro Worker/DO da mesma conta. Não confirmado.
