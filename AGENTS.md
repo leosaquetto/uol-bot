@@ -51,6 +51,11 @@ Vale para Claude, Codex, Antigravity e qualquer outro agente. Escrito em 18/11/2
 | `/decisions?limit=100` | até 100 ofertas, **com** os campos de imagem (`mainMessageKind`, `telegramImageStrategy`, `mainImageUpgradeError`) |
 | `/inventory?limit=300` | até 300 ofertas, com a sonda de esgotado (`ticketProbeLastResult`), **sem** os campos de imagem |
 
+## Entrega incerta (timeout do Telegram)
+
+- Oferta que **não é ingresso** e cai em entrega incerta (`ambiguous:telegram_*`) é fechada na hora, sem reenviar e sem alerta (`closeUnknownMain`, evidência `operator:auto-non-ticket-ambiguous`). Decisão do dono em 19/11/2026: duas ofertas comuns presas 16 h derrubaram o `/readyz` para 503 e geraram um aviso por hora.
+- Ingresso continua em `delivery_unknown` e vai ao dono. Para fechar à mão: `POST /resolve-delivery {"id","target":"main","outcome":"closed","evidenceReference":"operator:<motivo>","expectedGeneration","expectedAttempt","expectedUnknownAt"}` (valores em `/decisions`, na `deliveryTimeline`).
+
 ## Testes de integração (vitest)
 
 - Ofertas com "teatro" no link ficam retidas 90 s para agrupamento. No teste, use `THEATER_GROUP_HOLD_SECONDS = "0"`.
