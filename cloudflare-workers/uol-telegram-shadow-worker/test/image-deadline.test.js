@@ -6,6 +6,7 @@ import {
   imageDeadline,
   lateImageUpgradeDue,
   mainImageDeliveryOffer,
+  photoMutationSafetySeconds,
 } from "../src/image-deadline.js";
 
 test("mantém prazo absoluto desde a primeira detecção", () => {
@@ -102,4 +103,24 @@ test("adiamento de foto preserva tentativas de entrega", () => {
       nextAttemptAt: "2026-08-03T12:00:46.000Z",
     },
   );
+});
+
+test("janela da foto: com 45 s a tentativa em +30 s ainda pode enviar foto", () => {
+  // timeout do Telegram 8 s, prazo de texto 60 s
+  const safety = photoMutationSafetySeconds(60, 45, 8);
+  assert.equal(safety, 7);
+  const offer = { id: "o", firstSeenAt: "2026-11-19T12:00:00.000Z" };
+  const built = mainImageDeliveryOffer(offer, new Date("2026-11-19T12:00:30.000Z"), 60, safety);
+  // a foto precisa de >= 8 s até imageMutationDeadlineAt: 12:00:53 - 12:00:30 = 23 s
+  assert.equal(built.imageMutationDeadlineAt, "2026-11-19T12:00:53.000Z");
+  assert.ok(Date.parse(built.imageMutationDeadlineAt) - Date.parse("2026-11-19T12:00:30.000Z") >= 8_000);
+  // a última tentativa que ainda cabe começa em +45 s e termina (8 s) antes do texto
+  assert.ok(Date.parse(built.imageMutationDeadlineAt) - 8_000 === Date.parse("2026-11-19T12:00:45.000Z"));
+});
+
+test("janela da foto nunca passa o prazo menos o timeout e o padrão antigo era +14 s", () => {
+  assert.equal(photoMutationSafetySeconds(60, 300, 8), 0);
+  assert.equal(photoMutationSafetySeconds(60, 52, 8), 0);
+  assert.equal(photoMutationSafetySeconds(60, 14, 8), 38);
+  assert.equal(photoMutationSafetySeconds(60, 0, 8), 51);
 });
