@@ -18,23 +18,40 @@ const KIND_LABELS = Object.freeze({
   "delivery-slo": "Prazo da fila de entrega",
   "ticket-delivery": "Integridade da entrega de ingressos",
   "delivery-queue": "Fila de entrega",
+  digest: "Resumo do dia",
   monitor: "Monitor",
 });
 
-export function buildOperationalNotification(event = {}) {
+// `detail` is the text built at send time (offer title, what happened, what to
+// do). Without it the notice falls back to the type and level only.
+export function buildOperationalNotification(event = {}, detail = []) {
   const kind = Object.hasOwn(KIND_LABELS, event?.kind) ? event.kind : "monitor";
   const severity = ["critical", "warning", "info"].includes(event?.severity)
     ? event.severity
     : "warning";
   const recovered = event?.recovered === true;
+  const lines = (Array.isArray(detail) ? detail : [])
+    .map((line) => String(line || "").replace(/[\u0000-\u001f\u007f]+/g, " ").trim())
+    .filter(Boolean).slice(0, 12);
+  if (kind === "digest") {
+    return {
+      title: "UOL bot - resumo do dia",
+      body: (lines.length ? lines : ["Sem avisos nas últimas 24 h."]).join("\n").slice(0, 1_500),
+      priority: "2",
+    };
+  }
+  const legacy = [
+    event?.test === true ? "UOL bot: TESTE técnico autorizado." :
+      recovered ? "UOL bot: incidente recuperado." : "UOL bot: atenção necessária.",
+    `Tipo: ${KIND_LABELS[kind]}.`,
+  ];
+  // With send-time text: what happened, which offer and what to do. A recovery
+  // only names the offer (lines[1]) when there is one.
+  const extra = !lines.length ? [`Nível: ${severity}.`]
+    : recovered ? lines.slice(1, 2) : lines;
   return {
     title: event?.test === true ? "UOL bot - teste tecnico" : "UOL bot - aviso tecnico",
-    body: [
-      event?.test === true ? "UOL bot: TESTE técnico autorizado." :
-        recovered ? "UOL bot: incidente recuperado." : "UOL bot: atenção necessária.",
-      `Tipo: ${KIND_LABELS[kind]}.`,
-      `Nível: ${severity}.`,
-    ].join("\n"),
+    body: [...legacy, ...extra].join("\n").slice(0, 1_000),
     priority: recovered || severity === "info" ? "3" : severity === "critical" ? "5" : "4",
   };
 }
@@ -72,8 +89,8 @@ export function operationsTransport(env = {}) {
   return { url: server.origin + "/", topic, token };
 }
 
-export function buildOperationalEnvelope(event = {}) {
-  const notification = buildOperationalNotification(event);
+export function buildOperationalEnvelope(event = {}, detail = []) {
+  const notification = buildOperationalNotification(event, detail);
   const rawId = typeof event?.id === "string" && /^[A-Za-z0-9:_-]{1,110}$/.test(event.id)
     ? event.id : "";
   return {
@@ -97,7 +114,8 @@ export async function sendOperationalNotification(event, env = {}, fetchImpl = f
   try {
     const transport = operationsTransport(env);
     if (!transport) return { status: "permanent", reason: "transport_unconfigured" };
-    const { notification, envelope } = buildOperationalEnvelope(event);
+    // `event.detail` is transient send-time text; it is never persisted.
+    const { notification, envelope } = buildOperationalEnvelope(event, event?.detail);
     const controller = new AbortController();
     const init = {
       method: "POST",

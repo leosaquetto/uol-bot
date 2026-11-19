@@ -13,7 +13,8 @@ function at(minutes) {
 }
 
 function isolateHealth(instance) {
-  instance.env = { ...instance.env, UOL_API_AUTHORIZATION: "" };
+  // These tests exercise paging mechanics with an API warning; page every kind.
+  instance.env = { ...instance.env, UOL_API_AUTHORIZATION: "", OPS_DIGEST_KINDS: "none" };
   instance.failedRunStreak = () => 0;
   instance.deliveryQueueSlo = () => ({ criticalPending: 0, secondaryPending: 0, oldestAgeMs: 0 });
   instance.recentTicketDeliveryIssues = () => [];

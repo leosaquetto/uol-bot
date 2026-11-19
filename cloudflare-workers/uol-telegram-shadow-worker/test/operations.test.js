@@ -168,3 +168,27 @@ test("só alerta fila fora do SLA depois de três ciclos", () => {
   assert.equal(signal.severity, "critical");
   assert.match(signal.details, /principal pendente: 1/);
 });
+
+test("roteamento: crítico e acionável no celular; o resto no resumo do dia", async () => {
+  const { operationalAlertRoute, digestKinds, operationalAlertDetail } = await import("../src/operations.js");
+  assert.equal(operationalAlertRoute({ key: "ticket-api", severity: "warning" }), "digest");
+  assert.equal(operationalAlertRoute({ key: "source-health", severity: "warning" }), "digest");
+  assert.equal(operationalAlertRoute({ key: "source-health", severity: "critical" }), "page");
+  assert.equal(operationalAlertRoute({ key: "ticket-delivery:x", severity: "warning" }), "page");
+  assert.equal(operationalAlertRoute({ key: "ticket-api-expiry", severity: "warning" }), "page");
+  assert.equal(operationalAlertRoute({ key: "delivery-queue:x:main", severity: "warning" }), "page");
+  assert.equal(operationalAlertRoute({ key: "ticket-api", severity: "warning" }, digestKinds("none")), "page");
+  assert.deepEqual([...digestKinds("source-health, ticket-api")], ["source-health", "ticket-api"]);
+  const detail = operationalAlertDetail("ticket-delivery", { summary: "S", title: "T", details: "secret" });
+  assert.deepEqual(detail.slice(0, 2), ["S", "T"]);
+  assert.equal(detail.join(" ").includes("secret"), false);
+});
+
+test("saúde das fontes só abre warning depois de 10 min seguidos", () => {
+  const base = { sourceDivergenceStreak: 6, now: new Date("2026-11-18T12:00:00Z") };
+  const has = (extra) => buildIncidentSignals({ ...base, ...extra }).some((s) => s.key === "source-health");
+  assert.equal(has({ sourceBreachSeconds: 300 }), false);
+  assert.equal(has({ sourceBreachSeconds: 600 }), true);
+  assert.equal(has({ sourceBreachSeconds: 0, sourceHealthActive: true }), true);
+  assert.equal(has({ sourceBreachSeconds: 0, listingFailureStreak: 3 }), true);
+});

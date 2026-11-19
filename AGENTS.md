@@ -15,7 +15,8 @@ Vale para Claude, Codex, Antigravity e qualquer outro agente. Escrito em 18/11/2
 - **Merge não implanta.** O deploy é `npm run release` no checkout principal, depois de `git checkout main && git pull --ff-only` e com o CI do `main` verde.
 - **O release precisa de aprovação explícita do dono**, a cada vez.
 - O release publica o HEAD do `main` inteiro. Se outra sessão mesclou depois de você, um único release leva os dois PRs. Antes de rodar, confira `npx wrangler deployments list` e o quadro, para não haver dois releases ao mesmo tempo.
-- A verificação pós-deploy espera até 150 s (`UOL_VERIFY_ATTEMPTS`, padrão 30). Se ainda assim falhar com `version_metadata_mismatch`, rode de novo só a verificação: `EXPECTED_VERSION_ID=<versão> EXPECTED_DELIVERY_MODE=live npm run postdeploy:check`.
+- A verificação pós-deploy espera até 10 min enquanto o único erro for a versão nova propagando (`UOL_VERIFY_PROPAGATION_SECONDS`, padrão 600); os outros erros têm 30 tentativas de 5 s. Se ainda assim falhar com `version_metadata_mismatch`, rode de novo só a verificação: `EXPECTED_VERSION_ID=<versão> EXPECTED_DELIVERY_MODE=live npm run postdeploy:check`.
+- O monitor da gcp-box (`ops/gcp-ready-monitor`) só avisa `version_mismatch` se durar mais de 15 min. Mudou `ready-alert.py`? Reinstale com `ops/gcp-ready-monitor/install.sh <ntfy.json>`.
 - Mudanças só em `scripts/`, testes ou docs não precisam de release, mesmo que o `safe-merge` lembre do release.
 
 ## Custo zero: cota do Durable Object
@@ -33,6 +34,13 @@ Vale para Claude, Codex, Antigravity e qualquer outro agente. Escrito em 18/11/2
 
 - Quando a `imageUrl` da API dá 403, o upload usa a arte da página da oferta: a única URL em `/beneficios/`; `/beneficios_categorias/` é ignorada (`src/offer-page-image.js`).
 - Para reabrir a foto de uma oferta que ficou só em texto (`text_timeout`, tentativas esgotadas): `POST /requeue-delivery {"id":"<id>","target":"main_image"}`. Isso edita a mesma mensagem. **Nunca use `target: "main"` para isso: reenvia a oferta como mensagem nova, duplicada.** Custa 2 gravações por oferta e precisa de aprovação do dono.
+
+## Avisos no celular
+
+- Vai na hora só o que é crítico ou pede ação do dono: foto de ingresso abandonada, credencial da API vencendo, contrato da API, entrega bloqueada (`operationalAlertRoute` em `src/operations.js`).
+- Os outros warnings (fontes, API oscilando, webhook, fila) vão num **resumo diário às 09:00 BRT**. A lista é configurável por `OPS_DIGEST_KINDS` (`none` manda todos na hora).
+- O texto do aviso é montado no envio: resumo fixo, título da oferta e ação. Nunca use `incidents.details` no aviso, porque pode conter erro bruto do provedor.
+- Alerta novo precisa de tolerância maior que o tempo normal do fluxo; senão ele vira alarme que se resolve sozinho.
 
 ## Onde ver o estado (admin, token em `~/.config/uol-ticket-research/shadow-admin-token`)
 
