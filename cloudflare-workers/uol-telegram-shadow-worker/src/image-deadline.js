@@ -60,3 +60,15 @@ export function deferredMainDeliveryState(attempts, deadlineAt, now = new Date()
     nextAttemptAt: new Date(retryMs).toISOString(),
   };
 }
+
+// A foto só começa se ainda sobrar o timeout do Telegram antes do prazo de texto. Antes de
+// 19/11/2026 a margem era MAIN_AMBIGUOUS_RETRY_SECONDS (30) + timeout (8), o que fechava a
+// janela da foto em +14 s: com o Worker rodando a cada 30 s, cerca de 53% das ofertas perdiam
+// a foto e esperavam 60-90 s pelo texto. Agora a janela é configurável (MAIN_PHOTO_WINDOW_SECONDS).
+// Uma foto com resultado ambíguo continua virando "incerta" e nunca cai em texto duplicado.
+export function photoMutationSafetySeconds(waitSeconds, photoWindowSeconds, timeoutSeconds) {
+  const wait = Math.min(300, Math.max(1, Number(waitSeconds) || 60));
+  const timeout = Math.max(0, Number(timeoutSeconds) || 0);
+  const window = Math.min(Math.max(1, Number(photoWindowSeconds) || 1), Math.max(1, wait - timeout));
+  return Math.max(0, wait - window - timeout);
+}

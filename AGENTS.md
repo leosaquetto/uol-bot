@@ -19,6 +19,12 @@ Vale para Claude, Codex, Antigravity e qualquer outro agente. Escrito em 18/11/2
 - O monitor da gcp-box (`ops/gcp-ready-monitor`) só avisa `version_mismatch` se durar mais de 15 min. Mudou `ready-alert.py`? Reinstale com `ops/gcp-ready-monitor/install.sh <ntfy.json>`.
 - Mudanças só em `scripts/`, testes ou docs não precisam de release, mesmo que o `safe-merge` lembre do release.
 
+## Foto do canal principal e latência
+
+- A foto só começa se ainda sobrar o timeout do Telegram (8 s) antes do prazo de texto (`MAIN_IMAGE_WAIT_SECONDS`, 60 s). A janela em que ela pode começar é `MAIN_PHOTO_WINDOW_SECONDS` (padrão 45 s depois da oferta ser vista; `photoMutationSafetySeconds` em `src/image-deadline.js`). Antes de 19/11/2026 ela era de 14 s e, com o Worker rodando a cada 30 s, cerca de 53% das ofertas perdiam a foto e esperavam 60–90 s pelo texto.
+- Foto com resultado ambíguo continua virando "incerta" e nunca cai em texto duplicado. Não aumente a janela além de `MAIN_IMAGE_WAIT_SECONDS − 8`.
+- Mudou `wrangler.jsonc`? Rode `npx wrangler types --include-runtime=false` e comite `worker-configuration.d.ts`; senão o `check:types` do CI falha.
+
 ## Custo zero: cota do Durable Object
 
 - O gargalo do plano grátis são as **escritas** (cerca de 100 mil por dia; a previsão costuma ficar entre 60 e 65 mil). Nada de gravação extra por scan.
