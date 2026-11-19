@@ -4727,6 +4727,30 @@ export class UolTelegramShadow extends DurableObject {
       recordOutcome(claim, updated ? (unknown ? "unknown" : "failed") : "late_failure", {
         occurredAt, error: unknown ? `ambiguous:${message}` : message,
       });
+      // Non-ticket offers are not worth a critical incident: when the Telegram
+      // outcome is ambiguous, close the offer without resending (a resend could
+      // duplicate it) and without an alert (owner decision, 19/11/2026).
+      // Tickets keep the unknown state, so they still reach the owner.
+      if (updated && unknown && target === "main") {
+        try {
+          const unknownRow = this.sqlExec(
+            "SELECT * FROM offers WHERE id = ? LIMIT 1", claim.id,
+          ).toArray()[0];
+          if (unknownRow && !isTicketCampaign(rowToOffer(unknownRow))) {
+            this.closeUnknownMain(claim.id, {
+              evidenceReference: "operator:auto-non-ticket-ambiguous",
+              expectedGeneration: generation,
+              expectedAttempt: attempts,
+              expectedUnknownAt: occurredAt,
+            }, occurredAt);
+          }
+        } catch (closeError) {
+          // Other debt or a conflict: it stays unknown, as before.
+          logEvent("warn", "uol_non_ticket_unknown_close_skipped", {
+            offerId: claim.id, error: sanitizeError(closeError),
+          });
+        }
+      }
       return updated ? (unknown ? "unknown" : "retry") : "stale";
     };
     const preserveAcceptedReceipt = (claim, externalId, error, committed) => {
