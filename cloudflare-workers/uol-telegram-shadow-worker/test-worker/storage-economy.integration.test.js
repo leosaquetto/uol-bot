@@ -132,7 +132,9 @@ describe("storage economy preserves durable transitions", () => {
       const released = instance.ingestStorageUsage({ ...sample,
         observedAt: new Date(now.getTime() + 1).toISOString(), optionalWorkDeferred: false, optionalWorkReason: "none" });
       expect(released.budget.maintenanceAllowed).toBe(true);
-      const stale = instance.storageUsageSnapshot(new Date(now.getTime() + 30 * 60_000 + 2));
+      // Two hours: +30 min used to land inside the UTC rollover grace (45 min)
+      // when the suite ran near midnight UTC, so the sample still looked fresh.
+      const stale = instance.storageUsageSnapshot(new Date(now.getTime() + 2 * 60 * 60_000));
       expect(stale.maintenanceAllowed).toBe(false);
       expect(stale.writeGuardReason).toBe("storage_global_metrics_stale");
     });

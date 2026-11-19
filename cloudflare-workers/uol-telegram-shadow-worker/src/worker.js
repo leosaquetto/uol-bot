@@ -2917,7 +2917,10 @@ export class UolTelegramShadow extends DurableObject {
       this.setMetadata("ops_monitor_started_at", monitoringStartedAt);
       return [];
     }
-    const graceMinutes = envNumber(this.env, "OPS_TICKET_GRACE_MINUTES", 3, 1, 60);
+    // Theater tickets wait 90 s for grouping and Discord goes first, so the
+    // comment and the photo edit routinely land 8-12 min after the post. A
+    // shorter grace opened an incident that healed by itself (18/11).
+    const graceMinutes = envNumber(this.env, "OPS_TICKET_GRACE_MINUTES", 15, 1, 60);
     const graceCutoff = new Date(now.getTime() - graceMinutes * 60_000).toISOString();
     const recentCutoff = [
       new Date(now.getTime() - 24 * 60 * 60_000).toISOString(),
