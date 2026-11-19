@@ -63,6 +63,11 @@ export function buildIncidentSignals({
   sourceDivergenceStreak = 0,
   secondsSinceFullSourceSuccess = 0,
   sourceDetails = "",
+  // Seconds the source breach has lasted without a gap, and whether the
+  // incident is already open. A warning only opens after ten minutes: the API
+  // and the HTML listing diverge for minutes at a time on their own (18/11).
+  sourceBreachSeconds = Number.POSITIVE_INFINITY,
+  sourceHealthActive = false,
   ticketIssues = [],
   deliveryIssues = [],
   queueSlo = {},
@@ -136,17 +141,20 @@ export function buildIncidentSignals({
       details: `${failedRunStreak} ciclos consecutivos com falha`,
     });
   }
+  const sourceSeverity = listingFailureStreak >= 3 || secondsSinceFullSourceSuccess >= 300
+    ? "critical"
+    : "warning";
   if (
-    listingFailureStreak >= 3 ||
+    (listingFailureStreak >= 3 ||
     listingDropStreak >= 3 ||
     sourceDivergenceStreak >= 5 ||
-    secondsSinceFullSourceSuccess >= 180
+    secondsSinceFullSourceSuccess >= 180) &&
+    (sourceSeverity === "critical" || sourceHealthActive ||
+      sourceBreachSeconds >= SOURCE_WARNING_HOLD_SECONDS)
   ) {
     signals.push({
       key: "source-health",
-      severity: listingFailureStreak >= 3 || secondsSinceFullSourceSuccess >= 300
-        ? "critical"
-        : "warning",
+      severity: sourceSeverity,
       summary: "As fontes do Clube UOL estão divergentes ou degradadas",
       details: cleanText([
         `falhas HTML: ${listingFailureStreak}`,
@@ -178,13 +186,14 @@ export function buildIncidentSignals({
       ].join("; ")).slice(0, 240),
     });
   }
+  // Only offers whose photo the bot gave up on: something the owner can act on
+  // (reopen the photo). A missing comment or a photo still being retried heals
+  // by itself and is not an alert (18/11).
   for (const issue of ticketIssues) {
-    const missing = [issue.missingPhoto ? "foto" : "", issue.missingComment ? "comentário" : ""]
-      .filter(Boolean).join(" e ");
     signals.push({
       key: `ticket-delivery:${issue.id}`,
       severity: "warning",
-      summary: `Ingresso entregue sem ${missing}`,
+      summary: "Ingresso ficou sem foto e o bot desistiu de trocar",
       details: cleanText(issue.title || issue.id).slice(0, 180),
     });
   }
@@ -209,6 +218,46 @@ export function buildIncidentSignals({
     });
   }
   return signals;
+}
+
+const SOURCE_WARNING_HOLD_SECONDS = 10 * 60;
+
+// Which incidents reach the phone at once: anything critical and every warning
+// that needs the owner to do something. Warnings of the kinds below heal by
+// themselves and go into the daily digest instead (18/11). OPS_DIGEST_KINDS
+// overrides the list (comma separated; "none" pages every warning).
+export const DEFAULT_DIGEST_KINDS = Object.freeze([
+  "ticket-api", "telegram-webhook", "failed-scans", "source-health", "delivery-slo",
+  "instagram-monitor", "monitor",
+]);
+export function digestKinds(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return new Set(DEFAULT_DIGEST_KINDS);
+  if (text.toLowerCase() === "none") return new Set();
+  return new Set(text.split(",").map((kind) => kind.trim()).filter(Boolean));
+}
+export function operationalAlertRoute(signal = {}, kinds = new Set(DEFAULT_DIGEST_KINDS)) {
+  if (signal.severity === "critical") return "page";
+  const kind = String(signal.key || "").split(":")[0];
+  return kinds.has(kind) ? "digest" : "page";
+}
+
+const ACTION_HINTS = Object.freeze({
+  "ticket-delivery": "Ação: reabrir só a foto (requeue-delivery main_image), com sua aprovação.",
+  "ticket-api-expiry": "Ação: renovar UOL_API_AUTHORIZATION antes do vencimento.",
+  "ticket-api-contract": "Ação: conferir o contrato da API de ofertas.",
+  "delivery-queue": "Ação: conferir /decisions e resolver a entrega.",
+});
+
+// Text for one alert, built when it is sent (the outbox keeps metadata only).
+// Only fixed summaries, the public offer title and the action: incident
+// details can carry raw provider errors and must not reach the notification.
+export function operationalAlertDetail(kind, { summary = "", title = "" } = {}) {
+  return [
+    cleanText(summary).slice(0, 160),
+    cleanText(title).slice(0, 180),
+    ACTION_HINTS[kind] || "",
+  ].filter(Boolean);
 }
 
 export function buildOperationsAlert(signal, { recovered = false } = {}) {

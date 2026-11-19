@@ -21,7 +21,8 @@ Variáveis opcionais:
   UOL_WORKER_URL              URL base do Worker
   EXPECTED_DELIVERY_MODE      live ou shadow
   UOL_MAX_SCAN_AGE_SECONDS    idade máxima do último scan (padrão: 180)
-  UOL_VERIFY_ATTEMPTS         tentativas de liveness/readiness (padrão: 12)
+  UOL_VERIFY_ATTEMPTS         tentativas de liveness/readiness (padrão: 30)
+  UOL_VERIFY_PROPAGATION_SECONDS  quanto esperar a versão nova propagar (padrão: 600)
   UOL_VERIFY_INTERVAL_MS      intervalo entre tentativas (padrão: 5000)
   UOL_RELEASE_BASELINE_PATH   baseline privado original (padrão: ~/.config/uol-ticket-research/release-debt-baseline.json)
 
@@ -41,6 +42,11 @@ const maxScanAgeMs = positiveInteger(process.env.UOL_MAX_SCAN_AGE_SECONDS, 180) 
 // 12 × 5 s não bastou para a versão nova propagar no release do #156 (17/11): 30 × 5 s = 150 s.
 const attempts = positiveInteger(process.env.UOL_VERIFY_ATTEMPTS, 30);
 const intervalMs = positiveInteger(process.env.UOL_VERIFY_INTERVAL_MS, 5_000);
+// Nem 150 s bastaram no release do #162 (18/11): o /readyz passa pelo Durable
+// Object, que segue na versão anterior até reiniciar. Enquanto o único erro for
+// a versão ainda propagando, a espera vai até este prazo sem gastar tentativas.
+const propagationMs = positiveInteger(process.env.UOL_VERIFY_PROPAGATION_SECONDS, 600) * 1_000;
+const PROPAGATION_ERRORS = new Set(["version_metadata_mismatch", "debt_version_mismatch"]);
 
 if (expectedMode && expectedMode !== "live" && expectedMode !== "shadow") {
   throw new Error("EXPECTED_DELIVERY_MODE deve ser live ou shadow");
@@ -94,6 +100,7 @@ async function readHealth() {
 
 let lastError;
 let lastReport;
+const propagationDeadline = Date.now() + propagationMs;
 for (let attempt = 1; attempt <= attempts; attempt += 1) {
   try {
     const snapshot = await readHealth();
@@ -111,7 +118,10 @@ for (let attempt = 1; attempt <= attempts; attempt += 1) {
     process.exit(0);
   } catch (error) {
     lastError = error;
-    if (attempt < attempts) {
+    const propagating = PROPAGATION_ERRORS.has(String(error?.message || "")) &&
+      Date.now() + intervalMs < propagationDeadline;
+    if (propagating) attempt -= 1;
+    if (propagating || attempt < attempts) {
       await new Promise((resolve) => setTimeout(resolve, intervalMs));
     }
   }

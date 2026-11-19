@@ -196,3 +196,15 @@ test("demais HTTP são rejeições permanentes sem expor o corpo", async () => {
     assert.deepEqual(result, { status: "permanent", reason: "http_rejected", httpStatus: status });
   }
 });
+
+test("aviso traz oferta e ação; recuperação nomeia a oferta; resumo tem título próprio", async () => {
+  const { buildOperationalNotification: build } = await import("../src/operations-notify.js");
+  const opened = build({ kind: "ticket-delivery", severity: "warning" }, ["Resumo", "2 INGRESSOS: X", "Ação: Y"]);
+  assert.match(opened.body, /atenção necessária[\s\S]*2 INGRESSOS: X[\s\S]*Ação: Y/);
+  const recovered = build({ kind: "ticket-delivery", severity: "warning", recovered: true }, ["Resumo", "2 INGRESSOS: X", "Ação: Y"]);
+  assert.match(recovered.body, /incidente recuperado[\s\S]*2 INGRESSOS: X/);
+  assert.equal(recovered.body.includes("Ação"), false);
+  const digest = build({ kind: "digest", severity: "info" }, ["linha 1", "linha 2"]);
+  assert.equal(digest.title, "UOL bot - resumo do dia");
+  assert.equal(digest.body, "linha 1\nlinha 2");
+});

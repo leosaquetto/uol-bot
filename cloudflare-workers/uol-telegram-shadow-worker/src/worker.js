@@ -79,6 +79,9 @@ import {
 import {
   buildIncidentSignals,
   buildLatencyMetrics,
+  digestKinds,
+  operationalAlertDetail,
+  operationalAlertRoute,
 } from "./operations.js";
 import { buildOperationalNotification, operationsTransport, sendOperationalNotification } from "./operations-notify.js";
 import { enqueueOperationsEvent, reserveNextOperationsEvent,
@@ -2922,34 +2925,38 @@ export class UolTelegramShadow extends DurableObject {
     // shorter grace opened an incident that healed by itself (18/11).
     const graceMinutes = envNumber(this.env, "OPS_TICKET_GRACE_MINUTES", 15, 1, 60);
     const graceCutoff = new Date(now.getTime() - graceMinutes * 60_000).toISOString();
+    // Photo upgrades back off for hours before giving up, so look back two days.
     const recentCutoff = [
-      new Date(now.getTime() - 24 * 60 * 60_000).toISOString(),
+      new Date(now.getTime() - 48 * 60 * 60_000).toISOString(),
       monitoringStartedAt,
     ].sort().at(-1);
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    // Only photos the bot gave up on: text that is not intentionally text
+    // (text_fast) and that the late upgrade will no longer retry, because its
+    // attempts ran out or there is no image to use. A photo still being retried
+    // and a missing comment heal by themselves and are not alerts (18/11).
     return this.sqlExec(
-      `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title,
-              main_message_kind, telegram_image_strategy,
-              comment_sent_at, discussion_message_id
+      `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title
        FROM offers
        WHERE link LIKE '%/campanhasdeingresso/%'
          AND main_sent_at <> ''
+         AND main_message_id > 0
          AND first_seen_at >= ?
          AND first_seen_at <= ?
-         AND (
-           (main_message_kind <> 'photo' AND telegram_image_strategy <> 'text_fast')
-           OR comment_sent_at = ''
+         AND main_message_kind <> 'photo'
+         AND telegram_image_strategy <> 'text_fast'
+         AND NOT (
+           telegram_image_strategy = 'text_timeout'
+           AND main_image_upgrade_attempts < ?
+           AND COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
+                        NULLIF(card_image_url, ''), partner_image_url) <> ''
          )
        ORDER BY first_seen_at DESC
        LIMIT 12`,
       recentCutoff,
       graceCutoff,
-    ).toArray().map((row) => ({
-      id: row.id,
-      title: row.title,
-      missingPhoto: row.main_message_kind !== "photo" &&
-        row.telegram_image_strategy !== "text_fast",
-      missingComment: !row.comment_sent_at,
-    }));
+      maxAttempts,
+    ).toArray().map((row) => ({ id: row.id, title: row.title }));
   }
 
   deliveryQueueIssues(now = new Date()) {
@@ -3200,6 +3207,10 @@ export class UolTelegramShadow extends DurableObject {
     if (signal.severity === "critical" && this.env?.OPS_NTFY_SKIP_CRITICAL === "true") return false;
     const episodeKey = `ops_ntfy_episode:${signal.key}`;
     let episode = this.metadataValue(episodeKey);
+    // Warnings that heal by themselves go into the daily digest, not the phone.
+    // Without an opening episode their recovery is not sent either.
+    if (!recovered && !escalated &&
+        operationalAlertRoute(signal, digestKinds(this.env?.OPS_DIGEST_KINDS)) === "digest") return false;
     if (!recovered && !escalated) {
       episode = crypto.randomUUID();
     } else if (!episode) {
@@ -3212,6 +3223,7 @@ export class UolTelegramShadow extends DurableObject {
     const queued = enqueueOperationsEvent(this.loadOperationsOutbox(now), {
       id: `${episode}:${recovered ? "recovered" : escalated ? "critical" : "opened"}`,
       kind,
+      key: signal.key,
       severity: signal.severity,
       recovered,
     }, now);
@@ -3224,6 +3236,57 @@ export class UolTelegramShadow extends DurableObject {
     if (queued.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(queued.state));
     if (!recovered) this.setMetadataIfChanged(episodeKey, episode);
     if (!recovered && signal.severity === "critical") this.setMetadataIfChanged(criticalKey, episode);
+    return queued.enqueued;
+  }
+
+  // Send-time text for an alert: what happened, which offer, what to do. Read
+  // from the incident (and the offer title) so the outbox stays metadata only.
+  operationalAlertText(event, now = new Date()) {
+    if (event?.kind === "digest") return this.operationalDigestLines(now);
+    const key = String(event?.key || "");
+    if (!key) return [];
+    const incident = this.sqlExec(
+      "SELECT summary FROM incidents WHERE key = ?", key,
+    ).toArray()[0];
+    let title = "";
+    if (key.startsWith("ticket-delivery:")) {
+      title = this.sqlExec(
+        "SELECT COALESCE(NULLIF(title, ''), preview_title) AS title FROM offers WHERE id = ?",
+        key.slice("ticket-delivery:".length),
+      ).toArray()[0]?.title || "";
+    }
+    return operationalAlertDetail(event.kind, {
+      summary: incident?.summary || "", title,
+    });
+  }
+
+  // One line per digest-routed incident seen in the last 24 h.
+  operationalDigestLines(now = new Date()) {
+    const since = new Date(now.getTime() - 24 * 60 * 60_000).toISOString();
+    const rows = this.sqlExec(
+      `SELECT key, status, severity, summary, first_detected_at, last_detected_at
+       FROM incidents WHERE last_detected_at >= ? ORDER BY last_detected_at DESC LIMIT 40`,
+      since,
+    ).toArray().filter((row) =>
+      operationalAlertRoute(row, digestKinds(this.env?.OPS_DIGEST_KINDS)) === "digest");
+    if (!rows.length) return [];
+    const lines = rows.slice(0, 10).map((row) =>
+      `${row.status === "active" ? "• ativo" : "• resolvido"}: ${String(row.summary || row.key).slice(0, 90)}`);
+    if (rows.length > 10) lines.push(`• e mais ${rows.length - 10}`);
+    return [`${rows.length} aviso(s) que não pediam ação nas últimas 24 h:`, ...lines];
+  }
+
+  // Once a day at 12:00 UTC (09:00 BRT): one digest of the warnings that did
+  // not page. One metadata write per day; nothing is sent when there are none.
+  enqueueOperationalDigest(now = new Date()) {
+    const day = now.toISOString().slice(0, 10);
+    if (now.getUTCHours() < 12 || this.metadataValue("ops_digest_day") === day) return false;
+    this.setMetadataIfChanged("ops_digest_day", day);
+    if (!this.operationalDigestLines(now).length) return false;
+    const queued = enqueueOperationsEvent(this.loadOperationsOutbox(now), {
+      id: `digest-${day}:opened`, kind: "digest", severity: "info", recovered: false,
+    }, now);
+    if (queued.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(queued.state));
     return queued.enqueued;
   }
 
@@ -3240,8 +3303,10 @@ export class UolTelegramShadow extends DurableObject {
       const reserved = reserveNextOperationsEvent(this.loadOperationsOutbox(now), now);
       if (reserved.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(reserved.state));
       if (!reserved.event) return;
-      try{const n=buildOperationalNotification(reserved.event);this.saquettoosPush.enqueue({id:reserved.event.id,title:n.title,body:n.body});}catch{this.setMetadataIfChanged('saquettoos_push_error','enqueue_failed');}
-      const outcome = await sendOperationalNotification(reserved.event, this.env);
+      let detail = [];
+      try { detail = this.operationalAlertText(reserved.event, now); } catch { detail = []; }
+      try{const n=buildOperationalNotification(reserved.event, detail);this.saquettoosPush.enqueue({id:reserved.event.id,title:n.title,body:n.body});}catch{this.setMetadataIfChanged('saquettoos_push_error','enqueue_failed');}
+      const outcome = await sendOperationalNotification({ ...reserved.event, detail }, this.env);
       const finished = completeOperationsEvent(
         this.loadOperationsOutbox(new Date()), reserved.event.id, outcome, new Date(),
       );
@@ -3336,7 +3401,8 @@ export class UolTelegramShadow extends DurableObject {
         `SELECT main_sent_at, main_message_kind, telegram_image_strategy, comment_sent_at
          FROM offers WHERE id = ?`, row.key.slice("ticket-delivery:".length),
       ).toArray()[0];
-      return offer?.main_sent_at && offer.comment_sent_at &&
+      // The alert is about the photo only; a missing comment is not an incident.
+      return offer?.main_sent_at &&
         (offer.main_message_kind === "photo" || offer.telegram_image_strategy === "text_fast") ? at : null;
     }
     if (row.key.startsWith("delivery-queue:")) {
@@ -3447,6 +3513,27 @@ export class UolTelegramShadow extends DurableObject {
     const webhookChecked = Boolean(
       webhook.checkedAt || this.metadataValue("telegram_webhook_checked_at"),
     );
+    const existing = new Map(this.sqlExec(
+      "SELECT * FROM incidents",
+    ).toArray().map((row) => [row.key, row]));
+    const listingFailureStreak = Number(
+      sourceHealth.listingFailureStreak ?? this.metadataValue("listing_failure_streak") ?? 0,
+    );
+    const listingDropStreak = Number(
+      sourceHealth.listingDropStreak ?? this.metadataValue("listing_drop_streak") ?? 0,
+    );
+    const sourceDivergenceStreak = Number(
+      sourceHealth.sourceDivergenceStreak ??
+        this.metadataValue("source_divergence_streak") ?? 0,
+    );
+    // How long the source breach has lasted, kept in memory only (no write per
+    // pass). An eviction restarts the count, which only delays a warning.
+    const sourceBreach = listingFailureStreak >= 3 || listingDropStreak >= 3 ||
+      sourceDivergenceStreak >= 5 || secondsSinceFullSourceSuccess >= 180;
+    if (!sourceBreach) this.sourceBreachSince = null;
+    else if (!Number.isFinite(this.sourceBreachSince)) this.sourceBreachSince = now.getTime();
+    const sourceBreachSeconds = sourceBreach
+      ? Math.max(0, (now.getTime() - this.sourceBreachSince) / 1_000) : 0;
     const signals = buildIncidentSignals({
       apiError: api.lastError ?? this.metadataValue("api_last_error"),
       apiFailureStreak,
@@ -3460,18 +3547,13 @@ export class UolTelegramShadow extends DurableObject {
       webhookError: webhook.lastError || this.metadataValue("telegram_webhook_last_error") ||
         this.metadataValue("telegram_webhook_check_error"),
       failedRunStreak: this.failedRunStreak(),
-      listingFailureStreak: Number(
-        sourceHealth.listingFailureStreak ?? this.metadataValue("listing_failure_streak") ?? 0,
-      ),
-      listingDropStreak: Number(
-        sourceHealth.listingDropStreak ?? this.metadataValue("listing_drop_streak") ?? 0,
-      ),
-      sourceDivergenceStreak: Number(
-        sourceHealth.sourceDivergenceStreak ??
-          this.metadataValue("source_divergence_streak") ?? 0,
-      ),
+      listingFailureStreak,
+      listingDropStreak,
+      sourceDivergenceStreak,
       secondsSinceFullSourceSuccess,
       sourceDetails,
+      sourceBreachSeconds,
+      sourceHealthActive: existing.get("source-health")?.status === "active",
       ticketIssues: this.recentTicketDeliveryIssues(now),
       deliveryIssues: this.deliveryQueueIssues(now),
       queueSlo,
@@ -3479,9 +3561,6 @@ export class UolTelegramShadow extends DurableObject {
       now,
     });
     const activeKeys = new Set(signals.map((signal) => signal.key));
-    const existing = new Map(this.sqlExec(
-      "SELECT * FROM incidents",
-    ).toArray().map((row) => [row.key, row]));
     const nowIso = now.toISOString();
     let alerted = 0;
     let recovered = 0;
@@ -3532,6 +3611,7 @@ export class UolTelegramShadow extends DurableObject {
         this.setMetadataIfChanged(`ops_ntfy_recovery:${row.key}`, "");
         recovered += 1;
       }
+      try { this.enqueueOperationalDigest(now); } catch { /* the digest never blocks health */ }
       this.setMetadata("ops_health_checked_at", nowIso);
     } finally {
       // Queue pressure cannot prevent already accepted notification work from

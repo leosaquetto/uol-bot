@@ -11,7 +11,7 @@ const MAX_ORDINARY_ATTEMPTS = 15;
 const KINDS = new Set([
   "ticket-api", "ticket-api-contract", "ticket-api-expiry", "telegram-webhook",
   "failed-scans", "source-health", "delivery-slo", "ticket-delivery",
-  "delivery-queue", "instagram-monitor", "monitor",
+  "delivery-queue", "instagram-monitor", "digest", "monitor",
 ]);
 const STATUSES = new Set(["pending", "reserved", "accepted", "uncertain", "permanent", "exhausted"]);
 const TERMINAL = new Set(["accepted", "uncertain", "permanent", "exhausted"]);
@@ -65,6 +65,8 @@ export function normalizeOperationsOutbox(original, now = new Date(), { recoverR
       attempts: Math.max(0, Math.min(3, Math.trunc(Number(input.attempts) || 0))),
       nextAt: validTime(input.nextAt, nowIso),
     };
+    // The incident key (no text) lets the sender look up what to say.
+    if (typeof input.key === "string" && /^[A-Za-z0-9:_.-]{1,180}$/.test(input.key)) event.key = input.key;
     if (input.lastAttemptAt) event.lastAttemptAt = validTime(input.lastAttemptAt, nowIso);
     if (OUTCOMES.has(input.lastOutcome)) event.lastOutcome = input.lastOutcome;
     if (OUTCOME_REASONS.has(input.lastReason)) event.lastReason = input.lastReason;
@@ -156,6 +158,7 @@ export function enqueueOperationsEvent(original, input, now = new Date()) {
     attempts: 0,
     nextAt: nowIso,
   };
+  if (typeof input.key === "string" && /^[A-Za-z0-9:_.-]{1,180}$/.test(input.key)) event.key = input.key;
   // Normalize again so a recovery supersedes its unsent opening right away.
   const next = normalizeOperationsOutbox({ ...state, events: [...state.events, event] }, now).state;
   return result(original, next, { enqueued: true, event });

@@ -13,8 +13,14 @@ STATE_FILE = os.environ.get('STATE_FILE', '/var/lib/uol-ready-monitor/state.json
 # Reasons that are the Worker protecting the free tier on purpose, with readyz still 200: the
 # Oracle quota observer defers optional maintenance when the day's forecast passes 85%
 # (17/11 09:30-10:50 BRT). Alone they only alert if they last longer than SOFT_GRACE_SECONDS.
-SOFT_REASONS = {'maintenance_deferred'}
-SOFT_GRACE_SECONDS = int(os.environ.get('SOFT_GRACE_SECONDS', str(2 * 3600)))
+# version_mismatch: right after a deploy /livez (stateless) already answers with the new version
+# while /readyz (through the Durable Object) keeps the previous one until it restarts. It sent a
+# false "UOL: outage" during the 18/11 release; it only alerts if it lasts past its grace.
+SOFT_GRACE = {
+    'maintenance_deferred': int(os.environ.get('SOFT_GRACE_SECONDS', str(2 * 3600))),
+    'version_mismatch': int(os.environ.get('VERSION_GRACE_SECONDS', str(15 * 60))),
+}
+SOFT_REASONS = set(SOFT_GRACE)
 
 
 def notify(identifier, title, body):
@@ -58,11 +64,14 @@ def main():
         now = time.time()
         since = previous.get('softSince') if (previous or {}).get('softSignature') == signature else None
         since = since or now
-        if now - since < SOFT_GRACE_SECONDS:
+        grace = min(SOFT_GRACE[reason] for reason in reasons)
+        if now - since < grace:
             save({**{k: v for k, v in (previous or {}).items() if k in ('state', 'signature')},
                   'softSignature': signature, 'softSince': since})
             return
-        reasons_note = f"\nHá {int((now - since) // 60)} min (proteção de cota que não liberou)."
+        cause = ('versão nova sem propagar' if 'version_mismatch' in reasons
+                 else 'proteção de cota que não liberou')
+        reasons_note = f"\nHá {int((now - since) // 60)} min ({cause})."
     else:
         reasons_note = ''
     if state == 'healthy':
