@@ -17,6 +17,22 @@ Tudo abaixo vem de dados de produção de 19/11 (`/dashboard.json`, `/decisions`
 - Não temos a latência só de ingresso, que é a que importa. Medir primeiro (detecção → Discord → Telegram, por oferta de `campanhasdeingresso`) antes de mexer em qualquer espera.
 - Só depois: decidir se ingresso pode pular a espera pela foto ou se ela já é rápida pelo proxy. Nada de mudança sem número.
 
+### Resultado da Parte 2 (medido em 19/11, 300 ofertas do `/inventory`)
+
+Tempo entre a oferta aparecer e a mensagem sair no canal principal do Telegram:
+
+| Grupo | Amostras | Mediana | p90 | Saíram em até 20 s |
+|---|---|---|---|---|
+| Comum | 159 | 90 s | 267 s | 45 |
+| Ingresso de teatro | 89 | 62 s | 120 s | 8 |
+| Ingresso (outros) | 49 | 60 s | 91 s | 22 |
+
+- Teatro: a espera de 90 s é proposital (agrupa as datas do mesmo show numa mensagem). Não mexer.
+- Ingresso que não é teatro: 22 de 49 saem em até 20 s (estratégias `upload` e `file_id`: 1 a 6 s). Os outros 27 saem entre 60 e 92 s e ficam na estratégia `discord_proxy_edit` (texto no prazo de 60 s e foto editada depois). **Mais da metade dos ingressos simples espera o prazo inteiro de `MAIN_IMAGE_WAIT_SECONDS`.**
+- Os tempos 60/90/120/150 s são múltiplos do ciclo de 30 s do Worker: a tentativa só repete a cada ciclo.
+- Causa provável (hipótese, não confirmada): nessas ofertas a primeira tentativa de foto não acontece ou não tem URL utilizável (o Telegram não baixa o CDN do Clube; a imagem só chega pelo proxy do Discord), e o Worker espera até o prazo antes de mandar texto. A saúde das estratégias não mostra falhas recentes de `upload`/`discord_proxy`, o que reforça que a espera vem de não haver tentativa, e não de tentativa falhando.
+- Próximo passo (Parte 2b): descobrir **por que** a primeira tentativa foi adiada, sem gravar nada extra (log do Worker por oferta: `imageUrl` vazio? proxy pronto? estratégia desligada?). Só então encurtar a espera para ingresso, por exemplo tentar o `upload` na hora quando o proxy ainda não existe, ou reduzir o prazo de 60 s só para ingresso. Qualquer mudança precisa de teste que prove que não aumenta escrita nem duplica mensagem.
+
 ## Parte 3 — origem das escritas da conta (investigação)
 
 - Evidência: o Worker UOL escreveu 29,8 mil linhas em 19/11 até 16:44 BRT, mas a conta já estava em 62,8 mil de 100 mil. Inferência: ~33 mil vêm de outro Worker/DO da mesma conta. Não confirmado.
