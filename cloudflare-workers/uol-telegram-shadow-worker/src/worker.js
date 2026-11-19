@@ -100,7 +100,7 @@ import {
   buildGroupedOffers, isTheaterHeld, isTheaterLink, parseGroupedOffers, theaterGroupKey,
   theaterHoldUntil,
 } from "./theater-group.js";
-import { nextImageCircuitState } from "./image-strategy.js";
+import { imageCircuitCooldownMinutes, nextImageCircuitState } from "./image-strategy.js";
 import {
   classifyDeliveryRow,
   deliveryConfiguration,
@@ -2302,8 +2302,12 @@ export class UolTelegramShadow extends DurableObject {
   recordImageDelivery(offerId, imageKey, delivery, now = new Date()) {
     const nowIso = now.toISOString();
     const threshold = envNumber(this.env, "IMAGE_CIRCUIT_FAILURE_THRESHOLD", 3, 2, 20);
-    const cooldownMinutes = envNumber(this.env, "IMAGE_CIRCUIT_COOLDOWN_MINUTES", 10, 1, 120);
+    const defaultCooldownMinutes = envNumber(this.env, "IMAGE_CIRCUIT_COOLDOWN_MINUTES", 10, 1, 120);
+    const remoteUrlCooldownMinutes = envNumber(this.env, "IMAGE_REMOTE_URL_COOLDOWN_MINUTES", 360, 1, 1440);
     for (const attempt of delivery.imageAttempts || []) {
+      const cooldownMinutes = imageCircuitCooldownMinutes(attempt.strategy, {
+        defaultMinutes: defaultCooldownMinutes, remoteUrlMinutes: remoteUrlCooldownMinutes,
+      });
       const row = this.sqlExec(
         "SELECT consecutive_failures FROM image_strategy_health WHERE strategy = ?",
         attempt.strategy,

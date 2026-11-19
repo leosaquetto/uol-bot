@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { nextImageCircuitState } from "../src/image-strategy.js";
+import { imageCircuitCooldownMinutes, nextImageCircuitState } from "../src/image-strategy.js";
 
 test("abre circuito na terceira falha e fecha após sucesso", () => {
   const now = new Date("2026-08-01T12:00:00.000Z");
@@ -18,4 +18,15 @@ test("abre circuito na terceira falha e fecha após sucesso", () => {
     openedUntil: "",
     lastError: "",
   });
+});
+
+test("remote_url espera 6 h entre sondas; as demais estratégias seguem o padrão", () => {
+  assert.equal(imageCircuitCooldownMinutes("remote_url"), 360);
+  assert.equal(imageCircuitCooldownMinutes("upload"), 10);
+  assert.equal(imageCircuitCooldownMinutes("discord_proxy", { defaultMinutes: 15 }), 15);
+  assert.equal(imageCircuitCooldownMinutes("remote_url", { defaultMinutes: 500, remoteUrlMinutes: 60 }), 500);
+  const now = new Date("2026-11-19T00:00:00.000Z");
+  const opened = nextImageCircuitState({ consecutiveFailures: 21 }, { ok: false, error: "400" },
+    { now, threshold: 3, cooldownMinutes: imageCircuitCooldownMinutes("remote_url") });
+  assert.equal(opened.openedUntil, "2026-11-19T06:00:00.000Z");
 });
