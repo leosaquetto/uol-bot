@@ -22,3 +22,11 @@ export function nextImageCircuitState(
     lastError: String(attempt.error || "").slice(0, 240),
   };
 }
+
+// remote_url depends on Telegram downloading the Clube CDN itself, which fails with
+// "failed to get HTTP URL content" for days at a time (22 straight failures from 18/11).
+// Every half-open probe costs a Telegram call and a few seconds on a new offer, so it
+// is retried far less often than the strategies that work from our side.
+export function imageCircuitCooldownMinutes(strategy, { defaultMinutes = 10, remoteUrlMinutes = 360 } = {}) {
+  return strategy === "remote_url" ? Math.max(defaultMinutes, remoteUrlMinutes) : defaultMinutes;
+}
