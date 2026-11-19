@@ -126,6 +126,7 @@ import {
   deferredMainDeliveryState,
   lateImageUpgradeDue,
   mainImageDeliveryOffer,
+  photoMutationSafetySeconds,
 } from "./image-deadline.js";
 import {
   nextTicketProbeState,
@@ -4826,8 +4827,11 @@ export class UolTelegramShadow extends DurableObject {
             entry.telegramState.offer,
             new Date(),
             envNumber(this.env, "MAIN_IMAGE_WAIT_SECONDS", 60, 1, 300),
-            envNumber(this.env, "MAIN_AMBIGUOUS_RETRY_SECONDS", 30, 15, 300) +
+            photoMutationSafetySeconds(
+              envNumber(this.env, "MAIN_IMAGE_WAIT_SECONDS", 60, 1, 300),
+              envNumber(this.env, "MAIN_PHOTO_WINDOW_SECONDS", 45, 1, 300),
               TELEGRAM_MUTATION_TIMEOUT_SECONDS,
+            ),
           )
         : { ...entry.telegramState.offer, deferTextFallback: false };
       let acceptedMessageId = "";
