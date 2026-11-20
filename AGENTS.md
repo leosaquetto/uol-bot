@@ -60,6 +60,7 @@ Vale para Claude, Codex, Antigravity e qualquer outro agente. Escrito em 18/11/2
 ## Entrega incerta (timeout do Telegram)
 
 - Oferta que **não é ingresso** e cai em entrega incerta (`ambiguous:telegram_*`) é fechada na hora, sem reenviar e sem alerta (`closeUnknownMain`, evidência `operator:auto-non-ticket-ambiguous`). Decisão do dono em 19/11/2026: duas ofertas comuns presas 16 h derrubaram o `/readyz` para 503 e geraram um aviso por hora.
+- O mesmo vale para o **comentário** da oferta (`closeUnknownComment`): oferta comum com comentário incerto fecha sozinha. Fechar o comentário à mão (`/resolve-delivery` com `target:"comment","outcome":"closed"`) também reconhece o incidente `delivery-queue:<id>:comment`; antes não reconhecia e o `/readyz` ficou em 503 por 20 h (20/11), porque a recuperação espera um recibo de comentário que um comentário fechado nunca tem.
 - Ingresso continua em `delivery_unknown` e vai ao dono. Para fechar à mão: `POST /resolve-delivery {"id","target":"main","outcome":"closed","evidenceReference":"operator:<motivo>","expectedGeneration","expectedAttempt","expectedUnknownAt"}` (valores em `/decisions`, na `deliveryTimeline`).
 
 ## Testes de integração (vitest)
