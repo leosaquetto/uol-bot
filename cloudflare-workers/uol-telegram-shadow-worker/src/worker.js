@@ -3440,7 +3440,8 @@ export class UolTelegramShadow extends DurableObject {
       }[target];
       if (!receiptColumn) return null;
       const offer = this.sqlExec(
-        `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at
+        `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at,
+                comment_delivery_error
          FROM offers WHERE id = ?`, row.key.slice("delivery-queue:".length, separator),
       ).toArray()[0];
       if (!offer && ["main", "canal2", "discord"].includes(target)) {
@@ -3456,7 +3457,9 @@ export class UolTelegramShadow extends DurableObject {
         return receipt?.state === "resolved_sent" && String(receipt.external_id || "").trim() &&
           receiptAt > Date.parse(row.last_detected_at) && receiptAt <= at ? at : null;
       }
-      return offer?.receipt && offer.status !== "delivery_unknown" &&
+      // A comment closed by the owner has no receipt by design; that closure is the recovery.
+      const closedComment = target === "comment" && offer?.comment_delivery_error === "historical_unknown_closed";
+      return (offer?.receipt || closedComment) && offer.status !== "delivery_unknown" &&
         !offer.main_delivery_unknown_at && !offer.comment_delivery_unknown_at ? at : null;
     }
     return null;

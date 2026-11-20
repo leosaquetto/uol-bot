@@ -80,4 +80,25 @@ describe("comentário incerto no Telegram", () => {
       expect(offer(state, "preso").comment_delivery_unknown_at).toBe("");
     });
   });
+
+  it("incidente que ficou ativo depois de um fechamento antigo se recupera sozinho", async () => {
+    vi.stubGlobal("fetch", async () => { throw new Error("unexpected_http"); });
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("clube-uol-global-monitor");
+    await runInDurableObject(stub, async (instance, state) => {
+      configure(instance);
+      insert(state, "antigo", "https://clube.uol.com.br/ingressocom/nzi-antigo", "ingressocom", {
+        comment_delivery_error: "historical_unknown_closed", comment_delivery_attempts: 10,
+      });
+      incident(state, "delivery-queue:antigo:comment");
+      const row = state.storage.sql.exec("SELECT * FROM incidents WHERE key = ?", "delivery-queue:antigo:comment").one();
+      const now = new Date();
+      const snapshots = { api: {}, apiContract: {}, sourceHealth: {}, webhook: {}, queueSlo: {} };
+      expect(instance.operationalRecoveryObservedAt(row, snapshots, now)).toBe(now.getTime());
+      // e um comentário com erro comum (sem fechamento) continua sem recuperação
+      insert(state, "aberto", "https://clube.uol.com.br/ingressocom/nzi-aberto", "ingressocom", { comment_delivery_error: "timeout" });
+      incident(state, "delivery-queue:aberto:comment");
+      const open = state.storage.sql.exec("SELECT * FROM incidents WHERE key = ?", "delivery-queue:aberto:comment").one();
+      expect(instance.operationalRecoveryObservedAt(open, snapshots, now)).toBeNull();
+    });
+  });
 });
