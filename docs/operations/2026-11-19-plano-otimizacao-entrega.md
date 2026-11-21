@@ -47,9 +47,21 @@ Proposta (Parte 2c, precisa de aprovação por mexer na proteção contra duplic
 2. Com janela de +45 s, toda primeira tentativa de foto cabe no primeiro ciclo. O pior caso (foto ambígua perto do limite) continua virando "incerta", sem texto duplicado.
 3. Teste de integração: oferta vista em t0, primeira tentativa em t0+30 s com `sendPhoto` ok deve sair como foto, sem `deferred`; e com `sendPhoto` em timeout, não pode sair texto depois.
 
-## Parte 3 — origem das escritas da conta (investigação)
+## Parte 3 — origem das escritas da conta (resultado medido em 19/11, 21:18 UTC)
 
-- Evidência: o Worker UOL escreveu 29,8 mil linhas em 19/11 até 16:44 BRT, mas a conta já estava em 62,8 mil de 100 mil. Inferência: ~33 mil vêm de outro Worker/DO da mesma conta. Não confirmado.
-- Por que importa: a previsão da conta (`optionalWorkReason: quota_forecast`) é o que liga `maintenance_deferred` e fazia o aviso ir e voltar.
-- Passos: (a) listar Workers/DOs da conta e as escritas de cada um (analytics do Cloudflare); (b) se for do UOL, cortar `sourceObservations` e `offerTouches` (~20 mil/dia previstos) sem tocar ingresso; (c) reduzir a leitura de `maintenanceLedger` (38% das leituras).
-- Regra: nada que aumente escrita por scan (ver `AGENTS.md`).
+Consulta somente leitura ao Analytics do Cloudflare (`durableObjectsPeriodicGroups` por `namespaceId`, ligado ao Worker pelas invocações). O token de leitura local venceu em 10/11; usei o da Oracle (`/var/lib/uol-instagram-monitor/analytics-read-token`, válido até 11/11/2027) rodando a consulta lá, sem copiar o segredo.
+
+| Worker | Escritas hoje (UTC) | Leituras | Requisições |
+|---|---|---|---|
+| `leo-remote` (2 namespaces) | 25.849 | ~206 mil | 19.418 |
+| `uol-telegram-shadow-pilot` | 25.186 | 949 mil | 3.766 |
+| `chatgpt-air-mcp` (2 namespaces) | 15.523 | ~21,6 mil | 24.039 |
+| **Conta** | **~66,6 mil de 100 mil** | | |
+
+- **O UOL é só 38% das escritas da conta.** Os 62% restantes são de outros Workers. A previsão da conta (`quota_forecast`) é o que ligava `maintenance_deferred` e os avisos que iam e voltavam.
+- **Maior corte isolado: `chatgpt-air-mcp` (repo `mini-chatgpt`).** Em `AirBridge` (`cloudflare-worker/src/index.ts`), todas as rotas (`/claim` vazio, `/status`, `/delivery`, `/heartbeat`, `/catalog` GET) terminam em `save()`, que sempre faz `storage.put` + `setAlarm`, mesmo sem nenhuma mudança. O listener consulta a fila o dia inteiro (24 mil requisições, 15,5 mil escritas). Corrigir `save()` para só gravar quando o estado mudou deve cortar a maior parte dessas ~15 mil escritas por dia (23% da conta). É inferência pelo código e pela proporção requisições/escritas; falta medir depois da mudança.
+- **`leo-remote`:** o heartbeat já é limitado a 1 escrita a cada 10 s (até ~8,6 mil/dia); o resto vem dos comandos (inserção, `claimed`, `accepted`, renovação de lease, resultado, mais as linhas de índice). Dá para subir o intervalo do heartbeat para 30 s (a regra é "online = batida em até 45 s"), economizando até ~5,8 mil/dia. Ganho menor e mexe na definição de "online": só com aprovação.
+- **UOL:** continua dentro do previsto (25,2 mil de 100 mil). Cortar `sourceObservations` e `offerTouches` (~20 mil/dia **projetados**, não medidos) só vale se o consumo real confirmar; hoje o real é bem menor que a projeção (62,7 mil projetados contra 25,2 mil reais).
+- **Efeito esperado:** sem o ruído de `save()`, a conta cai para ~51 mil/dia, bem longe do limiar de previsão que adia a manutenção do UOL.
+
+Próximo passo: PR no `mini-chatgpt` com `save()` gravando só quando algo mudou (e `setAlarm` só se o prazo mudou), com teste de que `/claim` vazio não escreve. É outro repositório, com release próprio.
