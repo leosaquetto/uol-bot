@@ -3440,7 +3440,8 @@ export class UolTelegramShadow extends DurableObject {
       }[target];
       if (!receiptColumn) return null;
       const offer = this.sqlExec(
-        `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at
+        `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at,
+                comment_delivery_error
          FROM offers WHERE id = ?`, row.key.slice("delivery-queue:".length, separator),
       ).toArray()[0];
       if (!offer && ["main", "canal2", "discord"].includes(target)) {
@@ -3456,7 +3457,9 @@ export class UolTelegramShadow extends DurableObject {
         return receipt?.state === "resolved_sent" && String(receipt.external_id || "").trim() &&
           receiptAt > Date.parse(row.last_detected_at) && receiptAt <= at ? at : null;
       }
-      return offer?.receipt && offer.status !== "delivery_unknown" &&
+      // A comment closed by the owner has no receipt by design; that closure is the recovery.
+      const closedComment = target === "comment" && offer?.comment_delivery_error === "historical_unknown_closed";
+      return (offer?.receipt || closedComment) && offer.status !== "delivery_unknown" &&
         !offer.main_delivery_unknown_at && !offer.comment_delivery_unknown_at ? at : null;
     }
     return null;
@@ -5764,6 +5767,15 @@ export class UolTelegramShadow extends DurableObject {
             occurredAt: unknownAt,
             error: `ambiguous:${message}`,
           });
+          // Owner decision (19-20/11/2026): an ordinary offer's uncertain Telegram
+          // result is closed, never resent and never alerted. Tickets stay uncertain.
+          try {
+            if (!isTicketCampaign(rowToOffer(row))) this.closeUnknownComment(row, unknownAt);
+          } catch (closeError) {
+            logEvent("warn", "uol_non_ticket_comment_close_skipped", {
+              offerId: row.id, error: sanitizeError(closeError),
+            });
+          }
         } else {
           const failedAt = new Date().toISOString();
           this.sqlExec(
@@ -8231,6 +8243,36 @@ export class UolTelegramShadow extends DurableObject {
     return result;
   }
 
+  // Closes an uncertain discussion comment without resending it. Without the
+  // acknowledgement the incident stays active forever: recovery waits for a
+  // comment receipt that a closed comment never gets (/readyz stayed 503 on 20/11).
+  closeUnknownComment(row, resolvedAt) {
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    this.sqlExec(
+      `UPDATE offers SET comment_delivery_attempts = ?,
+         comment_delivery_error = 'historical_unknown_closed',
+         comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = '',
+         comment_delivery_unknown_at = '' WHERE id = ?`,
+      maxAttempts,
+      row.id,
+    );
+    this.recordDeliveryLedgerEvent({ dedupeKey: crypto.randomUUID(),
+      offerId: row.id,
+      target: "comment",
+      operation: "comment",
+      state: "closed",
+      attempt: maxAttempts,
+      generation: row.delivery_generation,
+      occurredAt: resolvedAt,
+      error: "historical_unknown_closed",
+    });
+    this.sqlExec(
+      `UPDATE incidents SET status = 'administratively_acknowledged'
+       WHERE key = ? AND status = 'active'`, `delivery-queue:${row.id}:comment`,
+    );
+    this.readinessCache = null;
+  }
+
   closeUnknownMain(id, payload, resolvedAt) {
     const evidenceReference = String(payload?.evidenceReference || "").trim();
     if (!/^operator:[a-z0-9][a-z0-9:._-]{0,150}$/u.test(evidenceReference)) {
@@ -8459,25 +8501,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!unknownAt) throw new Error("delivery_target_not_unknown");
     if (normalizedTarget === "comment") {
       if (normalizedOutcome === "closed") {
-        const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-        this.sqlExec(
-          `UPDATE offers SET comment_delivery_attempts = ?,
-             comment_delivery_error = 'historical_unknown_closed',
-             comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = '',
-             comment_delivery_unknown_at = '' WHERE id = ?`,
-          maxAttempts,
-          row.id,
-        );
-        this.recordDeliveryLedgerEvent({ dedupeKey: crypto.randomUUID(),
-          offerId: row.id,
-          target: "comment",
-          operation: "comment",
-          state: "closed",
-          attempt: maxAttempts,
-          generation: row.delivery_generation,
-          occurredAt: resolvedAt,
-          error: "historical_unknown_closed",
-        });
+        this.closeUnknownComment(row, resolvedAt);
       } else if (normalizedOutcome === "sent") {
         const suppliedIds = (Array.isArray(payload?.messageIds) ? payload.messageIds : [])
           .map(Number).filter((value) => Number.isInteger(value) && value > 0);
