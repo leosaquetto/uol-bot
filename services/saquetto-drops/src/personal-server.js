@@ -9,6 +9,7 @@ import { createPersonalTextApi, createPersonalTextSender } from './personal-text
 import { createPersonalInbox } from './personal-inbox.js';
 import { createPersonalInboxApi } from './personal-inbox-api.js';
 import { createPersonalChatActions } from './personal-chat-actions.js';
+import { createPersonalProfilePhotos } from './personal-profile-photos.js';
 
 process.umask(0o077);
 const data = process.env.BAILEYS_PERSONAL_DATA || '/var/lib/baileys-personal';
@@ -38,6 +39,7 @@ const canSend = () => !closing && whatsapp.isReady() === true;
 const personalText = createPersonalTextApi({ store, getConfig, canSend, inbox: personalInbox });
 const personalInboxApi = createPersonalInboxApi({ inbox: personalInbox, whatsapp });
 const personalChatActions = createPersonalChatActions({ store, inbox: personalInbox, whatsapp });
+const personalProfilePhotos = createPersonalProfilePhotos({ whatsapp });
 const sendNext = createPersonalTextSender({ store, getConfig, inbox: personalInbox, whatsapp, canSend });
 const timers = [setInterval(() => sendNext().catch(() => {}), 1000)];
 
@@ -53,6 +55,10 @@ const server = createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   const path = url.pathname;
   if (req.method === 'GET' && path === '/v1/status') return reply(200, personalStatus({ whatsapp, pairingRequired: qrAvailable }));
+  if (personalProfilePhotos.matches(req.method, path)) {
+    const result = await personalProfilePhotos.route(req, url);
+    return reply(result.status, result.body);
+  }
   if (personalChatActions.matches(req.method, path)) {
     const result = await personalChatActions.route(req, url);
     return reply(result.status, result.body);
