@@ -1219,9 +1219,23 @@ export class UolTelegramShadow extends DurableObject {
 
   completeStorageUsageCycle(kind, startedRowsRead, details = {}) {
     this.rollStorageUsageDay();
-    // Metadata checkpoint (row + key index) and an alarm write. Normal
-    // sqlExec already measures affected indexes using cursor.rowsWritten.
-    this.recordStorageUsage(2, 3);
+    // The checkpoint costs 2 rows (row + key index). Persisting it on every
+    // 30-second cycle spent ~3k Durable Object writes/day while idle, so it is
+    // written at most every STORAGE_USAGE_PERSIST_SECONDS (and at once on a new
+    // day or version). An eviction loses at most that window of local counts;
+    // the account-wide guard still comes from the collector sample.
+    const persistIntervalMs = envNumber(
+      this.env, "STORAGE_USAGE_PERSIST_SECONDS", 300, 0, 3_600,
+    ) * 1_000;
+    const lastPersistedMs = Date.parse(this.storageUsage.lastPersistedAt || "");
+    const versionNow = String(details.versionId || this.env.WORKER_VERSION?.id || "").trim();
+    const persistDue = !Number.isFinite(lastPersistedMs) ||
+      Date.now() - lastPersistedMs >= persistIntervalMs ||
+      (kind === "primary" && versionNow &&
+        versionNow !== String(this.storageUsage.primaryLastVersionId || "").trim());
+    // Checkpoint (when due) and an alarm write. Normal sqlExec already
+    // measures affected indexes using cursor.rowsWritten.
+    this.recordStorageUsage(2, persistDue ? 3 : 1);
     const context = this.storageContext.getStore();
     const cycleRowsRead = context?.cycle?.kind === kind
       ? Math.max(0, Number(context.cycle.rowsRead || 0))
@@ -1257,6 +1271,7 @@ export class UolTelegramShadow extends DurableObject {
         cycleRowsRead,
       );
     }
+    if (!persistDue) return cycleRowsRead;
     this.storageUsage.lastPersistedAt = new Date().toISOString();
     const serialized = JSON.stringify(this.storageUsage);
     this.ctx.storage.sql.exec(
@@ -1977,6 +1992,18 @@ export class UolTelegramShadow extends DurableObject {
       this.sqlExec(`
         ALTER TABLE offers ADD COLUMN group_items_json TEXT NOT NULL DEFAULT '';
         INSERT INTO _sql_schema_migrations (id) VALUES (28);
+      `);
+    }
+    if (currentVersion < 29) {
+      // No query plan uses these four indexes (checked with EXPLAIN QUERY PLAN
+      // against every offers query), yet every insert and every update of their
+      // columns paid one Durable Object row write each.
+      this.sqlExec(`
+        DROP INDEX IF EXISTS offers_comment_idx;
+        DROP INDEX IF EXISTS offers_discord_idx;
+        DROP INDEX IF EXISTS offers_detail_repair_idx;
+        DROP INDEX IF EXISTS offers_main_unknown_due_idx;
+        INSERT INTO _sql_schema_migrations (id) VALUES (29);
       `);
     }
   }
