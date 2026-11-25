@@ -21,6 +21,28 @@ describe("storage economy preserves durable transitions", () => {
     });
   });
 
+  it("storage usage checkpoint is written at most every 5 minutes, not every cycle", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("economy-usage-checkpoint");
+    await runInDurableObject(stub, (instance, state) => {
+      const stored = () => state.storage.sql.exec(
+        "SELECT value FROM metadata WHERE key = 'runtime:storage_usage'").toArray()[0]?.value || "";
+      const versionId = instance.env.WORKER_VERSION?.id || "";
+      instance.completeStorageUsageCycle("primary", 0, { versionId, successful: true });
+      const first = stored();
+      expect(first).not.toBe("");
+      const before = instance.storageUsage.rowsWritten;
+      instance.completeStorageUsageCycle("primary", 0, { versionId, successful: true });
+      instance.completeStorageUsageCycle("maintenance", 0);
+      expect(stored()).toBe(first);
+      expect(instance.storageUsage.rowsWritten - before).toBe(2);
+      instance.storageUsage.lastPersistedAt = new Date(Date.now() - 5 * 60_000).toISOString();
+      instance.completeStorageUsageCycle("primary", 0, { versionId, successful: true });
+      expect(stored()).not.toBe(first);
+      instance.completeStorageUsageCycle("primary", 0, { versionId: "new-version", successful: true });
+      expect(JSON.parse(stored()).primaryLastVersionId).toBe("new-version");
+    });
+  });
+
   it("stable contract keeps live freshness and checkpoints after 15 minutes or real change", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("economy-contract-checkpoint");
     await runInDurableObject(stub, instance => {
