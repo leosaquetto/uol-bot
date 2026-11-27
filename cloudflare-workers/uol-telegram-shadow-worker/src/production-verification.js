@@ -243,6 +243,24 @@ export function productionBaseline(debt) {
   return { worker: WORKER_NAME, versionId: debt.versionId, checkedAt: debt.checkedAt, checks, identities };
 }
 
+// Release-only exception for one owner-approved, already observed WhatsApp delivery.
+export function baselineWithApprovedWhatsAppUnknown(baseline, predeploy, offerId) {
+  if (typeof offerId !== "string" || !/^[a-z0-9][a-z0-9-]{2,159}$/u.test(offerId)) {
+    throw new Error("release_whatsapp_exception_invalid");
+  }
+  const allowed = productionBaseline(baseline);
+  const observed = productionBaseline(predeploy);
+  const identity = JSON.stringify(["whatsapp", offerId]);
+  for (const key of ["deadLetters", "unknown"]) {
+    if (!observed.identities[key].includes(identity) || allowed.identities[key].includes(identity)) {
+      throw new Error(`release_whatsapp_exception_not_new_and_present:${key}`);
+    }
+    allowed.identities[key].push(identity);
+    allowed.checks[key] += 1;
+  }
+  return allowed;
+}
+
 export function productionDebtRegressions(baseline, current) {
   const original = productionBaseline(baseline);
   const observed = productionBaseline(current);

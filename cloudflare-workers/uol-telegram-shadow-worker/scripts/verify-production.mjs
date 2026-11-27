@@ -1,4 +1,4 @@
-import { reportProductionHealth } from "../src/production-verification.js";
+import { baselineWithApprovedWhatsAppUnknown, reportProductionHealth } from "../src/production-verification.js";
 import { loadReleaseDebtBaseline, saveInitialReleaseDebtBaseline } from "./release.mjs";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -60,6 +60,13 @@ const baselinePath = process.env.UOL_RELEASE_BASELINE_PATH || join(homedir(), ".
 const baseline = loadReleaseDebtBaseline(baselinePath, { bootstrap: bootstrapDebt });
 const predeployDebt = process.env.UOL_PREDEPLOY_DEBT_PATH
   ? JSON.parse(readFileSync(process.env.UOL_PREDEPLOY_DEBT_PATH, "utf8")) : null;
+const approvedWhatsAppUnknown = process.env.UOL_RELEASE_APPROVED_WHATSAPP_UNKNOWN;
+if (approvedWhatsAppUnknown && (!baseline || !predeployDebt || bootstrapDebt)) {
+  throw new Error("release_whatsapp_exception_requires_predeploy_and_baseline");
+}
+const comparisonBaseline = approvedWhatsAppUnknown
+  ? baselineWithApprovedWhatsAppUnknown(baseline, predeployDebt, approvedWhatsAppUnknown)
+  : baseline || predeployDebt;
 const token = readFileSync(join(homedir(), ".config", "uol-ticket-research", "shadow-admin-token"), "utf8").trim();
 if (!token) throw new Error("release_admin_token_missing");
 
@@ -110,7 +117,7 @@ for (let attempt = 1; attempt <= attempts; attempt += 1) {
       maxScanAgeMs,
       now: Date.now(),
       bootstrapDebt,
-    }, baseline || predeployDebt, snapshot.debt);
+    }, comparisonBaseline, snapshot.debt);
     lastReport = summary;
     if (!summary.ok) throw new Error(summary.runtimeError || summary.regressions.join(","));
     if (bootstrapDebt) saveInitialReleaseDebtBaseline(baselinePath, snapshot.debt);

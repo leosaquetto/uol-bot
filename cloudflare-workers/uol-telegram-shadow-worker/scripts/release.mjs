@@ -1,4 +1,4 @@
-import { productionBaseline, productionDebtRegressions } from "../src/production-verification.js";
+import { baselineWithApprovedWhatsAppUnknown, productionBaseline, productionDebtRegressions } from "../src/production-verification.js";
 import { spawnSync } from "node:child_process";
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
@@ -287,6 +287,10 @@ Somente no primeiro lote, sem baseline e com endpoint ainda não publicado:
   O pós-deploy salva o primeiro snapshot em ~/.config/uol-ticket-research/release-debt-baseline.json,
   com debtVerified=false. Lotes seguintes exigem o baseline, sem substituí-lo.
 
+Com autorização explícita do dono para um único envio WhatsApp incerto já observado:
+  npm run release -- --accept-existing-whatsapp-unknown=<offer-id>
+  Não altera a fila, o baseline salvo nem a proteção a novas pendências.
+
 Opção segura para validar somente argumentos/parsers, sem deploy:
   npm run release -- --dry-run
 
@@ -299,7 +303,15 @@ async function main() {
     help();
     return;
   }
-  const unsupported = [...args].filter((arg) => arg !== "--dry-run" && arg !== "--bootstrap-debt");
+  const exceptionPrefix = "--accept-existing-whatsapp-unknown=";
+  const exceptions = process.argv.slice(2).filter(arg => arg.startsWith(exceptionPrefix));
+  const whatsappException = exceptions[0]?.slice(exceptionPrefix.length);
+  if (exceptions.length > 1 || (exceptions.length && (!/^[a-z0-9][a-z0-9-]{2,159}$/u.test(whatsappException) ||
+      args.has("--bootstrap-debt") || args.has("--dry-run")))) {
+    throw new Error("release_whatsapp_exception_invalid");
+  }
+  const unsupported = [...args].filter((arg) => arg !== "--dry-run" && arg !== "--bootstrap-debt" &&
+    !arg.startsWith(exceptionPrefix));
   if (unsupported.length > 0) throw new Error(`release_argument_unsupported:${unsupported.join(",")}`);
 
   const scriptDirectory = fileURLToPath(new URL(".", import.meta.url));
@@ -330,8 +342,11 @@ async function main() {
   const baseUrl = String(process.env.UOL_WORKER_URL || "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev").replace(/\/+$/, "");
   const predeployDebt = await readReleaseDebt(baseUrl, token, { bootstrap: bootstrapDebt });
   if (baseline) {
-    const regressions = productionDebtRegressions(baseline, predeployDebt);
+    const comparisonBaseline = whatsappException
+      ? baselineWithApprovedWhatsAppUnknown(baseline, predeployDebt, whatsappException) : baseline;
+    const regressions = productionDebtRegressions(comparisonBaseline, predeployDebt);
     if (regressions.length) throw new Error(`release_debt_regression:${regressions.join(",")}`);
+    if (whatsappException) console.log(`release_approved_existing_whatsapp_unknown: ${whatsappException}`);
   }
 
   const temporaryDirectory = mkdtempSync(join(tmpdir(), "uol-worker-release-"));
@@ -384,6 +399,7 @@ async function main() {
         UOL_RELEASE_BASELINE_PATH: baselinePath,
         UOL_RELEASE_BOOTSTRAP_DEBT: bootstrapDebt ? "1" : "0",
         UOL_PREDEPLOY_DEBT_PATH: predeployDebt ? predeployDebtPath : "",
+        UOL_RELEASE_APPROVED_WHATSAPP_UNKNOWN: whatsappException || "",
         EXPECTED_VERSION_ID: versionId,
         EXPECTED_DELIVERY_MODE: "live",
       },

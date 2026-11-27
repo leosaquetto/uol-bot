@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validateProductionHealth, productionBaseline, productionDebtRegressions, reportProductionHealth } from "../src/production-verification.js";
+import { baselineWithApprovedWhatsAppUnknown, validateProductionHealth, productionBaseline, productionDebtRegressions, reportProductionHealth } from "../src/production-verification.js";
 
 const NOW = new Date("2026-08-10T15:00:00.000Z");
 const EXPECTED_VERSION_ID = "version-current";
@@ -75,6 +75,31 @@ function debtSnapshot(snapshot) {
       Array.from({ length: snapshot.readiness.checks[key] }, (_, index) => `${key}:${index}`)])),
   };
 }
+
+test("exceção temporária só admite a identidade WhatsApp já observada", () => {
+  const baseline = debtSnapshot(healthySnapshot());
+  const original = structuredClone(baseline);
+  const observed = structuredClone(baseline);
+  const id = "qa0-ticket";
+  const identity = JSON.stringify(["whatsapp", id]);
+  for (const key of ["unknown", "deadLetters"]) {
+    observed.identities[key] = [identity];
+    observed.checks[key] = 1;
+  }
+  const allowed = baselineWithApprovedWhatsAppUnknown(baseline, observed, id);
+  assert.deepEqual(productionDebtRegressions(allowed, observed), []);
+  assert.deepEqual(productionDebtRegressions(allowed, baseline), []);
+  assert.deepEqual(baseline, original);
+  assert.throws(() => baselineWithApprovedWhatsAppUnknown(baseline, baseline, id), /not_new_and_present/);
+  assert.throws(() => baselineWithApprovedWhatsAppUnknown(baseline, observed, "*"), /exception_invalid/);
+  const replacement = structuredClone(observed);
+  replacement.identities.unknown = [JSON.stringify(["whatsapp", "qa1-ticket"])];
+  assert.deepEqual(productionDebtRegressions(allowed, replacement), ["unknown:new_identities:1"]);
+  observed.checks.criticalIncidents = 1;
+  observed.identities.criticalIncidents = ["new-critical"];
+  assert.deepEqual(productionDebtRegressions(allowed, observed),
+    ["criticalIncidents:increased", "criticalIncidents:new_identities:1"]);
+});
 
 function validate(snapshot) {
   return validateProductionHealth(snapshot, {
