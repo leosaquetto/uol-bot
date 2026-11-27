@@ -70,7 +70,7 @@ function allowedStoryOfferUrl(value) {
     const authority = raw.match(/^https:\/\/([^/?#]+)/)?.[1];
     return authority === "clube.uol.com.br" && url.href === raw &&
       !url.username && !url.password && !url.port && !url.search && !url.hash &&
-      /^\/campanhasdeingresso\/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname);
+      /^\/campanhasdeingresso\/[A-Za-z][A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname);
   } catch {
     return false;
   }

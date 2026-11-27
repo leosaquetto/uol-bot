@@ -748,3 +748,14 @@ test("legacy operations secret never enables Telegram heartbeat alerts", async (
   assert.equal(result.operationsAlert, "not_configured");
   assert.equal(inbox.notifyOperations, null);
 });
+
+test("Story aceita campanha qa3 e outras letras sem ampliar outros formatos", () => {
+  const url = "https://clube.uol.com.br/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp";
+  for (const code of ["qa3", "Aa3", "Zk9"]) {
+    const link = url.replace("qa3", code);
+    assert.equal(normalizeInstagramStory({ ...STORY, link }, NOW).link, link);
+  }
+  for (const bad of [url.replace("qa3", "1a3"), url + "/resgatar", url + "?fbclid=x"]) {
+    assert.throws(() => validateInstagramCampaignLink(bad));
+  }
+});

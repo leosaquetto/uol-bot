@@ -97,3 +97,16 @@ test("nao le um corpo que ja excede o limite declarado", async () => {
   const result = await fetchTicketCodeOffer("pPS", async () => new Response("x", { headers: { "content-type": "text/html", "content-length": String(1024 * 1024 + 1) } }));
   assert.deepEqual(result, { status: "unknown", reason: "body_too_large", requests: 1 });
 });
+
+test("qa3 e outros prefixos: alias completo, caixa exata e vizinhança ainda ancorada", () => {
+  const seal = `${origin}/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp`;
+  assert.equal(ticketCodeOfferUrl(seal, "qa3", { full: true }), seal);
+  assert.equal(ticketCodeOfferUrl(seal, "qA3", { full: true }), "");
+  assert.ok(buildTicketCodeCandidates([card("qa2"), card("qa4")]).includes("qa3"));
+  assert.deepEqual(buildTicketCodeCandidates([card("qa2"), card("qb4")]), []);
+  for (const code of ["Aa3", "Zk9", "ra2"]) {
+    const url = `${origin}/campanhasdeingresso/${code}-oferta`;
+    assert.equal(ticketCodeOfferUrl(url, code, {full:true}), url);
+  }
+  assert.equal(ticketCodeOfferUrl(seal.replace("qa3", "1a3"), "1a3"), "");
+});

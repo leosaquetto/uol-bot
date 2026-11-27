@@ -25,7 +25,7 @@ MAX_IMAGE_CANDIDATES = 100
 MAX_STICKERS = 100
 IDENTIFIER = re.compile(r"[1-9][0-9]{0,23}")
 STORY_IDENTIFIER = re.compile(r"[0-9]{10,24}")
-CAMPAIGN_PATH = re.compile(r"/campanhasdeingresso/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*")
+CAMPAIGN_PATH = re.compile(r"/campanhasdeingresso/[A-Za-z][A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*")
 AUTH_MESSAGES = frozenset(("login_required", "challenge_required", "checkpoint_required",
                            "checkpoint_challenge_required", "consent_required"))
 

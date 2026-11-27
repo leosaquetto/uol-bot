@@ -136,3 +136,10 @@ test("record limits fail closed", () => {
   assert.equal(parse({ reels_media: Array.from({ length: 101 }, () => ({ user: OWNER, items: [] })) }).reason, "structure_limit");
   assert.throws(() => parseReels({}, [PROFILE, PROFILE, PROFILE, PROFILE], NOW), /three profiles/);
 });
+
+test("accepts a qa3 campaign and strips only its usual tracking parameters", () => {
+  const link = "https://clube.uol.com.br/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp";
+  assert.equal(normalizeCampaignLink(link + "?fbclid=tracking"), link);
+  assert.equal(normalizeCampaignLink(link.replace("qa3", "1a3")), null);
+  assert.equal(normalizeCampaignLink(link + "/resgatar"), null);
+});

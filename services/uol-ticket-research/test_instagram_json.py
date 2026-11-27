@@ -148,6 +148,14 @@ class ParserTests(unittest.TestCase):
         result = self.parse(reels([story(story_link_stickers=[{"story_link": {"url": wrapped}}])]))
         self.assertEqual(result["stories"][0]["destinations"], [TICKET])
 
+    def test_story_accepts_campaign_code_starting_with_any_letter(self):
+        for code in ("qa3", "Aa3", "Zk9", "pQg"):
+            with self.subTest(code=code):
+                url = f"https://clube.uol.com.br/campanhasdeingresso/{code}-2-ingressos-28-11-nubank-parque-sp"
+                wrapped = "https://l.instagram.com/?u=" + urllib.parse.quote(url + "?fbclid=x", safe="")
+                result = self.parse(reels([story(story_link_stickers=[{"story_link": {"url": wrapped}}])]))
+                self.assertEqual(result["stories"][0]["destinations"], [url])
+
     def test_images_enforce_full_story_aspect_and_worker_dimension_limits(self):
         candidates = [{"width": 6000, "height": 12000, "url": MEDIA},
                       {"width": 100, "height": 3000, "url": MEDIA},

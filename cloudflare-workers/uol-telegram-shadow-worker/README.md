@@ -452,7 +452,8 @@ O [complemento de Stories do Instagram](../../services/uol-ticket-research/INSTA
 
 `TICKET_CODE_DISCOVERY_ENABLED=true` habilita uma fonte pública adicional. Usa
 lacunas e até dois códigos vizinhos dos dois prefixos recentes corroborados por
-links da API/listagem. Preserva maiúsculas/minúsculas; não adivinha pontos ou a
+links da API/listagem. O código começa com qualquer letra ASCII, seguida de
+2 a 5 alfanuméricos. Preserva maiúsculas/minúsculas; não adivinha pontos ou a
 ordem entre alfabetos. Por exemplo, `pPP` e `pPT` permitem procurar `pPQ`, `pPR`
 e `pPS`. A página curta precisa revelar um alias completo; ambos são verificados
 antes da oferta entrar na deduplicação e nas filas existentes.

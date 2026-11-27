@@ -1,7 +1,7 @@
 const DAY_MS = 86_400_000;
 const MAX_RECORDS = 100;
 const STORY_ID = /^\d{10,24}$/;
-const CAMPAIGN_PATH = /^\/campanhasdeingresso\/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/;
+const CAMPAIGN_PATH = /^\/campanhasdeingresso\/[A-Za-z][A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/;
 const CDN_HOST = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:cdninstagram\.com|fbcdn\.net)$/i;
 
 function record(value) {

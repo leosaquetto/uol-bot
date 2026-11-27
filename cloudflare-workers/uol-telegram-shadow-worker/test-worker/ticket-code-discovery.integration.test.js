@@ -17,18 +17,22 @@ function html(url) {
 function response(url) { return new Response(html(url), { headers: { 'Content-Type': 'text/html' } }); }
 
 describe('public hidden ticket discovery', () => {
-  it('confirms short and full page without fetching the redemption CTA', async () => {
+  it('confirms qa3 from short and full pages without fetching the redemption CTA', async () => {
+    const code = 'qa3';
+    const qa3Link = origin + '/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp';
     const calls = [];
-    const result = await fetchTicketCodeOffer('pPS', async (url, options) => {
+    const result = await fetchTicketCodeOffer(code, async (url, options) => {
       calls.push(url);
       expect(options.redirect).toBe('manual');
       expect(options.headers.Authorization).toBeUndefined();
-      return response(url);
+      const page = html(url).replaceAll('pPS-2-ingressos-13-10-nubank-parque-sp', 'qa3-2-ingressos-28-11-nubank-parque-sp')
+        .replaceAll('pPS', code).replace('13/10', '28/11').replace('Robbie Williams', 'Seal');
+      return new Response(page, { headers: { 'Content-Type': 'text/html' } });
     });
     expect(result.status).toBe('found');
-    expect(result.card.link).toBe(link);
-    expect(result.card.apiDetail.description).toContain('Robbie Williams');
-    expect(calls).toEqual([`${origin}/campanhasdeingresso/pPS`, link]);
+    expect(result.card.link).toBe(qa3Link);
+    expect(result.card.apiDetail.description).toContain('Seal');
+    expect(calls).toEqual([origin + '/campanhasdeingresso/qa3', qa3Link]);
   });
   it('rejects conflicting identity, multiple containers and generic challenge pages', async () => {
     for (const body of [html(link).replace('content="'+link+'"', 'content="'+link.replace('pPS','pPQ')+'"'),
@@ -44,20 +48,22 @@ describe('public hidden ticket discovery', () => {
     const boilerplate = html(link).replace('sujeito às regras', 'não pode ser usado se esgotado, sujeito às regras');
     expect((await parseTicketCodePage(new Response(boilerplate), 'pPS', link)).status).toBe('found');
   });
-  it('adds an unlisted offer once, restores state, and protects against public-list absence', async () => {
+  it('adds an unlisted qa3 offer once, restores state, and protects against public-list absence', async () => {
+    const link = origin + '/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp';
     const stub = env.UOL_TELEGRAM_SHADOW.getByName('hidden-tickets-durable');
     await runInDurableObject(stub, async instance => {
       instance.env = { ...instance.env, TICKET_CODE_DISCOVERY_ENABLED: 'true' };
       let requests = 0;
-      const parsed = await parseTicketCodePage(response(link), 'pPS', link);
+      const page = html(link).replaceAll('pPS-2-ingressos-13-10-nubank-parque-sp', 'qa3-2-ingressos-28-11-nubank-parque-sp').replaceAll('pPS','qa3');
+      const parsed = await parseTicketCodePage(new Response(page, { headers: { 'Content-Type': 'text/html' } }), 'qa3', link);
       instance.fetchTicketCode = async code => {
         requests++;
-        return code === 'pPS' ? { ...parsed, requests: 2 } : { status: 'absent', requests: 1 };
+        return code === 'qa3' ? { ...parsed, requests: 2 } : { status: 'absent', requests: 1 };
       };
       instance.processDeliveryQueue = async () => ({ selectedRows: [], recentSecondaryRows: [] });
       instance.scheduleDiscordDelivery = () => {};
       instance.scheduleCriticalBeeperDelivery = () => {};
-      instance.setRuntimeSnapshot('api', { codeAnchors: ['pPP','pPT'].map(code => ({ link: `${origin}/retail/${code}-offer` })) });
+      instance.setRuntimeSnapshot('api', { codeAnchors: ['qa2','qa4'].map(code => ({ link: `${origin}/retail/${code}-offer` })) });
       await instance.scheduleTicketCodeDiscovery();
       expect(requests).toBe(0); // Normal baseline must exist first.
       instance.setMetadata('initialized_at', new Date().toISOString());
@@ -78,7 +84,7 @@ describe('public hidden ticket discovery', () => {
       expect(instance.evaluateSoldOut(new Set(protectedTicketCodeIds(snapshot)), new Date(), 'ticket')).toBe(0);
       // Simulate the next due interval after restoring the persisted snapshot.
       snapshot.nextAt = 0;
-      snapshot.entries.pPS.nextAt = 0;
+      snapshot.entries.qa3.nextAt = 0;
       instance.setRuntimeSnapshot('ticket_code_discovery', snapshot);
       await instance.scheduleTicketCodeDiscovery();
       expect(requests).toBeGreaterThan(before);
