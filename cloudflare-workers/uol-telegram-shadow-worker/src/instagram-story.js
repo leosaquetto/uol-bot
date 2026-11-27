@@ -37,7 +37,7 @@ function secureUrl(value, maxLength) {
 export function validateInstagramCampaignLink(value) {
   const url = secureUrl(value, 2_048);
   if (url.hostname !== "clube.uol.com.br" || url.search || url.href !== value ||
-      !/^\/campanhasdeingresso\/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname)) {
+      !/^\/campanhasdeingresso\/[A-Za-z][A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname)) {
     throw inputError("instagram_campaign_link_invalid");
   }
   return url.href;

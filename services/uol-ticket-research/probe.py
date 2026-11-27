@@ -65,7 +65,7 @@ def allowed(url, code, full=False, legacy=False):
         if u.scheme != 'https' or u.username or u.password or u.port: return ''
     except ValueError: return ''
     if u.hostname not in ({'clube.uol.com.br','clubeuol.clubeben.com.br'} if legacy else {'clube.uol.com.br'}): return ''
-    m = re.fullmatch(r'/campanhasdeingresso/(p[A-Za-z0-9]{2,5})(-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?', u.path)
+    m = re.fullmatch(r'/campanhasdeingresso/([A-Za-z][A-Za-z0-9]{2,5})(-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?', u.path)
     if not m or m[1] != code or (full and not m[2]): return ''
     return ORIGIN + u.path
 
@@ -76,7 +76,7 @@ def get(url):
     global REQUESTS, BLOCKED_REASON
     try:
         u = urllib.parse.urlsplit(url)
-        code = re.fullmatch(r'/campanhasdeingresso/(p[A-Za-z0-9]{2,5})(?:-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?',u.path)
+        code = re.fullmatch(r'/campanhasdeingresso/([A-Za-z][A-Za-z0-9]{2,5})(?:-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?',u.path)
         safe = url in CATALOG_URLS or (code and allowed(url,code[1])==url)
     except ValueError: safe = False
     if not safe: raise ValueError('public_read_url_blocked')
@@ -147,7 +147,7 @@ def detail(url, code):
     return {'status':'found','reason':'','title':title,'link':link,'description':description,'validity':list(dict.fromkeys(validity)), 'stock':'explicit_sold_out' if explicit_sold_out else 'unknown',**meta}
 
 def probe_code(code):
-    if not re.fullmatch(r'p[A-Za-z0-9]{2,5}',str(code)):
+    if not re.fullmatch(r'[A-Za-z][A-Za-z0-9]{2,5}',str(code)):
         return {'code':code,'status':'unknown','reason':'invalid_code','observedAt':now(),'requests':0,'httpStatuses':[]}
     first=detail(ORIGIN+'/campanhasdeingresso/'+code,code)
     statuses=[first.get('httpStatus')]; count=1
@@ -170,7 +170,7 @@ def fetch_catalogs():
                 titles=[a for a in n.nodes() if a.tag=='p' and a.has_class('titulo')]
                 if not anchors or not titles: continue
                 link=urllib.parse.urljoin(ORIGIN,anchors[0].attrs['href']); u=urllib.parse.urlsplit(link)
-                code=re.search(r'^/[^/]+/(p[A-Za-z0-9]{2,5})-',u.path)
+                code=re.search(r'^/[^/]+/([A-Za-z][A-Za-z0-9]{2,5})-',u.path)
                 if u.hostname!='clube.uol.com.br' or not code: continue
                 key=(code[1],link);unique.add(key)
                 cards.setdefault(key,{'code':code[1],'url':link,'title':clean(titles[0].text()),'category':n.attrs.get('data-categoria',''),'catalogs':[]})['catalogs'].append(url)

@@ -107,7 +107,7 @@ test('private adapter rejects invalid Story format and destinations before enque
     for(const overrides of invalid)assert.equal((await send(f.api,input(original,overrides))).status,400);
     assert.equal((await send(f.api,input(Buffer.from('not an image')))).status,415);
     assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,0);
-    const target='https://clube.uol.com.br/campanhasdeingresso/pQg-2-ingressos-30-10-nubank-parque-sp';
+    const target='https://clube.uol.com.br/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp';
     assert.equal((await send(f.api,input(original,{text:`Story\n${target}`,
       preview:{link:target,title:'Clube UOL',summary:'',imageBase64:original.toString('base64')}}))).status,202);
   }finally{f.close();}

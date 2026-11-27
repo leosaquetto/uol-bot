@@ -29,7 +29,7 @@ EXCLUSIONS = {'', 'coverage_gap', 'coverage_metadata_missing', 'unknown'} | {
 }
 _STAMP = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}'
                     r'(?:\.\d{1,6})?(?:Z|\+00:00)')
-_PATH = re.compile(r'/campanhasdeingresso/(p[A-Za-z0-9]{2,5})-'
+_PATH = re.compile(r'/campanhasdeingresso/([A-Za-z][A-Za-z0-9]{2,5})-'
                    r'[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*')
 
 

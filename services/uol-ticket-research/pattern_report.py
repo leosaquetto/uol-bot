@@ -152,7 +152,7 @@ def _attach_stories(shows, stories, codes, metadata):
     observations = []
     for story in records:
         code, url = story.get("code"), story.get("canonicalUrl")
-        if not isinstance(code, str) or not re.fullmatch(r"p[A-Za-z0-9]{2,5}", code) or not isinstance(url, str) or not re.fullmatch(r"https://clube\.uol\.com\.br/campanhasdeingresso/" + re.escape(code) + r"-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*", url):
+        if not isinstance(code, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9]{2,5}", code) or not isinstance(url, str) or not re.fullmatch(r"https://clube\.uol\.com\.br/campanhasdeingresso/" + re.escape(code) + r"-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*", url):
             continue
         record, info = codes.get(code, {}), metadata.get(code, {})
         known_url = record.get("url") or info.get("url")

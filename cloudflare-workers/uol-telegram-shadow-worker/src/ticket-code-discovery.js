@@ -2,7 +2,7 @@ import { cleanText, evaluateDetailQuality, extractValidity, normalizeCard } from
 
 const ORIGIN = "https://clube.uol.com.br";
 const LEGACY_HOST = "clubeuol.clubeben.com.br";
-const CODE_PATTERN = /^p[A-Za-z0-9]{2,5}$/;
+const CODE_PATTERN = /^[A-Za-z][A-Za-z0-9]{2,5}$/;
 const MAX_BYTES = 1024 * 1024;
 const BANDS = ["abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "0123456789"];
 
@@ -27,7 +27,7 @@ export function ticketCodeOfferUrl(value, code, { full = false, legacy = false }
   if (!CODE_PATTERN.test(String(code || ""))) return "";
   const url = publicUrl(value, { legacy });
   if (!url) return "";
-  const match = url.pathname.match(/^\/campanhasdeingresso\/(p[A-Za-z0-9]{2,5})(-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?$/);
+  const match = url.pathname.match(/^\/campanhasdeingresso\/([A-Za-z][A-Za-z0-9]{2,5})(-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?$/);
   if (!match || match[1] !== code || (full && !match[2])) return "";
   return `${ORIGIN}${url.pathname}`;
 }
@@ -37,7 +37,7 @@ function observedCode(card) {
   // Anchors must come from explicit official HTTPS links, not inferred relative paths.
   if (!raw.startsWith(`${ORIGIN}/`)) return "";
   const url = publicUrl(raw);
-  return url?.pathname.match(/^\/[A-Za-z0-9-]+\/(p[A-Za-z0-9]{2,5})-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/)?.[1] || "";
+  return url?.pathname.match(/^\/[A-Za-z0-9-]+\/([A-Za-z][A-Za-z0-9]{2,5})-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/)?.[1] || "";
 }
 
 /** Bounded gaps and neighbours around two recently observed, corroborated prefixes. */
@@ -244,7 +244,7 @@ export async function fetchTicketCodeOffer(code, fetchImpl = fetch) {
 // A phone supplies an already known public URL. Validate that exact page using
 // the same identity/CTA contract as server discovery; never follow a redemption.
 export async function fetchTicketCampaignOffer(link, fetchImpl = fetch) {
-  const code = String(link || "").match(/\/campanhasdeingresso\/(p[A-Za-z0-9]{2,5})-/)?.[1];
+  const code = String(link || "").match(/\/campanhasdeingresso\/([A-Za-z][A-Za-z0-9]{2,5})-/)?.[1];
   const url = code && ticketCodeOfferUrl(link, code, { full: true });
   if (!url || url !== link) return { ...unknown("invalid_url"), requests: 0 };
   return { ...await fetchPage(url, code, fetchImpl), requests: 1 };

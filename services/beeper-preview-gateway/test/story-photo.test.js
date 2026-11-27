@@ -60,8 +60,8 @@ test('normal offers retain the preexisting hash and preview format',async()=>{
   }finally{f.close();}
 });
 
-test('canonical pQg campaign accepts the Story photo format',async()=>{
-  const target='https://clube.uol.com.br/campanhasdeingresso/pQg-2-ingressos-30-10-nubank-parque-sp';
+test('canonical qa3 campaign accepts the Story photo format',async()=>{
+  const target='https://clube.uol.com.br/campanhasdeingresso/qa3-2-ingressos-28-11-nubank-parque-sp';
   const f=fixture({fetchImpl:async()=>new Response(Buffer.from('story'),{headers:{'Content-Type':'image/jpeg'}})});
   try{assert.equal((await f.handler(request({link:target,text:`Story\n${target}`}))).status,202);}finally{f.close();}
 });

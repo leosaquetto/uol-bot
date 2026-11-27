@@ -52,7 +52,7 @@ def ticket_link(link):
         u = urllib.parse.urlsplit(link)
         if (u.scheme == 'https' and u.hostname == 'clube.uol.com.br'
                 and not u.username and not u.password and u.port is None and not u.query and not u.fragment
-                and re.fullmatch(r'/campanhasdeingresso/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', u.path)):
+                and re.fullmatch(r'/campanhasdeingresso/[A-Za-z][A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', u.path)):
             return 'https://clube.uol.com.br' + u.path
     except (TypeError, ValueError):
         pass
